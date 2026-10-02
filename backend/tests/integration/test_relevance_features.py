@@ -38,7 +38,7 @@ def test_what_to_plant_api_and_page(client):
 
 
 def test_home_dont_know_button_goes_to_what_to_plant(client):
-    html = client.get("/", query_string={"nova": 1}).get_data(as_text=True)
+    html = client.get("/consulta", query_string={"nova": 1}).get_data(as_text=True)
     assert 'formaction="/o-que-plantar"' in html and "Não sei o que plantar" in html
     r = client.get("/o-que-plantar", query_string={"place": "Araraquara SP", "crop": "", "soil": ""})
     assert r.status_code == 200

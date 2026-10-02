@@ -8,8 +8,15 @@ def page(client, url, **params):
 
 
 def test_inicio_form(client):
-    code, html = page(client, "/")
+    code, html = page(client, "/consulta")
     assert code == 200 and 'action="/clima"' in html and "Milho" in html
+
+
+def test_landing_is_home_and_uses_our_api(client):
+    code, html = page(client, "/")
+    assert code == 200 and "Saiba o que e quando plantar" in html
+    assert "/api/v1/recommendations/by-month" in html and "/api/v1/location/resolve" in html
+    assert "supabase.co" not in html and "sb_publishable" not in html and "pk.eyJ" not in html
 
 
 def test_clima_renders_real_recommendation(client, weather):
