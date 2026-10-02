@@ -58,6 +58,8 @@ class Config:
     LLM_TIMEOUT = float(os.getenv("LLM_TIMEOUT", "12"))
     LLM_MAX_TOKENS = 400
     LLM_CACHE_TTL = 24 * 3600
+    # Mapa da landing (Mapbox). Token público "pk." — fica no .env, nunca no HTML/git. Vazio = sem mapa.
+    MAPBOX_TOKEN = os.getenv("MAPBOX_TOKEN", "").strip()
     GEO_DIR = os.getenv("GEO_DIR", str(INSTANCE_DIR / "geo"))  # malhas IBGE por UF (fora do git)
     HTTP_TIMEOUT = (3, 8)
 
@@ -81,6 +83,7 @@ class TestingConfig(Config):
     GEOCODING_CEP_PROVIDER = "none"
     WEATHER_PROVIDER = "fixture"
     LLM_PROVIDER = "none"
+    MAPBOX_TOKEN = ""  # testes não dependem do .env local
 
 
 class ProductionConfig(Config):

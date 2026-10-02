@@ -48,6 +48,19 @@ def _defaults() -> dict:
 
 
 @bp.get("/")
+def landing():
+    """Landing page (Raul/equipe): apresentação + consulta por mês com dados do ZARC."""
+    from datetime import date as _date
+
+    from flask import current_app
+
+    d = _defaults()
+    return render_template("landing.html", mapbox_token=current_app.config.get("MAPBOX_TOKEN", ""),
+                           last=d if d.get("municipality") and d.get("crop") else None,
+                           month=_date.today().month)
+
+
+@bp.get("/consulta")
 def inicio():
     args = request.args
     if not args.get("nova") and args.get("crop") and (args.get("place") or args.get("lat")):

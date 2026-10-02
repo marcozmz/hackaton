@@ -135,3 +135,37 @@ def day_suggestions(
         out.append(Suggestion("out_of_window", {"label": window.label if window else None,
                                                 "start": window.start.isoformat() if window else None}))
     return out
+
+
+@dataclass
+class MonthStatus:
+    status: str  # recomendado | atencao | nao_recomendado | sem_dado
+    riscos: list[dict]  # [{decendio, label, risco_percentual | None}]
+    best_decendio: int | None
+    window_label: str | None
+
+
+def month_status(windows: dict[int, int], has_zarc: bool, month: int, year: int) -> MonthStatus:
+    """Situação de uma cultura num mês (3 decêndios) pelo ZARC.
+
+    recomendado = algum decêndio do mês com risco 20% · atencao = só 30–40% ·
+    nao_recomendado = nenhum decêndio indicado · sem_dado = sem zoneamento.
+    """
+    decs = [(month - 1) * 3 + i for i in (1, 2, 3)]
+    riscos = []
+    for d in decs:
+        start, end = dec.bounds(d, year)
+        riscos.append({"decendio": d, "label": f"{start.day} a {end.day}/{end.month:02d}",
+                       "risco_percentual": windows.get(d)})
+    if not has_zarc:
+        return MonthStatus("sem_dado", riscos, None, None)
+    inside = [r for r in riscos if r["risco_percentual"]]
+    if not inside:
+        status = "nao_recomendado"
+    elif any(r["risco_percentual"] <= 20 for r in inside):
+        status = "recomendado"
+    else:
+        status = "atencao"
+    best = min(inside, key=lambda r: (r["risco_percentual"], r["decendio"]))["decendio"] if inside else None
+    seg = next((s for s in dec.segments(windows) if best in s), None) if best else None
+    return MonthStatus(status, riscos, best, seg.label() if seg else None)
