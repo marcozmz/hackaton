@@ -4,16 +4,14 @@ from __future__ import annotations
 import logging
 import os
 
-from dotenv import load_dotenv
 from flask import Flask
 
 from app.config import CONFIGS, INSTANCE_DIR
 from app.errors import register_error_handlers
-from app.extensions import cache, cors, db, limiter, migrate
+from app.extensions import cache, compress, cors, db, limiter, migrate
 
 
 def create_app(env: str | None = None) -> Flask:
-    load_dotenv()
     env = env or os.getenv("APP_ENV", "development")
     cfg = CONFIGS[env]
     if hasattr(cfg, "validate"):
@@ -23,6 +21,7 @@ def create_app(env: str | None = None) -> Flask:
     app.config.from_object(cfg)
     app.json.ensure_ascii = False
     app.json.sort_keys = False
+    app.json.compact = True  # GeoJSON grande: sem indentação nem em dev
     INSTANCE_DIR.mkdir(exist_ok=True)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -31,6 +30,7 @@ def create_app(env: str | None = None) -> Flask:
     db.init_app(app)
     migrate.init_app(app, db, render_as_batch=True)
     cache.init_app(app)
+    compress.init_app(app)
     limiter.init_app(app)
     cors.init_app(app, resources={r"/api/*": {"origins": app.config["CORS_ORIGINS"]}})
 

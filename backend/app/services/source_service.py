@@ -22,6 +22,15 @@ def forecast_ref(fc) -> dict:
     }
 
 
+def insurance_ref(facts) -> dict:
+    return {
+        "id": "sisser",
+        "name": "SISSER – Seguro Rural (PSR/MAPA), agregado",
+        "version": facts.version_label,
+        "extracted_at": None,
+    }
+
+
 class SourceService:
     def list(self) -> list[dict]:
         out = []

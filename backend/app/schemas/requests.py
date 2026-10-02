@@ -49,6 +49,25 @@ class VarietiesQuery(_Q):
         return self
 
 
+class InsuranceQuery(_Q):
+    municipality: int | None = Field(None, ge=1_000_000, le=9_999_999)
+    place: str | None = Field(None, max_length=80)
+    crop: str = Field(..., min_length=1, max_length=80)
+
+    @model_validator(mode="after")
+    def _where(self):
+        if not (self.municipality or self.place):
+            raise ValueError("informe municipality ou place")
+        return self
+
+
+class ZarcLayerQuery(_Q):
+    uf: str = Field(..., min_length=2, max_length=2)
+    crop: str = Field(..., min_length=1, max_length=80)
+    soil: str | None = Field(None, max_length=30)
+    as_of: dt.date | None = Field(None, alias="date")
+
+
 class WeatherQuery(_Q):
     municipality: int | None = Field(None, ge=1_000_000, le=9_999_999)
     place: str | None = Field(None, max_length=80)

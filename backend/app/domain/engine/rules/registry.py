@@ -9,6 +9,7 @@ from app.domain.engine.rules.forecast_rules import (
     ForecastHeavyRainRule,
     ForecastSowingMoistureRule,
 )
+from app.domain.engine.rules.insurance_rules import InsuranceHintRule
 from app.domain.engine.rules.zarc_rules import ZarcCoverageRule, ZarcWindowRule
 
 RULES = [
@@ -20,5 +21,5 @@ RULES = [
     ForecastAvailabilityRule(),
     ForecastHeavyRainRule(),
     ForecastSowingMoistureRule(),
-    # desejável: InsuranceHintRule()
+    InsuranceHintRule(),
 ]

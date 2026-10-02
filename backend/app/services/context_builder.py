@@ -13,6 +13,7 @@ from app.domain.context import AgroContext, VarietyFacts, ZarcFacts, ZoneFacts
 from app.domain.zarc import CYCLE_GROUP_NUMBER
 from app.errors import UpstreamUnavailable
 from app.repositories import catalog_repo, zarc_repo
+from app.services.insurance_service import InsuranceService
 from app.services.weather_service import WeatherService
 
 log = logging.getLogger(__name__)
@@ -81,7 +82,18 @@ class ForecastEnricher:
         used["open_meteo"] = fc
 
 
-ENRICHERS = [ZarcEnricher(), VarietyEnricher(), ForecastEnricher()]  # desejável: InsuranceEnricher()
+class InsuranceEnricher:
+    name = "insurance"
+
+    def enrich(self, ctx: AgroContext, used: dict) -> None:
+        facts = InsuranceService().facts(ctx.municipality, ctx.crop)
+        if facts is None:
+            return  # base não carregada: não é lacuna da recomendação
+        ctx.facts["insurance"] = facts
+        used["sisser"] = facts
+
+
+ENRICHERS = [ZarcEnricher(), VarietyEnricher(), ForecastEnricher(), InsuranceEnricher()]
 
 
 class ContextBuilder:

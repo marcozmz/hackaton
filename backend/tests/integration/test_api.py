@@ -155,3 +155,31 @@ def test_sources(client):
     ids = {s["id"]: s for s in body["items"]}
     assert ids["zarc_tabua_risco"]["status"] == "loaded"
     assert ids["zarc_tabua_risco"]["license"].startswith("Creative Commons")
+
+
+# --- explicação detalhada (visão §10) ----------------------------------------
+def test_explanation_answers_vision_questions(client):
+    _, body = rec(client, place="Araraquara SP", crop="aipim")
+    ex = body["explanation"]
+    assert ex["what"]["title"] == body["title"]  # o que foi recomendado
+    assert ex["headline"].startswith("Risco")  # por quê (manchete)
+    assert ex["why"] and all("data_used" in w and "rule" in w for w in ex["why"])  # dados usados
+    assert any("aipim" in d for d in ex["data_considered"])  # o que foi considerado
+    assert ex["period"]["as_of"] == TODAY and "outubro" in ex["period"]["text"]  # período
+    assert ex["confidence_text"].startswith("Confiança")  # confiança
+    assert ex["actions"] == body["actions"]  # ação
+
+
+def test_explanation_cites_source_and_official_act(client):
+    _, body = rec(client, municipality=ARARAQUARA, crop="milho", soil="2")
+    zarc = next(w for w in body["explanation"]["why"] if w["code"] == "zarc_in_window")
+    assert zarc["source"]["id"] == "zarc_tabua_risco" and zarc["source"]["extracted_at"] == "2026-10-01"
+    assert "Risco do ZARC hoje: 20%" in zarc["data_used"]
+    assert any(d.startswith("Ato oficial: Port") for d in zarc["data_used"])
+    assert body["explanation"]["planting_options"][0]["variant"] == "Milho 1ª Safra"
+
+
+def test_explanation_confidence_lists_what_reduced_it(client):
+    _, body = rec(client, municipality=ARARAQUARA, crop="milho", level="standard")
+    assert "Reduzida por" in body["explanation"]["confidence_text"]
+    assert "Tipo de solo não informado" in body["explanation"]["confidence_text"]

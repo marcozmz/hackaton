@@ -1,6 +1,7 @@
 # Catálogo do MVP: identidade oficial + nomes regionais + como a cultura aparece nas bases.
 #
 # zarc_names:     valores exatos de `Nome_cultura` na Tábua de Risco (cada um vira uma "variante").
+# sisser_match:   idem para `NM_CULTURA_GLOBAL` do SISSER (seguro rural).
 # cultivar_match: como casar `Cultura` do arquivo ZARC – Cultivares (texto normalizado:
 #                 sem acento, minúsculo). Casa se começar com algum `include` e não contiver nenhum `exclude`.
 # aliases:        nomes que o agricultor pode digitar. kind ∈ official|common|regional|scientific|abbreviation|misspelling
@@ -13,6 +14,7 @@ crops:
     category: grão
     zarc_names: ["Milho 1ª Safra", "Milho 2ª Safra"]
     cultivar_match: {include: ["milho"], exclude: ["pipoca", "braquiaria"]}
+    sisser_match: {include: ["milho"], exclude: ["pipoca", "verde"]}
     aliases:
       - {alias: "milho", kind: official}
       - {alias: "milho grão", kind: common}
@@ -27,6 +29,7 @@ crops:
     category: grão
     zarc_names: ["Feijão", "Feijão 2ª Safra"]
     cultivar_match: {include: ["feijao"], exclude: ["caupi", "vigna", "corda", "macassar"]}
+    sisser_match: {include: ["feijao"], exclude: ["caupi", "corda", "vagem"]}
     aliases:
       - {alias: "feijão", kind: official}
       - {alias: "feijão comum", kind: common}
@@ -43,6 +46,7 @@ crops:
     category: grão
     zarc_names: ["Feijão Caupi"]
     cultivar_match: {include: ["feijao caupi", "caupi", "feijao de corda", "vigna"], exclude: []}
+    sisser_match: {include: ["feijao caupi", "caupi", "feijao de corda"]}
     aliases:
       - {alias: "feijão-caupi", kind: official}
       - {alias: "caupi", kind: common}
@@ -60,6 +64,7 @@ crops:
     category: grão
     zarc_names: ["Arroz"]
     cultivar_match: {include: ["arroz"], exclude: ["irrigado"]}
+    sisser_match: {include: ["arroz"]}
     aliases:
       - {alias: "arroz", kind: official}
       - {alias: "arroz de sequeiro", kind: common}
@@ -72,6 +77,7 @@ crops:
     category: raiz
     zarc_names: ["Mandioca (aipim, macaxeira)"]
     cultivar_match: {include: ["mandioca"], exclude: []}
+    sisser_match: {include: ["mandioca", "aipim", "macaxeira"]}
     aliases:
       - {alias: "mandioca", kind: official}
       - {alias: "aipim", kind: regional}
@@ -87,6 +93,7 @@ crops:
     category: grão
     zarc_names: ["Amendoim"]
     cultivar_match: {include: ["amendoim"], exclude: []}
+    sisser_match: {include: ["amendoim"]}
     aliases:
       - {alias: "amendoim", kind: official}
       - {alias: "mendoim", kind: misspelling}
@@ -98,6 +105,7 @@ crops:
     category: grão
     zarc_names: ["Soja"]
     cultivar_match: {include: ["soja"], exclude: []}
+    sisser_match: {include: ["soja"]}
     aliases:
       - {alias: "soja", kind: official}
       - {alias: "soya", kind: misspelling}
@@ -109,6 +117,7 @@ crops:
     category: fibra
     zarc_names: ["Algodão Herbáceo"]
     cultivar_match: {include: ["algodao"], exclude: []}
+    sisser_match: {include: ["algodao"]}
     aliases:
       - {alias: "algodão", kind: official}
       - {alias: "algodão herbáceo", kind: common}

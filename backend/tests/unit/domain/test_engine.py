@@ -123,3 +123,10 @@ def test_narrator_levels_differ():
     s1 = Narrator().narrate(c1, ENGINE.evaluate(c1)).summary
     s2 = Narrator().narrate(c2, ENGINE.evaluate(c2)).summary
     assert s1 != s2
+
+
+def test_portaria_humanized():
+    from app.domain.narrative.explainer import portaria_text
+
+    assert portaria_text("Port.21_de_16-03-2026") == "Portaria nº 21, de 16/03/2026"
+    assert portaria_text("algo estranho") == "algo estranho"

@@ -99,6 +99,18 @@ findings:
     simple: "A previsão do tempo mostrada não é a mais recente."
     standard: "Usando a última previsão disponível (atualizada há algumas horas)."
     technical: "Forecast run expirado reutilizado (provider indisponível)."
+  insurance_uptake:
+    simple: "Em {year}, foram feitos {policies} seguros rurais de {crop} em {where}, com o governo pagando cerca de {subsidy_pct}% do custo."
+    standard: "{policies} apólices de seguro de {crop} com subvenção federal (PSR) em {where} em {year}, cobrindo {area_ha} ha; o governo pagou em média {subsidy_pct}% do prêmio."
+    technical: "PSR {year} ({where}): {policies} apólices, {area_ha} ha, taxa média {premium_pct}% do limite de garantia, subvenção {subsidy_pct}% do prêmio."
+  insurance_uptake_any_crop:
+    simple: "Em {year}, {policies} produtores de {where} usaram o seguro rural com ajuda do governo (várias culturas)."
+    standard: "{policies} apólices do PSR em {where} em {year} (todas as culturas); subvenção média de {subsidy_pct}% do prêmio."
+    technical: "PSR {year} ({where}, todas as culturas): {policies} apólices, {area_ha} ha, subvenção {subsidy_pct}% do prêmio."
+  insurance_available:
+    simple: "Existe seguro rural com ajuda do governo (PSR) para proteger a sua lavoura."
+    standard: "O Programa de Subvenção ao Seguro Rural (PSR) pode reduzir o custo do seguro."
+    technical: "Sem apólices PSR suficientes na região em {year} para exibir agregados (k < 3)."
   location_approximate:
     simple: "Entendemos que você está em {municipality} ({uf}). Se não for, corrija o lugar."
     standard: "Localização aproximada: {municipality}/{uf}."
@@ -120,6 +132,7 @@ actions:
   plan_around_rain: "Programe o plantio para aproveitar a chuva de {day}."
   wait_soil_moisture: "Espere uma boa chuva antes de semear: terra seca atrapalha a germinação."
   check_forecast_later: "Confira a previsão do tempo mais tarde."
+  consider_insurance: "Pergunte no banco ou na cooperativa sobre o seguro rural com ajuda do governo: para ter direito, plante dentro do período do zoneamento (ZARC)."
 
 assumptions:
   soil_unspecified: "Tipo de solo não informado: janela mais conservadora."
@@ -149,6 +162,74 @@ weather_summary:
 weather_highlight:
   rainiest: "Dia mais chuvoso: {day} ({mm} mm)."
   none: "Sem dia de chuva relevante."
+
+# --- Explicação detalhada ("Por que recebi essa recomendação?") ---
+explanation:
+  headline:
+    simple: "Risco {risk_word}. Principal motivo: {main}"
+    standard: "Risco {risk_word}. Principal motivo: {main}"
+    technical: "risk_level={risk_level} (pior achado: {main_code}). {main}"
+  in_favor: "A favor: {text}"
+  confidence:
+    simple: "Confiança {confidence_word} nesta orientação."
+    standard: "Confiança {confidence_word} ({score}). {reduced}"
+    technical: "Confiança {score} (heurística de lacunas, não é probabilidade). {reduced}"
+  reduced_by: "Reduzida por: {items}."
+  not_reduced: "Nenhuma lacuna de dados."
+  period: "Hoje ({today}) está no período de {decendio_label}."
+  forecast_horizon: "Previsão analisada: próximos {n_days} dias."
+
+data_considered:
+  location: "Local: {municipality}/{uf} ({resolved_by_text})"
+  crop: "Cultura: {crop_name}{matched_text}"
+  soil: "Tipo de terra: {soil}"
+  soil_none: "Tipo de terra: não informado"
+  zarc: "Zoneamento: {version}"
+  varieties: "Cultivares: {count} indicadas para {uf}"
+  forecast: "Previsão do tempo: {provider}, atualizada em {fetched_at_text}"
+  management: "Cultivo considerado: sequeiro (sem irrigação)"
+
+resolved_by:
+  ibge_code: "código IBGE"
+  exact_name: "nome do município"
+  fuzzy_name: "nome aproximado"
+  cep: "CEP"
+  nearest_centroid: "localização do aparelho, município mais próximo"
+
+confidence_words:
+  high: "alta"
+  medium: "média"
+  low: "baixa"
+
+# Dados usados por achado (rótulo: valor). Variáveis = params do achado + evidência.
+evidence:
+  zarc_in_window: ["Risco do ZARC hoje: {risk_pct}%", "Janela oficial: {window_label}", "Ato oficial: {portarias_text}", "Base: {season}"]
+  zarc_out_of_window: ["Próxima janela oficial: {window_label}", "Risco nessa janela: a partir de {risk_pct}%", "Ato oficial: {portarias_text}"]
+  zarc_window_closing: ["Fim da janela: {window_end_text}"]
+  zarc_lower_risk_period: ["Período de risco {better_risk_pct}%: {better_label}"]
+  zarc_no_coverage: ["Município sem zoneamento de {crop} na safra vigente"]
+  zarc_no_window: ["Nenhum decêndio com risco aceitável (20, 30 ou 40%)"]
+  soil_unspecified: ["Solo não informado: janela comum a todos os tipos de terra"]
+  soil_ad_approximation: ["Classes do ZARC usadas: {soil_codes_text}"]
+  cultivar_available: ["{count} cultivares indicadas em {uf}", "Exemplos: {examples}"]
+  cultivar_unknown: ["Nenhuma cultivar listada para {uf}"]
+  forecast_heavy_rain: ["Chuva prevista: {mm} mm na {day} ({date_text})", "Limite de alerta: {threshold_int} mm/dia (provisório)"]
+  forecast_moderate_rain: ["Chuva prevista: {mm} mm na {day} ({date_text})"]
+  forecast_dry_spell: ["Chuva somada em {n_days} dias: {mm_total} mm"]
+  forecast_good_moisture: ["Chuva somada em {n_days} dias: {mm_total} mm"]
+  location_approximate: ["Município identificado por: {resolved_by_text}"]
+  insurance_uptake: ["Apólices em {year}: {policies} ({where})", "Área segurada: {area_ha} ha", "Subvenção federal: {subsidy_pct}% do prêmio"]
+  insurance_uptake_any_crop: ["Apólices em {year}, todas as culturas: {policies} ({where})"]
+
+map:
+  legend:
+    low: "Bom para plantar agora (risco baixo)"
+    medium: "Dá para plantar, com atenção (risco médio)"
+    high: "Dá para plantar, mas o risco é alto"
+    out_of_window: "Fora do período de plantio"
+    no_data: "Sem zoneamento oficial"
+  feature_label: "{name}: {legend}"
+  title: "{crop} em {uf} — situação de {period}"
 
 risk_words:
   low: "baixo"

@@ -10,13 +10,15 @@ from flask import current_app
 from app.domain.context import AgroContext
 from app.domain.engine import ENGINE_VERSION, RecommendationEngine
 from app.domain.narrative import Narrator
+from app.domain.narrative.explainer import Explainer
 from app.domain.zarc import CYCLE_LABELS, MANAGEMENT_LABELS
 from app.extensions import cache
 from app.repositories import zarc_repo
 from app.services.context_builder import ContextBuilder
 from app.services.crop_service import CropService
 from app.services.location_service import LocationService
-from app.services.source_service import forecast_ref, version_ref
+from app.services.insurance_service import InsuranceService
+from app.services.source_service import forecast_ref, insurance_ref, version_ref
 from app.services.weather_service import WeatherService
 
 SOURCE_NAMES = {
@@ -88,7 +90,9 @@ class RecommendationService:
         varieties = ctx.facts.get("varieties")
         crop_detail = self.crops.detail(ctx.crop.slug)
         sources = [
-            forecast_ref(v) if code == "open_meteo" else version_ref(code, SOURCE_NAMES.get(code, code), v)
+            forecast_ref(v) if code == "open_meteo"
+            else insurance_ref(v) if code == "sisser"
+            else version_ref(code, SOURCE_NAMES.get(code, code), v)
             for code, v in used.items()
         ]
         weather = WeatherService()
@@ -135,10 +139,9 @@ class RecommendationService:
                 "source_id": "zarc_cultivares",
             },
             "actions": text.actions,
-            "explanation": {
-                "headline": text.reason,
-                "reasons": text.reasons,
-            },
+            "explanation": Explainer(self.narrator).explain(
+                ctx, result, text, {s["id"]: s for s in sources}
+            ),
             "confidence": {
                 "level": result.confidence_level.value,
                 "score": result.confidence_score,
@@ -154,7 +157,11 @@ class RecommendationService:
             "engine": {"version": result.engine_version, "rules": result.rules},
             # Blocos desejáveis: aparecem quando implementados.
             "forecast": forecast,
-            "insurance": {"status": "unavailable"},
+            "insurance": InsuranceService().present(
+                ctx.facts.get("insurance"),
+                ctx.municipality,
+                next((r["text"] for r in text.reasons if r["code"].startswith("insurance_")), None),
+            ),
         }
 
     def _debug(self, ctx, result) -> dict:

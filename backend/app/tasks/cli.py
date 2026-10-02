@@ -5,9 +5,10 @@ from datetime import date
 from pathlib import Path
 
 import click
+from flask import current_app
 from flask.cli import AppGroup
 
-from app.ingestion import catalog_seed, ibge_municipios, zarc, zarc_cultivars
+from app.ingestion import catalog_seed, ibge_malhas, ibge_municipios, sisser, zarc, zarc_cultivars
 from app.repositories import source_repo
 
 
@@ -53,6 +54,23 @@ def import_zarc(files, crops, label, extracted_at):
 def import_cultivares(file, seasons, crops, extracted_at):
     only = set(crops.split(",")) if crops else None
     click.echo(zarc_cultivars.run(file, list(seasons) or None, only, _date(extracted_at)).render())
+
+
+@data_cli.command("import-sisser")
+@click.option("--file", "files", multiple=True, required=True, type=click.Path(exists=True, path_type=Path),
+              help="uma planilha por ano (ex.: dados_abertos_psr_2025_sisser.xlsx)")
+@click.option("--extracted-at", default=None)
+def import_sisser(files, extracted_at):
+    """Seguro rural (PSR): lê só colunas não pessoais e grava agregados."""
+    click.echo(sisser.run(list(files), _date(extracted_at)).render())
+
+
+@data_cli.command("import-malhas")
+@click.option("--uf", "ufs", multiple=True, help="UFs (padrão: todas). Ex.: --uf SP --uf MG")
+def import_malhas(ufs):
+    """Limites municipais do IBGE (GeoJSON por UF) para o mapa."""
+    geo_dir = Path(current_app.config["GEO_DIR"])
+    click.echo(ibge_malhas.run(geo_dir, list(ufs) or None).render())
 
 
 @data_cli.command("list-versions")

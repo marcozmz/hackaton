@@ -45,6 +45,23 @@ datasets:
     refresh_policy: anual
     usage_status: active
     sensitivity: none
+  - code: sisser
+    source: mapa
+    name: SISSER – Programa de Subvenção ao Seguro Rural (agregado)
+    format: xlsx
+    methodology_url: https://dados.agricultura.gov.br/dataset
+    refresh_policy: anual
+    usage_status: active
+    sensitivity: personal_data_risk
+    notes: "Arquivo oficial contém nome/documento do segurado e coordenadas; o sistema lê só colunas não pessoais e grava apenas agregados por município × cultura × ano."
+  - code: ibge_malha_municipal
+    source: ibge
+    name: Malha municipal do IBGE (qualidade mínima)
+    format: geojson
+    methodology_url: https://servicodados.ibge.gov.br/api/docs/malhas?versao=3
+    refresh_policy: anual
+    usage_status: active
+    sensitivity: none
   - code: open_meteo_forecast
     source: open_meteo
     name: Previsão do tempo diária (Open-Meteo)
