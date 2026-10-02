@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+# Config/segredos
+.env
+# Banco local e dados brutos (bases oficiais são grandes: baixar à parte)
+backend/instance/
+backend/data/raw/
+*.db
+*.db-wal
+*.db-shm

@@ -1,0 +1,49 @@
+# Fontes e datasets (alimenta o rodapé do app, /sources e o slide de fontes do pitch).
+sources:
+  - code: mapa
+    name: Ministério da Agricultura e Pecuária (MAPA)
+    organization: MAPA / SPA / DEGER / CGRA
+    homepage_url: https://dados.agricultura.gov.br/dataset
+    license: Creative Commons Attribution (CC-BY)
+  - code: ibge
+    name: Instituto Brasileiro de Geografia e Estatística (IBGE)
+    organization: IBGE (via kelvins/municipios-brasileiros, MIT)
+    homepage_url: https://github.com/kelvins/municipios-brasileiros
+    license: Dados públicos IBGE; compilação MIT
+  - code: plante_facil
+    name: Plante Fácil (curadoria da equipe)
+    organization: Equipe Plante Fácil
+    license: CC-BY
+
+datasets:
+  - code: zarc_tabua_risco
+    source: mapa
+    name: ZARC – Tábua de Risco
+    format: csv
+    methodology_url: https://dados.agricultura.gov.br/dataset/tabua-de-risco-zoneamento-agricola-de-risco-climatico
+    refresh_policy: por safra (portarias do ZARC)
+    usage_status: active
+    sensitivity: none
+  - code: zarc_cultivares
+    source: mapa
+    name: ZARC – Cultivares
+    format: csv
+    methodology_url: https://dados.agricultura.gov.br/dataset/siszarc-sistemas-de-zoneamento-agricola-e-risco-climatico
+    refresh_policy: por safra
+    usage_status: active
+    sensitivity: none
+  - code: ibge_municipios
+    source: ibge
+    name: Municípios brasileiros com centroide
+    format: csv
+    methodology_url: https://github.com/kelvins/municipios-brasileiros
+    refresh_policy: anual
+    usage_status: active
+    sensitivity: none
+  - code: catalogo_culturas
+    source: plante_facil
+    name: Catálogo de culturas e nomes regionais
+    format: yaml
+    refresh_policy: manual
+    usage_status: active
+    sensitivity: none

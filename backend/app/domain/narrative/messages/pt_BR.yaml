@@ -1,0 +1,110 @@
+# Catálogo de mensagens: código × nível de linguagem (simple | standard | technical).
+# Variáveis entre chaves vêm dos params do achado (+ derivadas pelo Narrator: *_text).
+# Nível ausente cai para "standard" e depois para "simple".
+
+titles:
+  favorable: "Bom momento para plantar {crop}"
+  attention: "Dá para plantar {crop}, mas com atenção"
+  unfavorable: "Ainda não é hora de plantar {crop}"
+  no_data: "Sem zoneamento oficial para {crop} aqui"
+
+summaries:
+  favorable:
+    simple: "Na sua região, o período bom para plantar {crop} vai de {window_start_text} até {window_end_text}. O risco agora é baixo."
+    standard: "O ZARC indica plantio de {crop} entre {window_start_text} e {window_end_text}. Hoje o risco climático é baixo ({risk_pct}%)."
+    technical: "Decêndio atual dentro da janela ZARC ({window_label}); risco {risk_pct}% para a combinação município × solo × ciclo considerada."
+  attention:
+    simple: "Você está dentro do período de plantio de {crop} ({window_start_text} até {window_end_text}), mas o risco agora é {risk_word}."
+    standard: "O ZARC indica plantio de {crop} entre {window_start_text} e {window_end_text}. O risco climático hoje é {risk_word} ({risk_pct}%)."
+    technical: "Decêndio atual dentro da janela ZARC ({window_label}) com risco {risk_pct}%."
+  unfavorable:
+    simple: "O período indicado para plantar {crop} na sua região começa em {window_start_text} e vai até {window_end_text}."
+    standard: "Hoje está fora da janela do ZARC para {crop}. A próxima janela vai de {window_start_text} a {window_end_text}."
+    technical: "Decêndio atual fora da janela ZARC. Próximo segmento: {window_label} (risco mínimo {risk_pct}%)."
+  unfavorable_no_window:
+    simple: "O zoneamento oficial não indica nenhum período bom para plantar {crop} na sua região, com o tipo de terra escolhido."
+    standard: "O ZARC não indica decêndios de plantio para {crop} nesta combinação de município e solo."
+    technical: "Zona ZARC existente sem decêndios com risco aceitável (20/30/40%) para a combinação consultada."
+  no_data:
+    simple: "Não existe zoneamento oficial (ZARC) de {crop} para {municipality}. Isso não quer dizer que é ruim: só não temos o dado oficial."
+    standard: "O ZARC não traz zoneamento de {crop} para {municipality}. Sem esse dado oficial, não fazemos recomendação de janela."
+    technical: "Nenhuma zarc_zone para (município, cultura) na versão vigente da Tábua de Risco."
+
+findings:
+  zarc_in_window:
+    simple: "Hoje está dentro do período indicado pelo zoneamento agrícola oficial (ZARC)."
+    standard: "Hoje está dentro da janela de plantio do ZARC ({window_label}), com risco de {risk_pct}%."
+    technical: "Decêndio atual na janela ZARC {window_label}; risco {risk_pct}%; opções abertas: {options_open_text}."
+  zarc_window_closing:
+    simple: "O período de plantio está acabando: termina em {window_end_text}."
+    standard: "A janela atual termina em {window_end_text}."
+    technical: "Restam poucos decêndios na janela (fim em {window_end_text})."
+  zarc_lower_risk_period:
+    simple: "Se puder esperar, a partir de {better_start_text} o risco fica menor."
+    standard: "Há um período de risco menor ({better_risk_pct}%) a partir de {better_start_text} ({better_label})."
+    technical: "Segmento com risco {better_risk_pct}% em {better_label}."
+  zarc_out_of_window:
+    simple: "Hoje está fora do período indicado pelo zoneamento oficial. O próximo período começa em {window_start_text}."
+    standard: "Fora da janela do ZARC. Próxima janela: {window_label}."
+    technical: "Decêndio atual fora da janela ZARC; faltam {decendios_until} decêndios para o próximo segmento ({window_label})."
+  zarc_no_window:
+    simple: "O zoneamento oficial não indica período bom de plantio para essa combinação."
+    standard: "O ZARC não traz decêndios recomendados para esta combinação."
+    technical: "Zona sem decêndios com risco aceitável."
+  zarc_no_coverage:
+    simple: "Não há zoneamento oficial de {crop} para {municipality}."
+    standard: "O ZARC não cobre {crop} em {municipality}."
+    technical: "Sem zarc_zone para (município, cultura) na versão vigente."
+  zarc_old_season:
+    simple: "Os dados do zoneamento são de uma safra anterior."
+    standard: "Dados do ZARC de safra anterior ({version})."
+    technical: "Versão do ZARC não corresponde à safra corrente: {version}."
+  soil_unspecified:
+    simple: "Como você não disse o tipo de terra, mostramos o período mais seguro para todos os tipos."
+    standard: "Solo não informado: usamos a janela mais conservadora entre os tipos de solo."
+    technical: "Solo não informado: interseção dos decêndios entre os códigos de solo, com o maior risco."
+  soil_ad_approximation:
+    simple: "Usamos uma aproximação para o seu tipo de terra."
+    standard: "O ZARC desta cultura usa classes de água disponível (AD); aproximamos pela textura informada ({soil})."
+    technical: "Zonas por classe AD (11–16) mapeadas para o grupo textural informado; janela conservadora entre as classes do grupo."
+  cultivar_available:
+    simple: "Há {count} cultivares (tipos de semente) indicadas para o seu estado, como {examples}."
+    standard: "{count} cultivares de {crop} indicadas pelo ZARC para {uf}, por exemplo: {examples}."
+    technical: "{count} cultivares em ZARC – Cultivares para {uf} (granularidade UF)."
+  cultivar_unknown:
+    simple: "Não encontramos a lista oficial de cultivares para o seu estado."
+    standard: "Sem cultivares de {crop} indicadas para {uf} na base oficial."
+    technical: "Nenhum registro em ZARC – Cultivares para (cultura, UF)."
+  location_approximate:
+    simple: "Entendemos que você está em {municipality} ({uf}). Se não for, corrija o lugar."
+    standard: "Localização aproximada: {municipality}/{uf}."
+    technical: "Município resolvido por aproximação."
+
+actions:
+  prepare_soil: "Prepare a terra nos próximos dias."
+  plant_in_window: "Plante dentro do período indicado ({window_start_text} até {window_end_text})."
+  plant_soon: "Se for plantar, faça isso logo: o período termina em {window_end_text}."
+  consider_lower_risk_period: "Se puder, espere até {better_start_text}, quando o risco fica menor."
+  wait_window: "Espere o período indicado, que começa em {window_start_text}."
+  prepare_for_next_window: "O período começa em {window_start_text}: já vá preparando a terra e as sementes."
+  inform_soil: "Diga qual é o seu tipo de terra para uma orientação mais precisa."
+  choose_cultivar: "Escolha uma cultivar (semente) indicada para o seu estado."
+  ask_cultivar_technician: "Pergunte a um técnico qual semente é indicada para a sua região."
+  seek_technical_assistance: "Procure a assistência técnica (Emater/ATER) da sua região."
+  confirm_location: "Confira se o município está certo."
+
+assumptions:
+  soil_unspecified: "Tipo de solo não informado: janela mais conservadora."
+  soil_ad_approximation: "Classe de água disponível do solo aproximada pela textura informada."
+  cultivar_by_uf: "Cultivares indicadas por estado (a base oficial não detalha por município)."
+  location_approximate: "Município identificado por aproximação."
+
+gaps:
+  zarc_old_season: "Zoneamento de safra anterior."
+  cultivars: "Lista de cultivares indisponível."
+
+risk_words:
+  low: "baixo"
+  medium: "médio"
+  high: "alto"
+  unknown: "desconhecido"
