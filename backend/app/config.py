@@ -31,6 +31,14 @@ class Config:
 
     # Providers
     GEOCODING_CEP_PROVIDER = os.getenv("GEOCODING_CEP_PROVIDER", "viacep")  # viacep | none
+    WEATHER_PROVIDER = os.getenv("WEATHER_PROVIDER", "open_meteo")  # open_meteo | fixture | none
+    WEATHER_TIMEOUT = (5, 15)
+    WEATHER_FIXTURE = os.getenv(
+        "WEATHER_FIXTURE", str(BASE_DIR / "app" / "providers" / "weather" / "fixtures" / "open_meteo_araraquara.json")
+    )
+    FORECAST_TTL_SECONDS = int(os.getenv("FORECAST_TTL_SECONDS", "10800"))  # 3 h
+    FORECAST_STALE_MAX_SECONDS = 24 * 3600  # provider fora: aceita run antigo até 24 h (degradado)
+    FORECAST_DAYS = 10
     HTTP_TIMEOUT = (3, 8)
 
     # Domínio
@@ -51,6 +59,7 @@ class TestingConfig(Config):
     CACHE_TYPE = "NullCache"
     RATELIMIT_ENABLED = False
     GEOCODING_CEP_PROVIDER = "none"
+    WEATHER_PROVIDER = "fixture"
 
 
 class ProductionConfig(Config):

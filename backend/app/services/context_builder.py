@@ -11,7 +11,9 @@ from flask import current_app
 
 from app.domain.context import AgroContext, VarietyFacts, ZarcFacts, ZoneFacts
 from app.domain.zarc import CYCLE_GROUP_NUMBER
+from app.errors import UpstreamUnavailable
 from app.repositories import catalog_repo, zarc_repo
+from app.services.weather_service import WeatherService
 
 log = logging.getLogger(__name__)
 
@@ -63,7 +65,23 @@ class VarietyEnricher:
         ctx.facts["varieties"] = VarietyFacts(version.id, tuple(items), "uf")
 
 
-ENRICHERS = [ZarcEnricher(), VarietyEnricher()]  # desejável: ForecastEnricher(), InsuranceEnricher()
+class ForecastEnricher:
+    name = "forecast"
+
+    def enrich(self, ctx: AgroContext, used: dict) -> None:
+        svc = WeatherService()
+        if not svc.enabled():
+            return  # previsão desligada por config: não é lacuna
+        try:
+            fc = svc.forecast(ctx.municipality)
+        except UpstreamUnavailable:
+            ctx.data_gaps.append("forecast")
+            return
+        ctx.facts["forecast"] = fc
+        used["open_meteo"] = fc
+
+
+ENRICHERS = [ZarcEnricher(), VarietyEnricher(), ForecastEnricher()]  # desejável: InsuranceEnricher()
 
 
 class ContextBuilder:

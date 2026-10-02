@@ -20,7 +20,7 @@ MESSAGES = Path(__file__).parent / "messages" / "pt_BR.yaml"
 FALLBACK = {"technical": ("technical", "standard", "simple"), "standard": ("standard", "simple"), "simple": ("simple",)}
 
 
-class _SafeDict(dict):
+class SafeDict(dict):
     def __missing__(self, key):  # variável ausente não quebra o texto
         return "—"
 
@@ -62,7 +62,7 @@ class Narrator:
         return next(iter(entry.values()))
 
     def _fmt(self, template: str, params: dict) -> str:
-        return template.format_map(_SafeDict(params))
+        return template.format_map(SafeDict(params))
 
     def _params(self, ctx: AgroContext, result: EngineResult, extra: dict | None = None) -> dict:
         p = {

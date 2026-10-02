@@ -4,6 +4,11 @@ from app.domain.engine.rules.context_rules import (
     LocationApproximateRule,
     SoilUnspecifiedRule,
 )
+from app.domain.engine.rules.forecast_rules import (
+    ForecastAvailabilityRule,
+    ForecastHeavyRainRule,
+    ForecastSowingMoistureRule,
+)
 from app.domain.engine.rules.zarc_rules import ZarcCoverageRule, ZarcWindowRule
 
 RULES = [
@@ -12,5 +17,8 @@ RULES = [
     SoilUnspecifiedRule(),
     CultivarHintRule(),
     LocationApproximateRule(),
-    # desejável: ForecastHeavyRainRule(), ForecastDrySpellRule(), InsuranceHintRule()
+    ForecastAvailabilityRule(),
+    ForecastHeavyRainRule(),
+    ForecastSowingMoistureRule(),
+    # desejável: InsuranceHintRule()
 ]

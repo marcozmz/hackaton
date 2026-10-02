@@ -49,6 +49,21 @@ class VarietiesQuery(_Q):
         return self
 
 
+class WeatherQuery(_Q):
+    municipality: int | None = Field(None, ge=1_000_000, le=9_999_999)
+    place: str | None = Field(None, max_length=80)
+    cep: str | None = Field(None, max_length=10)
+    lat: float | None = Field(None, ge=-35, le=6)
+    lon: float | None = Field(None, ge=-75, le=-28)
+    level: Level = "simple"
+
+    @model_validator(mode="after")
+    def _where(self):
+        if not (self.municipality or self.place or self.cep or (self.lat is not None and self.lon is not None)):
+            raise ValueError("informe municipality, place, cep ou lat+lon")
+        return self
+
+
 class PlantingQuery(_Q):
     municipality: int | None = Field(None, ge=1_000_000, le=9_999_999)
     place: str | None = Field(None, max_length=80)

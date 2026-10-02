@@ -74,10 +74,21 @@ pytest               # testes (domínio puro + API com mini-ZARC sintético)
 | `GET /api/v1/crops/{slug}` · `/crops/{slug}/varieties?municipality=` | ficha e cultivares indicadas |
 | `GET /api/v1/soils` | 3 opções simples de solo (+ "não sei") |
 | `GET /api/v1/recommendations/planting?place=Araraquara SP&crop=milho&soil=2` | **recomendação de janela de plantio** |
+| `GET /api/v1/weather/outlook?place=Araraquara SP` | previsão de 7 dias já interpretada (Open-Meteo) |
 | `GET /api/v1/sources` | fontes, licenças, versões e data de extração |
 
 Parâmetros úteis da recomendação: `level=simple|standard|technical`, `date=AAAA-MM-DD`
 (simular outra data), `debug=1` (só em desenvolvimento: zonas ZARC cruas).
+
+### Previsão do tempo (desejável, implementada)
+
+- Provider em `WEATHER_PROVIDER`: `open_meteo` (padrão, sem chave), `fixture` (resposta gravada, para demo sem internet) ou `none`.
+- Cada consulta vira um `forecast_run` válido por 3 h por município (cache); se o Open-Meteo cair,
+  usa o último run de até 24 h (`forecast.status = degraded`) ou segue só com o ZARC (`unavailable`, confiança −0,20).
+- Regras: chuva forte ≥ 50 mm/dia nos próximos 5 dias (atenção), chuva moderada ≥ 30 mm (informativo),
+  pouca chuva em 7 dias dentro da janela (atenção: esperar umidade) ou boa umidade (ok).
+  Limiares **provisórios** (referência: avisos do INMET) em `app/domain/engine/thresholds.py`.
+- A previsão **nunca cria janela de plantio**: só ajusta o "quando, dentro da janela" e avisa riscos.
 
 ### Como a recomendação é decidida
 

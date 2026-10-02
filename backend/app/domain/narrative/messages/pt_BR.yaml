@@ -65,7 +65,7 @@ findings:
     technical: "Solo não informado: interseção dos decêndios entre os códigos de solo, com o maior risco."
   soil_ad_approximation:
     simple: "Usamos uma aproximação para o seu tipo de terra."
-    standard: "O ZARC desta cultura usa classes de água disponível (AD); aproximamos pela textura informada ({soil})."
+    standard: "O ZARC desta cultura usa classes de água disponível (AD); aproximamos pela textura informada: {soil}."
     technical: "Zonas por classe AD (11–16) mapeadas para o grupo textural informado; janela conservadora entre as classes do grupo."
   cultivar_available:
     simple: "Há {count} cultivares (tipos de semente) indicadas para o seu estado, como {examples}."
@@ -75,6 +75,30 @@ findings:
     simple: "Não encontramos a lista oficial de cultivares para o seu estado."
     standard: "Sem cultivares de {crop} indicadas para {uf} na base oficial."
     technical: "Nenhum registro em ZARC – Cultivares para (cultura, UF)."
+  forecast_heavy_rain:
+    simple: "Vai chover muito na {day} (cerca de {mm} mm). Evite mexer na terra logo antes dessa chuva."
+    standard: "Previsão de {mm} mm de chuva na {day}."
+    technical: "Precipitação prevista de {mm} mm em 24 h ({date}), acima do limiar de {threshold} mm (provisório, ref. avisos INMET)."
+  forecast_moderate_rain:
+    simple: "Deve chover bem na {day} (cerca de {mm} mm)."
+    standard: "Previsão de {mm} mm de chuva na {day}."
+    technical: "Precipitação prevista de {mm} mm em 24 h ({date}), acima de {threshold} mm."
+  forecast_dry_spell:
+    simple: "Quase não deve chover nos próximos {n_days} dias. A semente precisa de terra úmida para nascer."
+    standard: "Previsão de só {mm_total} mm de chuva nos próximos {n_days} dias: pouca umidade para a semeadura."
+    technical: "Acumulado previsto de {mm_total} mm em {n_days} dias, abaixo do limiar provisório para semeadura em sequeiro."
+  forecast_good_moisture:
+    simple: "Tem chuva prevista para os próximos dias: bom para a semente nascer."
+    standard: "Previsão de {mm_total} mm de chuva nos próximos {n_days} dias, boa umidade para semear."
+    technical: "Acumulado previsto de {mm_total} mm em {n_days} dias."
+  forecast_unavailable:
+    simple: "Não consegui ver a previsão do tempo agora."
+    standard: "Previsão do tempo indisponível no momento."
+    technical: "Provider de previsão indisponível; recomendação baseada só no ZARC."
+  forecast_stale:
+    simple: "A previsão do tempo mostrada não é a mais recente."
+    standard: "Usando a última previsão disponível (atualizada há algumas horas)."
+    technical: "Forecast run expirado reutilizado (provider indisponível)."
   location_approximate:
     simple: "Entendemos que você está em {municipality} ({uf}). Se não for, corrija o lugar."
     standard: "Localização aproximada: {municipality}/{uf}."
@@ -92,6 +116,10 @@ actions:
   ask_cultivar_technician: "Pergunte a um técnico qual semente é indicada para a sua região."
   seek_technical_assistance: "Procure a assistência técnica (Emater/ATER) da sua região."
   confirm_location: "Confira se o município está certo."
+  avoid_soil_work_before_rain: "Evite preparar a terra ou plantar logo antes da chuva forte de {day}."
+  plan_around_rain: "Programe o plantio para aproveitar a chuva de {day}."
+  wait_soil_moisture: "Espere uma boa chuva antes de semear: terra seca atrapalha a germinação."
+  check_forecast_later: "Confira a previsão do tempo mais tarde."
 
 assumptions:
   soil_unspecified: "Tipo de solo não informado: janela mais conservadora."
@@ -102,6 +130,25 @@ assumptions:
 gaps:
   zarc_old_season: "Zoneamento de safra anterior."
   cultivars: "Lista de cultivares indisponível."
+  forecast: "Previsão do tempo indisponível."
+  forecast_stale: "Previsão do tempo desatualizada."
+
+weather_conditions:
+  heavy_rain: "Chuva forte"
+  moderate_rain: "Chuva moderada a forte"
+  rain: "Chuva"
+  light_rain: "Chuva fraca"
+  dry: "Sem chuva"
+weather_flags:
+  hot: "muito calor"
+  cold: "frio forte"
+weather_summary:
+  simple: "Nos próximos {n_days} dias: {mm_total} mm de chuva no total. {highlight}"
+  standard: "Próximos {n_days} dias: {mm_total} mm acumulados; máxima de {t_max_max}°C. {highlight}"
+  technical: "Horizonte de {n_days} dias: acumulado {mm_total} mm; Tmax {t_max_max}°C; Tmin {t_min_min}°C. {highlight}"
+weather_highlight:
+  rainiest: "Dia mais chuvoso: {day} ({mm} mm)."
+  none: "Sem dia de chuva relevante."
 
 risk_words:
   low: "baixo"

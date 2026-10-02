@@ -95,10 +95,10 @@ def test_recommendation_favorable_with_varieties_and_sources(client):
     assert body["recommended_window"]["start"] == "2026-09-21"
     assert body["recommended_window"]["end"] == "2026-10-31"
     assert body["varieties"]["items"][0]["name"] == "BRS 1010"
-    assert {s["id"] for s in body["sources"]} == {"zarc_tabua_risco", "zarc_cultivares"}
+    assert {s["id"] for s in body["sources"]} == {"zarc_tabua_risco", "zarc_cultivares", "open_meteo"}
     assert body["actions"] and body["reason"]
     assert "cultivar_by_uf" not in body["confidence"]["assumptions"]  # texto, não código
-    assert body["forecast"]["status"] == "unavailable"
+    assert body["forecast"]["status"] == "ok" and len(body["forecast"]["days"]) == 7
 
 
 def test_recommendation_by_place_text_and_alias(client):

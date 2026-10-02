@@ -12,6 +12,16 @@ def version_ref(dataset_code: str, name: str, version) -> dict:
     }
 
 
+def forecast_ref(fc) -> dict:
+    return {
+        "id": "open_meteo",
+        "name": "Open-Meteo (previsão do tempo)",
+        "version": fc.provider,
+        "fetched_at": fc.fetched_at.isoformat(timespec="seconds"),
+        "extracted_at": fc.fetched_at.date().isoformat(),
+    }
+
+
 class SourceService:
     def list(self) -> list[dict]:
         out = []
@@ -27,7 +37,7 @@ class SourceService:
                     "version": v.version_label if v else None,
                     "extracted_at": v.extracted_at.isoformat() if v else None,
                     "row_count": v.row_count if v else 0,
-                    "status": "loaded" if v else "not_loaded",
+                    "status": "live" if ds.format == "api" else ("loaded" if v else "not_loaded"),
                 }
             )
         return out

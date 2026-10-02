@@ -10,6 +10,11 @@ sources:
     organization: IBGE (via kelvins/municipios-brasileiros, MIT)
     homepage_url: https://github.com/kelvins/municipios-brasileiros
     license: Dados públicos IBGE; compilação MIT
+  - code: open_meteo
+    name: Open-Meteo
+    organization: Open-Meteo.com (modelos de previsão de serviços meteorológicos nacionais)
+    homepage_url: https://open-meteo.com
+    license: "Dados CC BY 4.0; API gratuita para uso não comercial"
   - code: plante_facil
     name: Plante Fácil (curadoria da equipe)
     organization: Equipe Plante Fácil
@@ -38,6 +43,14 @@ datasets:
     format: csv
     methodology_url: https://github.com/kelvins/municipios-brasileiros
     refresh_policy: anual
+    usage_status: active
+    sensitivity: none
+  - code: open_meteo_forecast
+    source: open_meteo
+    name: Previsão do tempo diária (Open-Meteo)
+    format: api
+    methodology_url: https://open-meteo.com/en/docs
+    refresh_policy: a cada 3 h por município (cache)
     usage_status: active
     sensitivity: none
   - code: catalogo_culturas

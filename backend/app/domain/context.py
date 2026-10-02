@@ -6,7 +6,7 @@ Nova dimensão (previsão, seguro, bioma...) = novo enricher que preenche
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from typing import Any
 
 
@@ -63,6 +63,30 @@ class VarietyFacts:
     dataset_version_id: int | None
     items: tuple[dict, ...]  # {"name", "holder", "group", "zarc_crop_name"}
     granularity: str = "uf"  # uf | municipality
+
+
+@dataclass(frozen=True)
+class DayForecast:
+    date: date
+    t_min: float | None
+    t_max: float | None
+    precip_mm: float | None
+    precip_prob: int | None
+    wind_max_kmh: float | None = None
+    et0_mm: float | None = None
+
+
+@dataclass(frozen=True)
+class ForecastFacts:
+    run_id: int | None
+    provider: str
+    fetched_at: datetime
+    valid_until: datetime
+    days: tuple[DayForecast, ...]
+    stale: bool = False  # provider fora: usando run antigo
+
+    def upcoming(self, as_of: date, n: int) -> tuple[DayForecast, ...]:
+        return tuple(d for d in self.days if d.date >= as_of)[:n]
 
 
 @dataclass

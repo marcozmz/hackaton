@@ -16,7 +16,8 @@ from app.repositories import zarc_repo
 from app.services.context_builder import ContextBuilder
 from app.services.crop_service import CropService
 from app.services.location_service import LocationService
-from app.services.source_service import version_ref
+from app.services.source_service import forecast_ref, version_ref
+from app.services.weather_service import WeatherService
 
 SOURCE_NAMES = {
     "zarc_tabua_risco": "ZARC – Tábua de Risco (MAPA)",
@@ -69,8 +70,12 @@ class RecommendationService:
         out = self._present(ctx, loc, result, text, used, key)
         if debug and current_app.config.get("DEBUG_PAYLOADS"):
             out["debug"] = self._debug(ctx, result)
-        else:
-            cache.set(key, out, timeout=current_app.config["RECOMMENDATION_CACHE_TTL"])
+        elif "forecast" not in ctx.data_gaps:  # resposta degradada não vai para o cache
+            ttl = current_app.config["RECOMMENDATION_CACHE_TTL"]
+            if (fc := ctx.facts.get("forecast")) is not None:
+                remaining = (fc.valid_until - datetime.now(timezone.utc)).total_seconds()
+                ttl = max(60, min(ttl, int(remaining)))
+            cache.set(key, out, timeout=ttl)
         return out
 
     @staticmethod
@@ -82,7 +87,17 @@ class RecommendationService:
         w = result.window or {}
         varieties = ctx.facts.get("varieties")
         crop_detail = self.crops.detail(ctx.crop.slug)
-        sources = [version_ref(code, SOURCE_NAMES.get(code, code), v) for code, v in used.items()]
+        sources = [
+            forecast_ref(v) if code == "open_meteo" else version_ref(code, SOURCE_NAMES.get(code, code), v)
+            for code, v in used.items()
+        ]
+        weather = WeatherService()
+        if (fc := ctx.facts.get("forecast")) is not None:
+            forecast = weather.present(fc, ctx.as_of, ctx.language_level)
+        elif "forecast" in ctx.data_gaps:
+            forecast = weather.unavailable("unavailable")
+        else:
+            forecast = weather.unavailable("disabled")
         return {
             "id": key.removeprefix("rec:"),
             "location": loc.to_dict(),
@@ -138,7 +153,7 @@ class RecommendationService:
             "sources": sources,
             "engine": {"version": result.engine_version, "rules": result.rules},
             # Blocos desejáveis: aparecem quando implementados.
-            "forecast": {"status": "unavailable"},
+            "forecast": forecast,
             "insurance": {"status": "unavailable"},
         }
 

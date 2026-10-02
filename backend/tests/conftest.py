@@ -1,7 +1,7 @@
 """Fixtures: app em SQLite de memória com um mini-ZARC sintético (sem rede, sem arquivos reais)."""
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 from sqlalchemy import insert, select
@@ -20,9 +20,33 @@ from app.models import (
     ZarcWindow,
     ZarcZone,
 )
+from app.errors import UpstreamUnavailable
+from app.providers.weather.base import DailyWeatherDTO, ForecastDTO
 from app.repositories import territory_repo
 
 ARARAQUARA, ARARAS, CAMPINAS = 3503208, 3503307, 3509502
+DAY0 = date(2026, 10, 2)
+
+
+class FakeWeather:
+    """Provider controlável: `rain` = mm por dia a partir de DAY0; `down=True` simula queda."""
+
+    name = "fake"
+
+    def __init__(self):
+        self.rain = [3.0] * 10
+        self.down = False
+        self.calls = 0
+
+    def forecast(self, lat, lon, days=10):
+        self.calls += 1
+        if self.down:
+            raise UpstreamUnavailable("fora do ar")
+        out = tuple(
+            DailyWeatherDTO(DAY0 + timedelta(days=i), 18.0, 29.0, mm, 60, 12.0, 4.0)
+            for i, mm in enumerate(self.rain[:days])
+        )
+        return ForecastDTO(self.name, lat, lon, None, out, None)
 
 
 def _seed_minimal():
@@ -83,11 +107,17 @@ def app():
     with app.app_context():
         db.create_all()
         _seed_minimal()
+        app.extensions["providers"]["weather"] = FakeWeather()
         territory_repo.all_light.cache_clear()
         yield app
         db.session.remove()
         db.drop_all()
         territory_repo.all_light.cache_clear()
+
+
+@pytest.fixture()
+def weather(app) -> FakeWeather:
+    return app.extensions["providers"]["weather"]
 
 
 @pytest.fixture()
