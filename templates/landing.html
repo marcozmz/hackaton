@@ -56,7 +56,7 @@
         }
     </style>
 </head>
-<body class="bg-plant-bg text-slate-800 antialiased selection:bg-plant-green selection:text-white">
+<body class="bg-plant-bg text-slate-800 antialiased selection:bg-plant-green selection:text-white pb-20">
 
     <!-- Navigation Header -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
@@ -91,9 +91,9 @@
                 {% else %}
                 <a href="{{ url_for('web.login') }}" class="hidden sm:inline-flex text-sm font-bold text-plant-dark hover:underline">Entrar</a>
                 {% endif %}
-                <a href="#consulta" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-plant-dark hover:bg-plant-hover text-white font-bold text-sm shadow-md shadow-plant-dark/15 hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                    <i class="fa-solid fa-calendar-check text-plant-green"></i>
-                    <span>Consultar Terra</span>
+                <a href="{{ url_for('web.clima') if last else url_for('web.inicio', nova=1) }}" class="flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-plant-dark hover:bg-plant-hover text-white font-bold text-sm shadow-md shadow-plant-dark/15 hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-arrow-right-to-bracket text-plant-green"></i>
+                    <span>Abrir o Plant+Fácil</span>
                 </a>
             </div>
         </div>
@@ -123,9 +123,13 @@
                     <span>Continuar: {{ last.crop_name or last.crop }} em {{ last.place }}</span>
                 </a>
                 {% endif %}
-                <a href="#consulta" class="w-full sm:w-auto inline-flex justify-center items-center gap-3 px-8 py-4 rounded-2xl bg-plant-dark text-white font-bold text-base shadow-lg shadow-plant-dark/20 hover:bg-plant-hover hover:shadow-xl transition-all transform hover:-translate-y-0.5">
-                    <i class="fa-solid fa-location-dot text-plant-green"></i>
-                    <span>Consultar Época de Plantio</span>
+                <a href="{{ url_for('web.inicio', nova=1) }}" class="w-full sm:w-auto inline-flex justify-center items-center gap-3 px-8 py-4 rounded-2xl bg-plant-dark text-white font-bold text-base shadow-lg shadow-plant-dark/20 hover:bg-plant-hover hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-seedling text-plant-green"></i>
+                    <span>Começar minha orientação</span>
+                </a>
+                <a href="#consulta" class="w-full sm:w-auto inline-flex justify-center items-center gap-3 px-6 py-4 rounded-2xl bg-white border border-slate-300 text-slate-800 font-bold text-base hover:bg-slate-50 transition-all">
+                    <i class="fa-solid fa-calendar-days text-plant-dark"></i>
+                    <span>Ver por mês aqui</span>
                 </a>
             </div>
 
@@ -333,6 +337,27 @@
         </div>
     </section>
 
+    <!-- Ferramentas do sistema -->
+    <section id="ferramentas" class="py-14 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 text-center mb-8">O que você pode fazer no Plant+Fácil</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {% for href, icon, title, text in [
+                    (url_for('web.inicio', nova=1), 'fa-seedling', 'Orientação de plantio', 'Sua cidade, a cultura e o tipo de terra: período oficial, risco, melhor dia para semear e sementes indicadas.'),
+                    (url_for('web.o_que_plantar'), 'fa-wheat-awn', 'O que plantar agora', 'Não sabe o que plantar? Veja todas as culturas que estão no período certo na sua cidade.'),
+                    (url_for('web.planejamento'), 'fa-calendar-days', 'Calendário da roça', 'Dias bons para plantar, chuva prevista e suas atividades anotadas, mês a mês.'),
+                    (url_for('web.assistente'), 'fa-comments', 'Assistente', 'Pergunte do seu jeito, por escrito ou por voz: "posso plantar feijão agora?".')] %}
+                <a href="{{ href }}" class="group bg-slate-50 hover:bg-emerald-50 p-6 rounded-2xl border border-slate-200 hover:border-plant-green shadow-sm transition-all space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-plant-dark text-white flex items-center justify-center text-xl"><i class="fa-solid {{ icon }}"></i></div>
+                    <h3 class="text-lg font-bold text-slate-900">{{ title }}</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">{{ text }}</p>
+                    <span class="text-sm font-bold text-plant-dark group-hover:underline">Abrir <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer id="sobre" class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -378,6 +403,18 @@
             </div>
         </div>
     </footer>
+    <nav aria-label="Navegação Principal" class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2 px-2 shadow-lg flex items-center justify-around">
+        {% for href, icon, label, on in [
+            (url_for('web.landing'), 'fa-house', 'Início', True),
+            (url_for('web.assistente'), 'fa-comments', 'Assistente', False),
+            (url_for('web.clima'), 'fa-cloud-sun', 'Clima', False),
+            (url_for('web.planejamento'), 'fa-calendar-days', 'Planejamento', False),
+            (url_for('web.perfil'), 'fa-user', 'Conta', False)] %}
+        <a href="{{ href }}" class="flex-1 flex flex-col items-center gap-1 py-1 rounded-xl {{ 'bg-emerald-50 text-plant-dark font-bold' if on else 'text-slate-500 hover:text-plant-dark' }}">
+            <i class="fa-solid {{ icon }} text-lg"></i><span class="text-[11px] leading-none">{{ label }}</span></a>
+        {% endfor %}
+    </nav>
+
     <script>
         /*
          * PLANT+FÁCIL — LANDING integrada ao backend (sem Supabase/Gemini no navegador).

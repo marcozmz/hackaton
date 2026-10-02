@@ -32,3 +32,18 @@ def test_landing_with_token_loads_map_but_never_hardcodes_it(client, app):
     app.config["MAPBOX_TOKEN"] = "pk.teste123"
     html = client.get("/").get_data(as_text=True)
     assert "mapbox-gl.js" in html and '"pk.teste123"' in html  # vem da config (.env), não do arquivo
+
+
+def test_landing_links_into_the_app(client):
+    html = client.get("/").get_data(as_text=True)
+    for href in ('href="/consulta?nova=1"', 'href="/o-que-plantar"', 'href="/planejamento"', 'href="/assistente"',
+                 'href="/clima"', 'href="/perfil"'):
+        assert href in html, href
+    assert "Abrir o Plant+Fácil" in html and 'aria-label="Navegação Principal"' in html
+
+
+def test_landing_main_button_goes_to_last_result(client):
+    client.get("/clima", query_string={"municipality": ARARAQUARA, "crop": "milho", "soil": "2"})
+    html = client.get("/").get_data(as_text=True)
+    i = html.index("Abrir o Plant+Fácil")
+    assert 'href="/clima"' in html[i - 400:i]
