@@ -45,7 +45,10 @@ flask data seed                                   # fontes, solos, culturas e no
 flask data import-municipios --municipios ../arquivos/ibge_municipios.csv --estados ../arquivos/ibge_estados.csv
 flask data import-zarc --file ../arquivos/tabua-de-risco-safra-2026-2027.csv \
                        --file ../arquivos/tabua-de-risco-perene-olericola-sem-safra.csv
-flask data import-zarc-cultivares --file ../arquivos/siszarc_cronograma.csv.gz
+# Cultivares: o arquivo oficial tem >140 M linhas (≈1 GB .gz) e costuma vir truncado.
+# Reduza às linhas distintas da safra e importe o arquivo pequeno:
+python scripts/extract_cultivares.py ../arquivos/siszarc_cronograma.csv.gz ../arquivos/cultivares_2026-2027.csv.gz --season 2026-2027
+flask data import-zarc-cultivares --file ../arquivos/cultivares_2026-2027.csv.gz --season 2026-2027
 flask data list-versions
 ```
 

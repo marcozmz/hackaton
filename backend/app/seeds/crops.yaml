@@ -70,7 +70,7 @@ crops:
     official_name: Mandioca
     scientific_name: Manihot esculenta
     category: raiz
-    zarc_names: ["Mandioca"]
+    zarc_names: ["Mandioca (aipim, macaxeira)"]
     cultivar_match: {include: ["mandioca"], exclude: []}
     aliases:
       - {alias: "mandioca", kind: official}
