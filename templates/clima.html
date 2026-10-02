@@ -145,7 +145,7 @@
         <span class="material-symbols-outlined text-secondary text-base shrink-0" data-icon="location_on"
           data-weight="fill" style="font-variation-settings: 'FILL' 1;">location_on</span>
         <span class="font-label-md text-label-md text-on-surface truncate">{{ rec.location.name }} - {{ rec.location.uf }}</span>
-        <a href="{{ url_for('web.inicio', crop=rec.crop.name, soil=query.get('soil', '')) }}"
+        <a href="{{ url_for('web.inicio', nova=1, place=rec.location.name ~ ' ' ~ rec.location.uf, crop=rec.crop.name, soil=query.get('soil', '')) }}"
           class="font-label-sm text-label-sm text-secondary underline shrink-0">trocar</a>
       </div>
       {% if v.gps %}
@@ -487,7 +487,7 @@
     <!-- Item 2: ZARC Clima (ACTIVE - Selected Destination) -->
     <a aria-current="page"
       class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm active:scale-95 transition-all duration-150 font-bold"
-      href="{{ url_for('web.inicio') }}">
+      href="{{ url_for('web.clima') }}">
       <span class="material-symbols-outlined text-2xl" data-icon="cloud" data-weight="fill"
         style="font-variation-settings: 'FILL' 1;">cloud</span>
       <span class="">Clima e Plantio</span>

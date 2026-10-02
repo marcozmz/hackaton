@@ -35,7 +35,7 @@ def test_clima_ambiguous_place_back_to_form_with_options(client):
 
 
 def test_clima_missing_fields(client):
-    code, html = page(client, "/clima")
+    code, html = page(client, "/clima", place="Araraquara SP")  # lugar sem cultura e sem consulta anterior
     assert code == 422 and "Diga onde você está" in html
 
 

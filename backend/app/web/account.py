@@ -1,7 +1,7 @@
 """Rotas de conta: cadastro, login, perfil (propriedade, preferências, LGPD) e chat."""
 from __future__ import annotations
 
-from flask import jsonify, redirect, render_template, request, url_for
+from flask import jsonify, redirect, render_template, request, session, url_for
 
 from app.errors import AppError
 from app.extensions import limiter
@@ -18,7 +18,7 @@ from app.services.account_service import AccountService
 from app.services.chat_service import ChatService
 from app.services.crop_service import CropService
 from app.services.recommendation_service import RecommendationService
-from app.web import bp
+from app.web import LAST, bp
 
 
 @bp.route("/cadastro", methods=["GET", "POST"])
@@ -107,6 +107,7 @@ def salvar_propriedade():
                       soil_group=d.get("soil_group"), crops=d.get("crops") or [], name=d.get("name"))
     except AppError as e:
         return _json_error(e)
+    session.pop(LAST, None)  # roça nova passa a valer no "Clima e Plantio"
     return jsonify({"ok": True, "farm": svc.farm_view(current_user())})
 
 
