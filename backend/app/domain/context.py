@@ -89,6 +89,16 @@ class ForecastFacts:
         return tuple(d for d in self.days if d.date >= as_of)[:n]
 
 
+@dataclass(frozen=True)
+class InsuranceFacts:
+    dataset_version_id: int
+    version_label: str
+    year: int
+    scope: str  # municipality | uf | none
+    about_crop: bool  # False = total de todas as culturas do município
+    stat: dict | None  # policies_count, insured_area_ha, avg_premium_rate_pct, subsidy_share_pct...
+
+
 @dataclass
 class AgroContext:
     municipality: MunicipalityRef

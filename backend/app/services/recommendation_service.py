@@ -17,7 +17,8 @@ from app.repositories import zarc_repo
 from app.services.context_builder import ContextBuilder
 from app.services.crop_service import CropService
 from app.services.location_service import LocationService
-from app.services.source_service import forecast_ref, version_ref
+from app.services.insurance_service import InsuranceService
+from app.services.source_service import forecast_ref, insurance_ref, version_ref
 from app.services.weather_service import WeatherService
 
 SOURCE_NAMES = {
@@ -89,7 +90,9 @@ class RecommendationService:
         varieties = ctx.facts.get("varieties")
         crop_detail = self.crops.detail(ctx.crop.slug)
         sources = [
-            forecast_ref(v) if code == "open_meteo" else version_ref(code, SOURCE_NAMES.get(code, code), v)
+            forecast_ref(v) if code == "open_meteo"
+            else insurance_ref(v) if code == "sisser"
+            else version_ref(code, SOURCE_NAMES.get(code, code), v)
             for code, v in used.items()
         ]
         weather = WeatherService()
@@ -154,7 +157,11 @@ class RecommendationService:
             "engine": {"version": result.engine_version, "rules": result.rules},
             # Blocos desejáveis: aparecem quando implementados.
             "forecast": forecast,
-            "insurance": {"status": "unavailable"},
+            "insurance": InsuranceService().present(
+                ctx.facts.get("insurance"),
+                ctx.municipality,
+                next((r["text"] for r in text.reasons if r["code"].startswith("insurance_")), None),
+            ),
         }
 
     def _debug(self, ctx, result) -> dict:

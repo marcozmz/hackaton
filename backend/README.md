@@ -46,6 +46,7 @@ flask data import-zarc --file ../arquivos/tabua-de-risco-safra-2026-2027.csv \
 # Reduza às linhas distintas da safra e importe o arquivo pequeno:
 python scripts/extract_cultivares.py ../arquivos/siszarc_cronograma.csv.gz ../arquivos/cultivares_2026-2027.csv.gz --season 2026-2027
 flask data import-zarc-cultivares --file ../arquivos/cultivares_2026-2027.csv.gz --season 2026-2027
+flask data import-sisser --file ../arquivos/dados_abertos_psr_2025_sisser.xlsx   # seguro rural (agregado)
 flask data list-versions
 ```
 
@@ -75,6 +76,7 @@ pytest               # testes (domínio puro + API com mini-ZARC sintético)
 | `GET /api/v1/soils` | 3 opções simples de solo (+ "não sei") |
 | `GET /api/v1/recommendations/planting?place=Araraquara SP&crop=milho&soil=2` | **recomendação de janela de plantio** |
 | `GET /api/v1/weather/outlook?place=Araraquara SP` | previsão de 7 dias já interpretada (Open-Meteo) |
+| `GET /api/v1/insurance/summary?place=Rio Verde GO&crop=milho` | seguro rural (PSR) agregado da região |
 | `GET /api/v1/sources` | fontes, licenças, versões e data de extração |
 
 Parâmetros úteis da recomendação: `level=simple|standard|technical`, `date=AAAA-MM-DD`
@@ -89,6 +91,17 @@ Parâmetros úteis da recomendação: `level=simple|standard|technical`, `date=A
   pouca chuva em 7 dias dentro da janela (atenção: esperar umidade) ou boa umidade (ok).
   Limiares **provisórios** (referência: avisos do INMET) em `app/domain/engine/thresholds.py`.
 - A previsão **nunca cria janela de plantio**: só ajusta o "quando, dentro da janela" e avisa riscos.
+
+### Seguro rural — SISSER/PSR (desejável, implementado)
+
+- A planilha oficial **contém dados pessoais** (nome e documento do segurado, coordenadas, nº de apólice).
+  O importador lê **só colunas não pessoais** (`SAFE_COLUMNS` em `app/ingestion/sisser.py`) e grava
+  apenas **agregados por município × cultura × ano**. Nenhuma linha individual entra no banco ou no log.
+- **k-anonimato (k = 3):** município com menos de 3 apólices da cultura não é exibido; a resposta sobe
+  para o agregado do estado (ou para o total do município, todas as culturas).
+- Bloco `insurance` + ação "pergunte sobre o seguro rural: para ter direito à subvenção, plante dentro do ZARC".
+  É **informativo**: nunca altera o risco. A base aberta não traz sinistros (indenização vem vazia).
+- Várias planilhas (uma por ano, 2016–2025) podem ser passadas com `--file` repetido.
 
 ### Como a recomendação é decidida
 
@@ -105,5 +118,5 @@ Parâmetros úteis da recomendação: `level=simple|standard|technical`, `date=A
 
 ### Privacidade
 
-Nenhum dado pessoal é coletado ou gravado no MVP: município, cultura e solo vêm na consulta
+Nenhum dado pessoal é coletado ou gravado no MVP (o SISSER entra só agregado, com k-anonimato): município, cultura e solo vêm na consulta
 e só existem no cache da recomendação. Ver `files/09-security.md`.
