@@ -13,6 +13,7 @@ from app.domain.text import normalize_name
 INTENTS = {
     # ordem importa: a primeira que casar vence
     "out_of_scope_pests": r"\b(praga|pragas|lagarta|lagartas|pulgao|inseto|insetos|doenca|fungo|agrotox\w*|veneno|defensivo\w*|herbicida|inseticida|fungicida|adubo|adubacao|fertiliz\w*)\b",
+    "what_to_plant": r"\b(o que (eu )?(posso |devo |vou |da pra |da para |e bom |compensa )?(plantar|semear)|que (eu )?planto|qual cultura|quais culturas|o que plantar|o que da pra plantar)\b",
     "glossary": r"\b(o que (e|eh|significa|quer dizer)|que (e|eh) (o|a)|significa|explica(r)?|definicao)\b",
     "insurance": r"\b(seguro|psr|subvencao|proagro|apolice)\b",
     "varieties": r"\b(semente|sementes|cultivar|cultivares|variedade|variedades)\b",

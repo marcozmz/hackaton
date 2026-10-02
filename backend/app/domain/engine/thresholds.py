@@ -33,3 +33,9 @@ DRY_SPELL_MAX_MM = 10.0  # provisional: pouca chuva somada no período
 GOOD_MOISTURE_MM = 20.0  # provisional: chuva somada nos próximos dias boa para semear
 HOT_DAY_C = 35.0  # provisional
 COLD_NIGHT_C = 3.0  # provisional (risco de geada em baixada)
+
+# --- Melhor dia de semeadura (otimização; pesos provisórios, explicáveis) ---
+SOWING_HORIZON_DAYS = 10
+SOWING_GOOD_AFTER_MM = 10.0  # chuva somada nos 3 dias seguintes boa para germinar
+SOWING_SOME_AFTER_MM = 4.0
+SOWING_MIN_SCORE = 30  # abaixo disso não sugerimos "melhor dia"

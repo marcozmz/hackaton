@@ -4,6 +4,8 @@
 <head>
   <title>Plant+Facil - Onde e o que plantar</title>
   {% include '_head.html' %}
+  <link rel="manifest" href="{{ url_for('web.manifest') }}">
+  <meta name="theme-color" content="#016d30">
 </head>
 
 <body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
@@ -118,6 +120,10 @@
         </label>
       </fieldset>
 
+      <button type="submit" formaction="{{ url_for('web.o_que_plantar') }}" formnovalidate
+        class="w-full border-2 border-secondary text-secondary rounded-xl py-3 font-label-lg text-label-lg flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined">psychiatry</span> Não sei o que plantar: mostre o que dá agora
+      </button>
       <button type="submit"
         class="w-full bg-primary text-on-primary rounded-xl py-4 font-headline-sm text-headline-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all">
         <span class="material-symbols-outlined">search</span> Analisar
@@ -166,6 +172,7 @@
       { enableHighAccuracy: false, timeout: 10000 });
     });
   </script>
+  <script src="{{ url_for('web.offline_js') }}" defer></script>
 </body>
 
 </html>

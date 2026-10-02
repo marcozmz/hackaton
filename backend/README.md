@@ -142,6 +142,21 @@ Parâmetros úteis da recomendação: `level=simple|standard|technical`, `date=A
   cultivares, seguro, glossário em `app/seeds/glossary.yaml`); a IA só reescreve, com guard.
   Pragas/defensivos → recusa e indica a ATER. O servidor não guarda conversas.
 
+### Melhor dia para semear, "O que plantar agora?", WhatsApp e offline
+
+- **Melhor dia (otimização, `app/domain/sowing.py`)**: dentro da janela oficial, pontua cada dia dos próximos 10
+  combinando risco ZARC do decêndio, chuva no dia, chuva útil nos 3 dias seguintes, temporal (descarta o dia /
+  penaliza se vier logo depois) e calor extremo. Explicável: cada ponto vira uma razão em texto. Pesos provisórios
+  em `thresholds.py`. Aparece no clima (destaque), no calendário (⭐), no assistente e em `best_day` da API.
+- **O que plantar agora** (`/o-que-plantar`, `GET /api/v1/recommendations/what-to-plant`): todas as culturas
+  ordenadas pela situação de hoje no município (no período e com qual risco, ou quando abre), com o melhor dia.
+  Botão "Não sei o que plantar" na página inicial; pergunta "o que eu planto?" no assistente.
+- **WhatsApp**: botão "Mandar no WhatsApp" (clima, planejamento, o que plantar, respostas do assistente) com
+  mensagem curta, fonte e link. Usa `wa.me`: nada é enviado sem o usuário confirmar; sem dado pessoal.
+- **Internet fraca**: PWA instalável (`/manifest.webmanifest`) + service worker (`/sw.js`) que guarda a última
+  orientação (clima, planejamento, o que plantar) e os arquivos de CDN; aviso "Sem internet" quando offline.
+  Perfil/login/cadastro não vão para o cache.
+
 ### Como a recomendação é decidida
 
 1. **Localização** → município (código IBGE). **Cultura** → nome oficial (aliases: aipim, macaxeira…).

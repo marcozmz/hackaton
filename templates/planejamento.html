@@ -140,6 +140,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
+  <link rel="manifest" href="{{ url_for('web.manifest') }}">
+  <meta name="theme-color" content="#016d30">
 </head>
 
 <body class="bg-background text-on-surface antialiased min-h-screen pb-28">
@@ -236,7 +238,7 @@
           <a href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=crop.slug, soil=soil_param, dia=c.date.isoformat()) }}"
             title="{{ cal.levels[c.level] }}{% if c.risk_pct %} ({{ c.risk_pct }}%){% endif %}{% if c.rain_mm is not none %} · chuva {{ c.rain_mm|round|int }} mm{% endif %}"
             class="p-2 rounded-lg flex flex-col items-center justify-center {{ 'bg-secondary text-on-secondary font-bold shadow-md scale-105 ring-2 ring-secondary-container' if c.is_selected else 'hover:bg-surface-container-low' }} {{ 'outline outline-2 outline-primary' if c.is_today and not c.is_selected else '' }}">
-            <span class="{{ '' if c.is_selected else 'text-on-surface font-medium' }}">{{ c.date.day }}</span>
+            <span class="{{ '' if c.is_selected else 'text-on-surface font-medium' }}">{% if c.best %}<span class="material-symbols-outlined text-[14px] text-amber-500 align-top" style="font-variation-settings: 'FILL' 1;" title="Melhor dia para semear">star</span>{% endif %}{{ c.date.day }}</span>
             <span class="flex items-center gap-0.5 mt-1">
               <span class="w-2 h-2 rounded-full {{ DOT[c.level] }} {{ 'ring-1 ring-white' if c.is_selected else '' }}"></span>
               {% if c.rain_mm is not none and c.rain_mm >= 10 %}<span class="w-2 h-2 rounded-full {{ 'bg-error' if c.heavy_rain else 'bg-blue-500' }}"></span>{% endif %}
@@ -252,6 +254,13 @@
           {% endfor %}
           {% if cal.has_forecast %}<div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span><span class="text-on-surface-variant font-medium">{{ cal.rain_legend }}</span></div>{% endif %}
         </div>
+        {% if cal.best_day %}
+        <a href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=crop.slug, soil=soil_param, dia=cal.best_day.date.isoformat()) }}"
+          class="flex items-start gap-2 rounded-lg border-2 border-secondary bg-secondary-container/40 p-3">
+          <span class="material-symbols-outlined text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span>
+          <span class="text-body-sm"><strong>Melhor dia para semear:</strong> {{ cal.best_day.label }} — {{ cal.best_day.reasons|join(', ') }}.</span>
+        </a>
+        {% endif %}
         <p class="text-[11px] text-outline">Cores: ZARC – Tábua de Risco (MAPA){% if cal.has_forecast %} · Chuva: Open-Meteo (próximos dias){% endif %}.</p>
       </section>
       <!-- Dia selecionado -->
@@ -316,6 +325,9 @@
           <a href="{{ cal.google_calendar_url }}" target="_blank" rel="noopener noreferrer"
             class="flex-1 py-2.5 px-3 rounded-xl bg-surface-container-low border border-outline-variant/60 text-secondary hover:bg-secondary-container/20 font-label-md text-label-md flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all"><span
               class="material-symbols-outlined text-[20px] text-secondary" style="font-variation-settings: 'FILL' 1;">calendar_add_on</span><span>Exportar para Google Agenda</span></a>
+          <a href="{{ whatsapp }}" target="_blank" rel="noopener noreferrer"
+            class="flex-1 py-2.5 px-3 rounded-xl bg-[#25D366] text-white font-label-md text-label-md flex items-center justify-center gap-2 shadow-sm"><span
+              class="material-symbols-outlined text-[20px]">share</span><span>Mandar no WhatsApp</span></a>
         </div>
         <p class="text-[11px] text-outline print:hidden">A exportação abre o Google Agenda com o título e as atividades deste dia; nada é enviado sem você confirmar lá.</p>
       </section>
@@ -739,6 +751,7 @@
       });
     });
   </script>
+  <script src="{{ url_for('web.offline_js') }}" defer></script>
 </body>
 
 </html>

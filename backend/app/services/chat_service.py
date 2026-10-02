@@ -124,8 +124,11 @@ class ChatService:
         )
         simple = SimplifyService().simplify(rec, level)
         w = rec.get("recommended_window") or {}
+        bd = rec.get("best_day") or {}
+        best_txt = (f' Melhor dia para semear nos próximos dias: {bd["label"]} ({", ".join(bd["reasons"])}).'
+                    if bd.get("status") == "ok" else "")
         return {
-            "text": simple["text"],
+            "text": simple["text"] + best_txt,
             "generated_by": simple["generated_by"],
             "card": {
                 "type": "planting",
@@ -137,12 +140,40 @@ class ChatService:
                 "window": w.get("label"),
                 "soil": rec["soil"]["name"] if rec.get("soil") else "Não informado (período mais seguro)",
                 "varieties": rec["varieties"]["count"],
+                "best_day": bd.get("label") if bd.get("status") == "ok" else None,
                 "link": url_for("web.clima", municipality=m.ibge_code, crop=crop.slug,
                                 soil=self._soil(user, m) or ""),
                 "source": "ZARC – Tábua de Risco (MAPA)",
             },
             "suggestions": [f"Vai chover em {m.name}?", f"Quais sementes de {crop.name.lower()}?",
                             "Tem seguro com ajuda do governo?"],
+            "context": ctx,
+        }
+
+    def _on_what_to_plant(self, parsed, ctx, user) -> dict:
+        from app.services.what_to_plant_service import WhatToPlantService
+
+        m, clarify = self._location(parsed, ctx, user)
+        if clarify:
+            return {**clarify, "context": ctx}
+        if m is None:
+            return self._ask_place(ctx, user)
+        ctx["municipality"] = m.ibge_code
+        soil = self._soil(user, m)
+        r = WhatToPlantService().rank(m, int(soil) if soil else None)
+        now = [i for i in r["items"] if i["status"] == "now"]
+        best = next((i for i in now if i["best_day"]), None)
+        tip = f' Para {best["crop"]["name"].lower()}, o melhor dia é {best["best_day"]["label"]}.' if best else ""
+        return {
+            "text": r["summary"] + tip,
+            "card": {"type": "list", "title": f"O que plantar agora em {m.name} - {m.uf}",
+                     "items": [f'{i["crop"]["name"]}: {i["status_text"].lower()}'
+                               + (f' (risco {i["risk_pct"]}%)' if i["status"] == "now" else
+                                  f' (a partir de {i["start_text"]})' if i["start_text"] else "")
+                               for i in r["items"]],
+                     "source": "ZARC – Tábua de Risco (MAPA)",
+                     "link": url_for("web.o_que_plantar", municipality=m.ibge_code, soil=soil or "")},
+            "suggestions": [f"Quando plantar {i['crop']['name'].lower()}?" for i in now[:3]] or ["O que é o ZARC?"],
             "context": ctx,
         }
 

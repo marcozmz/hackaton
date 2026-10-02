@@ -11,6 +11,7 @@ from app.domain.context import AgroContext
 from app.domain.engine import ENGINE_VERSION, RecommendationEngine
 from app.domain.narrative import Narrator
 from app.domain.narrative.explainer import Explainer
+from app.domain.narrative.narrator import weekday_date_text
 from app.domain.zarc import CYCLE_LABELS, MANAGEMENT_LABELS
 from app.extensions import cache
 from app.repositories import zarc_repo
@@ -157,11 +158,31 @@ class RecommendationService:
             "engine": {"version": result.engine_version, "rules": result.rules},
             # Blocos desejáveis: aparecem quando implementados.
             "forecast": forecast,
+            "best_day": self._best_day(result),
             "insurance": InsuranceService().present(
                 ctx.facts.get("insurance"),
                 ctx.municipality,
                 next((r["text"] for r in text.reasons if r["code"].startswith("insurance_")), None),
             ),
+        }
+
+    def _best_day(self, result) -> dict:
+        """Otimização do dia de semeadura (regra best_sowing_day)."""
+        f = next((x for x in result.findings if x.code in ("best_sowing_day", "no_good_sowing_day")), None)
+        if f is None:
+            return {"status": "unavailable"}  # sem previsão ou fora da janela nos próximos dias
+        if f.code == "no_good_sowing_day":
+            return {"status": "none", "ranking": f.evidence.data.get("ranking", [])}
+        p = f.params
+        return {
+            "status": "ok",
+            "date": p["best_date"],
+            "label": weekday_date_text(p["best_date"]),
+            "risk_pct": p["best_risk"],
+            "score": p["best_score"],
+            "reasons": self.narrator.sowing_reason_texts(p["sowing_reasons"]),
+            "ranking": p["ranking"],
+            "sources": ["zarc_tabua_risco", "open_meteo"],
         }
 
     def _debug(self, ctx, result) -> dict:

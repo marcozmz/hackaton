@@ -14,6 +14,7 @@ from app.security.auth import csrf_token, current_user
 from app.services.account_service import AccountService
 from app.services.crop_service import CropService
 from app.services.recommendation_service import RecommendationService
+from app.web.share import recommendation_text, share_link
 from app.web.view_model import clima_view
 
 bp = Blueprint("web", __name__)
@@ -89,8 +90,22 @@ def clima():
     session[LAST] = {"municipality": loc["ibge_code"], "place": f'{loc["name"]} {loc["uf"]}',
                      "crop": rec["crop"]["slug"], "crop_name": rec["crop"]["name"],
                      "soil": str(rec["soil"]["id"]) if rec.get("soil") else ""}
+    from app.services.what_to_plant_service import WhatToPlantService
+
+    soil_group = rec["soil"]["id"] if rec.get("soil") else None
+    others = [i for i in WhatToPlantService().rank(_muni(loc["ibge_code"]), soil_group)["items"]
+              if i["status"] == "now" and i["crop"]["slug"] != rec["crop"]["slug"]][:4]
+    url = url_for("web.clima", municipality=loc["ibge_code"], crop=rec["crop"]["slug"],
+                  soil=session[LAST]["soil"], _external=True)
     return render_template("clima.html", rec=rec, v=clima_view(rec), crops=catalog_repo.list_crops(),
-                           query=args, now=datetime.now())
+                           query=args, now=datetime.now(), others=others,
+                           whatsapp=share_link(recommendation_text(rec), url))
+
+
+def _muni(ibge: int):
+    from app.services.location_service import LocationService
+
+    return LocationService().by_ibge(ibge).municipality
 
 
 @bp.get("/assistente")
@@ -122,3 +137,5 @@ def _inject_ui():
 
 from app.web import account  # noqa: E402,F401  (registra as rotas de conta no mesmo blueprint)
 from app.web import planning  # noqa: E402,F401  (aba Planejamento)
+from app.web import what_to_plant  # noqa: E402,F401  ('O que plantar agora?')
+from app.web import pwa  # noqa: E402,F401  (offline / instalar no celular)

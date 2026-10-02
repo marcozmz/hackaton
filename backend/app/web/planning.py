@@ -13,6 +13,7 @@ from app.services.crop_service import CropService
 from app.services.location_service import LocationService
 from app.services.planning_service import PlanningService
 from app.web import _defaults, bp
+from app.web.share import share_link
 
 
 def _parse_month(value: str | None, today: date) -> tuple[int, int]:
@@ -59,8 +60,16 @@ def planejamento():
     candidates = farm_crops or catalog_repo.list_crops()
     refs = [crops.resolve(c.slug, m.uf) for c in candidates]
     windows = svc.next_windows(m, refs, soil_ref.group_code if soil_ref else None, today)
+    sel = cal["selected"]
+    lines = [f"📅 {crop.name} em {m.name}-{m.uf} — {sel['label']}: {sel['level_text'] or ''}"]
+    lines += [f"• {s['title']}" for s in sel["suggestions"]]
+    if cal.get("best_day"):
+        lines.append(f"⭐ Melhor dia para semear: {cal['best_day']['label']}")
+    lines.append("Fonte: calendário oficial ZARC (MAPA). Via Plant+Facil.")
+    whatsapp = share_link("\n".join(lines), url_for("web.planejamento", municipality=m.ibge_code, crop=crop.slug,
+                                                     soil=soil, dia=sel["date"].isoformat(), _external=True))
     return render_template(
-        "planejamento.html", cal=cal, place=m, crop=crop, soil=soil_ref, soil_param=soil,
+        "planejamento.html", whatsapp=whatsapp, cal=cal, place=m, crop=crop, soil=soil_ref, soil_param=soil,
         crops=catalog_repo.list_crops(), windows=windows, windows_scope="suas culturas" if farm_crops else "todas as culturas",
         season=_season(), today=today,
     )

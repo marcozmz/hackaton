@@ -33,6 +33,7 @@ class DayCell:
     is_selected: bool = False
     tasks: int = 0
     done: int = 0
+    best: bool = False  # melhor dia para semear (otimização)
 
 
 @dataclass
