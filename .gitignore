@@ -11,3 +11,7 @@ backend/data/raw/
 *.db
 *.db-wal
 *.db-shm
+
+# Banco pronto compartilhado à parte (não versionar binário grande)
+plantefacil-db.zip
+backend/plantefacil-db.zip

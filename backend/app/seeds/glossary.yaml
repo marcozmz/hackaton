@@ -1,0 +1,60 @@
+# Glossário curado para o assistente ("o que é…?"). Texto simples + fonte.
+# A IA só pode simplificar estes textos; não cria definições.
+terms:
+  - slug: zarc
+    keys: ["zarc", "zoneamento", "zoneamento agricola", "zoneamento agricola de risco climatico"]
+    term: ZARC (Zoneamento Agrícola de Risco Climático)
+    text: >-
+      É o calendário oficial de plantio do governo (Ministério da Agricultura e Embrapa). Para cada
+      cultura, município e tipo de terra, ele diz em quais períodos do ano o risco de perder a lavoura
+      por causa do clima é menor. Plantar dentro do ZARC também é exigido para ter seguro rural com ajuda do governo.
+    source: MAPA / Embrapa
+  - slug: decendio
+    keys: ["decendio", "decendios"]
+    term: Decêndio
+    text: >-
+      É um período de cerca de 10 dias. O ano tem 36 decêndios: do dia 1 ao 10, do 11 ao 20 e do 21 ao
+      fim de cada mês. O ZARC indica as datas de plantio por decêndio.
+    source: MAPA (dicionário de dados da Tábua de Risco)
+  - slug: risco
+    keys: ["risco", "risco climatico", "20%", "30%", "40%"]
+    term: Risco do ZARC (20%, 30%, 40%)
+    text: >-
+      É a chance de a lavoura ter perda por causa do clima (seca, excesso de chuva, geada). O ZARC só
+      indica períodos com risco de até 40%: 20% é o mais seguro, 30% é médio e 40% é o maior risco aceito.
+    source: MAPA
+  - slug: cultivar
+    keys: ["cultivar", "cultivares", "variedade", "semente indicada"]
+    term: Cultivar
+    text: >-
+      É o "tipo" registrado de uma semente (por exemplo, uma variedade de feijão). O ZARC lista as
+      cultivares indicadas para cada estado; escolher uma delas ajuda a lavoura a se adaptar ao clima da região.
+    source: MAPA (ZARC – Cultivares)
+  - slug: sequeiro
+    keys: ["sequeiro", "irrigado", "irrigacao"]
+    term: Sequeiro
+    text: >-
+      É a lavoura que depende só da chuva, sem irrigação. As orientações do Plant+Facil usam o ZARC de
+      sequeiro, que é o caso mais comum na agricultura familiar.
+    source: MAPA
+  - slug: psr
+    keys: ["psr", "seguro rural", "subvencao", "subvencao ao premio"]
+    term: Seguro rural com subvenção (PSR)
+    text: >-
+      O Programa de Subvenção ao Prêmio do Seguro Rural paga parte do custo do seguro da lavoura. Para ter
+      direito, o plantio precisa seguir o ZARC. Informe-se no banco, na cooperativa ou com a seguradora.
+    source: MAPA (SISSER/PSR)
+  - slug: janela
+    keys: ["janela", "janela de plantio", "periodo de plantio", "epoca de plantio"]
+    term: Janela de plantio
+    text: >-
+      É o período do ano em que o calendário oficial (ZARC) indica plantar, porque o risco climático é menor.
+      Fora da janela, a chance de perder a lavoura por causa do clima é maior.
+    source: MAPA / Embrapa
+  - slug: solo
+    keys: ["tipo de solo", "solo arenoso", "solo argiloso", "textura", "tipo de terra", "solo"]
+    term: Tipo de solo no ZARC
+    text: >-
+      O ZARC separa a terra pela capacidade de guardar água: terra com mais areia segura menos água, terra
+      barrenta (argilosa) segura mais. Por isso o período de plantio pode mudar conforme o tipo de terra.
+    source: MAPA (dicionário de dados da Tábua de Risco)

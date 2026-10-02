@@ -30,6 +30,28 @@ COLUMN_MAP = {
 }
 
 
+def extract_distinct(src: Path, dst: Path, seasons: list[str]) -> dict:
+    """Reduz o arquivo oficial (>140 M linhas, ~1 GB .gz, às vezes truncado) às linhas distintas
+    das safras pedidas. Lê em streaming até onde o gzip permitir."""
+    import gzip
+
+    cols = list(COLUMN_MAP)
+    parts, read, truncated = [], 0, False
+    try:
+        with gzip.open(src, "rt", encoding="utf-8-sig") as fh:
+            for ch in pd.read_csv(fh, sep=";", dtype=str, usecols=cols, chunksize=1_000_000):
+                read += len(ch)
+                sel = ch[ch.Safra.isin(seasons)].drop_duplicates()
+                if not sel.empty:
+                    parts.append(sel)
+    except (EOFError, gzip.BadGzipFile, pd.errors.ParserError):
+        truncated = True
+    out = pd.concat(parts).drop_duplicates() if parts else pd.DataFrame(columns=cols)
+    with gzip.open(dst, "wt", encoding="utf-8") as fh:
+        out.to_csv(fh, sep=";", index=False)
+    return {"read": read, "distinct": len(out), "truncated": truncated}
+
+
 def match_crop(name: str, rules: list[tuple[int, list[str], list[str]]]) -> int | None:
     n = normalize_name(name)
     for crop_id, include, exclude in rules:
