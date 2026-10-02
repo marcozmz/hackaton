@@ -4,7 +4,11 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Carrega o .env ANTES de os atributos abaixo lerem os.getenv (senão o .env é ignorado).
+load_dotenv(BASE_DIR / ".env")
 INSTANCE_DIR = BASE_DIR / "instance"
 
 
@@ -39,6 +43,14 @@ class Config:
     FORECAST_TTL_SECONDS = int(os.getenv("FORECAST_TTL_SECONDS", "10800"))  # 3 h
     FORECAST_STALE_MAX_SECONDS = 24 * 3600  # provider fora: aceita run antigo até 24 h (degradado)
     FORECAST_DAYS = 10
+    # IA (desejável): só reescreve. gemini | ollama | none. Sem chave → none (templates).
+    LLM_API_KEY = os.getenv("LLM_API_KEY", "").strip()
+    LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini" if os.getenv("LLM_API_KEY", "").strip() else "none")
+    LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.5-flash-lite")  # ~1 s; 2.5/2.0 foram aposentados
+    OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:3b")
+    LLM_TIMEOUT = float(os.getenv("LLM_TIMEOUT", "12"))
+    LLM_MAX_TOKENS = 400
+    LLM_CACHE_TTL = 24 * 3600
     GEO_DIR = os.getenv("GEO_DIR", str(INSTANCE_DIR / "geo"))  # malhas IBGE por UF (fora do git)
     HTTP_TIMEOUT = (3, 8)
 
@@ -61,6 +73,7 @@ class TestingConfig(Config):
     RATELIMIT_ENABLED = False
     GEOCODING_CEP_PROVIDER = "none"
     WEATHER_PROVIDER = "fixture"
+    LLM_PROVIDER = "none"
 
 
 class ProductionConfig(Config):

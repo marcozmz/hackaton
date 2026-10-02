@@ -77,6 +77,7 @@ pytest               # testes (domínio puro + API com mini-ZARC sintético)
 | `GET /api/v1/soils` | 3 opções simples de solo (+ "não sei") |
 | `GET /api/v1/recommendations/planting?place=Araraquara SP&crop=milho&soil=2` | **recomendação de janela de plantio** |
 | `GET /api/v1/weather/outlook?place=Araraquara SP` | previsão de 7 dias já interpretada (Open-Meteo) |
+| `GET /api/v1/recommendations/planting/simple?…` | mesma consulta, texto reescrito por IA (sob demanda) |
 | `GET /api/v1/insurance/summary?place=Rio Verde GO&crop=milho` | seguro rural (PSR) agregado da região |
 | `GET /api/v1/geo/municipalities/{ibge}` | ponto (centroide) + limite do município (GeoJSON) |
 | `GET /api/v1/geo/layers/zarc-risk?uf=SP&crop=milho&soil=2` | camada do estado: situação de plantio de hoje por município |
@@ -115,6 +116,21 @@ Parâmetros úteis da recomendação: `level=simple|standard|technical`, `date=A
   (solo conservador, ciclos em união, sequeiro): `low | medium | high | out_of_window | no_data` + texto pronto.
   **Sem cores e sem códigos do ZARC** na resposta: o frontend mapeia `level` → cor usando `legend`.
 - Cache de 6 h por UF × cultura × solo × decêndio; respostas com gzip (SP ≈ 77 KB).
+
+### IA para simplificar o texto (desejável, implementado)
+
+> A IA explica; as regras decidem; os dados oficiais sustentam.
+
+- **Gemini** (`gemini-3.5-flash-lite`, cota gratuita do Google AI Studio, ~1–5 s) ou **Ollama** local
+  (`LLM_PROVIDER=ollama`). Sem `LLM_API_KEY` → só templates (o produto funciona igual).
+- A IA recebe só o **contexto estruturado já decidido** (cultura, município, decisão, janela, motivos, ações,
+  previsão, seguro) — sem coordenadas, IDs ou dados pessoais — e só **reescreve**.
+- **Guard** (`app/domain/narrative/guard.py`): todo número e mês do texto precisa existir no contexto;
+  proíbe promessas ("garantido", "sem risco"), agrotóxicos, links e markdown; máx. 700 caracteres.
+  Reprovou, deu timeout ou estourou a cota → **texto do template** (`generated_by: "template"` + motivo).
+- Nunca no caminho crítico: `/recommendations/planting` não chama IA; o texto simplificado é outro endpoint
+  (botão "explicar de forma mais simples"), com cache de 24 h e limite de 10/min.
+- No Jinja: `SimplifyService().simplify(rec, level)` com o `rec` de `RecommendationService().planting_advice(...)`.
 
 ### Como a recomendação é decidida
 

@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 import os
 
-from dotenv import load_dotenv
 from flask import Flask
 
 from app.config import CONFIGS, INSTANCE_DIR
@@ -13,7 +12,6 @@ from app.extensions import cache, compress, cors, db, limiter, migrate
 
 
 def create_app(env: str | None = None) -> Flask:
-    load_dotenv()
     env = env or os.getenv("APP_ENV", "development")
     cfg = CONFIGS[env]
     if hasattr(cfg, "validate"):
