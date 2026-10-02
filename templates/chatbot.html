@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR" style="">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title class="">Plant+Facil - Chatbot Assistente</title>
+  <!-- Material Symbols -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <!-- Typography from Design System -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Domine:wght@600;700&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;family=Quicksand:wght@500;600;700&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Tailwind Configuration -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-container": "#d9855b",
+            "secondary-container": "#98f4a7",
+            "primary-fixed": "#ffdbcc",
+            "surface-dim": "#cfdaf2",
+            "tertiary-fixed": "#ffddb8",
+            "tertiary": "#2d1900",
+            "tertiary-fixed-dim": "#eebe84",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#79db8d",
+            "on-tertiary": "#ffffff",
+            "on-background": "#111c2d",
+            "error-container": "#ffdad6",
+            "on-secondary-container": "#0c7234",
+            "inverse-primary": "#ffb693",
+            "primary-fixed-dim": "#ffb693",
+            "inverse-surface": "#263143",
+            "surface-container-high": "#dee8ff",
+            "surface-container-low": "#f0f3ff",
+            "primary-container": "#592100",
+            "on-secondary": "#ffffff",
+            "on-error": "#ffffff",
+            "secondary-fixed": "#9bf7aa",
+            "on-tertiary-fixed-variant": "#653e00",
+            "on-primary-fixed-variant": "#733511",
+            "surface-bright": "#f9f9ff",
+            "surface-container-highest": "#d8e3fb",
+            "surface-variant": "#d8e3fb",
+            "on-secondary-fixed-variant": "#005323",
+            "on-tertiary-fixed": "#2a1700",
+            "background": "#f9f9ff",
+            "on-primary-fixed": "#351000",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#e7eeff",
+            "outline-variant": "#dac1b7",
+            "primary": "#371200",
+            "on-primary": "#ffffff",
+            "on-surface": "#111c2d",
+            "on-error-container": "#93000a",
+            "on-surface-variant": "#54433c",
+            "tertiary-container": "#492c00",
+            "inverse-on-surface": "#ecf1ff",
+            "on-tertiary-container": "#fda518",
+            "surface": "#f9f9ff",
+            "outline": "#87736a",
+            "on-secondary-fixed": "#00210a",
+            "secondary": "#016d30",
+            "surface-tint": "#944a23"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-xl": "2rem",
+            "margin": "1rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Domine"],
+            "label-md": ["Work Sans"],
+            "label-sm": ["Work Sans"],
+            "headline-md": ["Domine"],
+            "label-lg": ["Work Sans"],
+            "headline-xl": ["Domine"],
+            "body-sm": ["Work Sans"],
+            "body-md": ["Work Sans"],
+            "body-lg": ["Work Sans"],
+            "headline-sm": ["Domine"]
+          },
+          "fontSize": {
+            "headline-lg": ["26px", { "lineHeight": "34px", "fontWeight": "700" }],
+            "label-md": ["14px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-lg": ["16px", { "lineHeight": "22px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background-color: #dac1b7;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen">
+  <!-- TopAppBar Fixed Header -->
+  <header
+    class="fixed top-0 left-0 right-0 z-40 bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline">
+    <div class="flex justify-between items-center w-full px-4 h-16 max-w-5xl mx-auto">
+      <!-- Leading Icon / Brand identity -->
+      <div class="flex items-center gap-3">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGg1Xn2puTmfWcHXN_UxAaY8G1Lid4lqigN5z3EBQVmeC8o3OG9CXQX0RqzvdkIapQLJau2tK2xcDB_adiw_x9pSazb58tK9jY7EOlXkCvW9uKvfJnZva2r7vHP-DluXVHW9DxNwU2C3OleRl_xT_5bp2_BsqwfLYO88XxlKrT6t_DDJYIvGCAaeKzen773yJVtA_zGb38Tsg67P05h1VDa1ALMy3QcaFXC2oKFLo7Vi7yoygtahuimBD82uOuFXNMiBs"
+          alt="Logo Plant+Facil" class="w-9 h-9 object-contain rounded-xl shadow-sm">
+        <div>
+          <div class="flex items-center gap-2">
+            <span
+              class="font-headline-md text-headline-md font-bold text-secondary dark:text-secondary-fixed">Plant+Facil</span>
+          </div>
+          <!-- Online status pill -->
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+            </span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Online • Responde na
+              hora</span>
+          </div>
+        </div>
+      </div>
+      <!-- Action buttons: Limpar / Novo Diálogo -->
+      <div class="flex items-center gap-2">
+        <button
+          class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-high transition-all active:scale-95"
+          title="Novo diálogo / Limpar conversa" type="button">
+          <span class="material-symbols-outlined text-secondary" style="font-size: 20px;">history</span>
+          <span class="font-label-sm text-label-sm hidden sm:inline">Limpar Conversa</span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <!-- Main Chat Content Canvas -->
+  <main class="flex-1 w-full max-w-5xl mx-auto pt-20 pb-44 px-4 overflow-y-auto custom-scroll">
+    <div class="flex flex-col gap-6 py-4">
+      <!-- Date / Context Badge Divider -->
+      <div class="flex justify-center my-1">
+        <span
+          class="bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface-variant">Safra
+          Vigente 2024/2025 • Planejamento Oficial MAPA / Embrapa</span>
+      </div>
+      <!-- Assistant Message 1: Welcome -->
+      <div class="flex items-start gap-3 max-w-3xl">
+        <!-- Assistant Avatar -->
+        <div
+          class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0 shadow-sm border border-outline-variant mt-0.5">
+          <img alt="Assistente Avatar" class="w-8 h-8 rounded-lg object-contain"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTkJ3Uxrk-e2D7dkcHOYkq5oBaziWmf-Qjv-fM-NBYQkrGwdXSY_cqC0FOta6ZS3EvvyDmG3Aq0-pSOByxWoFwa9KS8mXRIUk_FjnX1pvsPxhA0oBtwzDpOyRTSWAjpId6KY2BnRQIucpZ6UpCnIXu8F5dxjSn6C33o76lI9Ovy4PZUpoRqCP-au2v71rmvPk1X-D5QUqZxUUI8rpywZuJdlctBq4HSiRn1Lx1tpMjhTqhQRbS5vKPzIIK8YwBVQ8NsTM">
+        </div>
+        <div class="flex flex-col gap-2 w-full">
+          <div
+            class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-5 shadow-sm text-on-surface">
+            <p class="font-body-md text-body-md font-medium text-primary">Olá, compadre e comadre! Sou seu Assistente
+              Plant+Facil.</p>
+            <p class="font-body-md text-body-md mt-1.5 text-on-surface-variant">Me diga o que você deseja plantar ou
+              qual sua dúvida sobre o clima hoje. Estou pronto para consultar a melhor época de plantio na sua roça ou
+              dar dicas de manejo natural!</p>
+          </div>
+          <!-- Quick Suggestion Action Chips -->
+          <div class="flex flex-wrap gap-2 pt-1">
+            <button
+              class="flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all"
+              type="button">
+              <span class="text-base">🌱</span>
+              <span class="font-label-sm text-label-sm font-semibold text-primary">Quando plantar milho na minha
+                região?</span>
+            </button>
+            <button
+              class="flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all"
+              type="button">
+              <span class="text-base">🌧️</span>
+              <span class="font-label-sm text-label-sm font-semibold text-primary">Qual a previsão de chuva para os
+                próximos dias?</span>
+            </button>
+            <button
+              class="flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all"
+              type="button">
+              <span class="text-base">🛡️</span>
+              <span class="font-label-sm text-label-sm font-semibold text-primary">Qual a melhor época de plantio para a
+                soja?</span>
+            </button>
+            <button
+              class="flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all"
+              type="button">
+              <span class="text-base">🐛</span>
+              <span class="font-label-sm text-label-sm font-semibold text-primary">Como combater lagarta na horta sem
+                agrotóxicos?</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- User Query Message -->
+      <div class="flex justify-end items-end gap-2 max-w-2xl ml-auto">
+        <div class="flex flex-col items-end">
+          <div class="bg-primary-container text-white px-5 py-3.5 rounded-xl rounded-br-xs shadow-sm">
+            <p class="font-body-md text-body-md text-white font-medium">
+              Posso plantar feijão esta semana aqui em Goiás?
+            </p>
+          </div>
+          <span class="font-label-sm text-label-sm text-on-surface-variant mt-1 mr-1">10:42 • Entregue</span>
+        </div>
+      </div>
+      <!-- Assistant Detailed Response with ZARC Card -->
+      <div class="flex items-start gap-3 max-w-3xl">
+        <div
+          class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0 shadow-sm border border-outline-variant mt-0.5">
+          <img alt="Assistente Avatar" class="w-8 h-8 rounded-lg object-contain"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAPssKRWuL8OrAJRcZURQ5s23qkuXnqy_Fq1gU91quPVWrp7LHF_AIwEmYuhtxOzTJ0sBF9h2C7-17kVTukFzAgFr3Qiy0Hpcb6FkMQR6XUCWOPTwwgHnmJAp5rvr_ATlH4OlTtZw3Pof4y_6G2Dg6pmElLZ0FoPGeNAckmb-smfNsKtKoRcxGWEpOuEAnLwoKRf3MOqt7PRekulsG5z1-rqzgKk-mRe9j4uBszlMpJ4WVqQkcPbOqfFGwXebRE58YLsk">
+        </div>
+        <div class="flex flex-col gap-3 w-full">
+          <!-- Text Body -->
+          <div
+            class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-5 shadow-sm text-on-surface">
+            <p class="font-body-md text-body-md">Segundo as recomendações oficiais de plantio da Embrapa, a janela atual
+              em <strong>Goiás</strong> apresenta <strong>Risco Baixo (≤ 20%)</strong>. A umidade do solo está favorável
+              e as chuvas regulares apoiam a germinação vigorosa nas próximas semanas.</p>
+            <!-- Domain-Specific ZARC Card -->
+            <div class="mt-4 p-4 rounded-lg bg-surface-container-low border border-outline-variant flex flex-col gap-3">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-secondary font-bold"
+                    style="font-size: 22px;">verified</span>
+                  <span class="font-headline-sm text-headline-sm text-primary">Feijão Comum (1ª Safra)</span>
+                </div>
+                <!-- Badge Plantio Recomendado -->
+                <span
+                  class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm font-bold flex items-center gap-1">
+                  <span class="material-symbols-outlined" style="font-size: 16px;">check_circle</span>
+                  Plantio Recomendado
+                </span>
+              </div>
+              <!-- Technical Climate Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-left">
+                <div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant block">Janela Decendial</span>
+                  <span class="font-label-md text-label-md font-bold text-on-surface">Decêndio 2 (Outubro)</span>
+                </div>
+                <div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant block">Tipo de Solo</span>
+                  <span class="font-label-md text-label-md font-bold text-on-surface">Tipo 2 e Tipo 3 (Argiloso)</span>
+                </div>
+                <div
+                  class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant col-span-2 sm:col-span-1">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant block">Índice Hídrico (ISNA)</span>
+                  <span class="font-label-md text-label-md font-bold text-secondary">0.78 (Muito Bom)</span>
+                </div>
+              </div>
+              <!-- Recommendation note -->
+              <div class="text-xs text-on-surface-variant flex items-center gap-1.5 mt-1">
+                <span class="material-symbols-outlined text-secondary" style="font-size: 16px;">info</span>
+                Atende às exigências de cobertura do Programa de Garantia da Atividade Agropecuária (Proagro/Pronaf).
+              </div>
+            </div>
+            <!-- Voice Output Action Button -->
+            <div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between flex-wrap gap-2">
+              <button
+                class="flex items-center gap-2 bg-secondary text-on-secondary px-4 py-2 rounded-lg font-label-md text-label-md shadow-sm active:scale-95 hover:opacity-95 transition-all"
+                type="button">
+                <span class="material-symbols-outlined text-white" style="font-size: 20px;">volume_up</span>
+                <span class="">Ouvir resposta em áudio</span>
+              </button>
+              <div class="flex items-center gap-2 text-on-surface-variant">
+                <button class="p-1.5 rounded hover:bg-surface-container-high transition-colors text-on-surface-variant"
+                  title="Gostei" type="button">
+                  <span class="material-symbols-outlined" style="font-size: 18px;">thumb_up</span>
+                </button>
+                <button class="p-1.5 rounded hover:bg-surface-container-high transition-colors text-on-surface-variant"
+                  title="Não gostei" type="button">
+                  <span class="material-symbols-outlined" style="font-size: 18px;">thumb_down</span>
+                </button>
+                <button class="p-1.5 rounded hover:bg-surface-container-high transition-colors text-on-surface-variant"
+                  title="Copiar resposta" type="button">
+                  <span class="material-symbols-outlined" style="font-size: 18px;">content_copy</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- Fixed Bottom Conversation Input Bar -->
+  <div class="fixed bottom-14 left-0 right-0 z-30 bg-surface border-t border-outline-variant shadow-lg">
+    <div class="max-w-5xl mx-auto px-4 py-2.5">
+      <div class="flex items-center gap-2">
+        <!-- Attach photo / camera button (For identifying crop pests) -->
+        <button
+          class="p-2.5 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container transition-all active:scale-95 flex items-center justify-center flex-shrink-0"
+          style="min-width: 44px; min-height: 44px;" title="Tirar foto da praga ou folha" type="button">
+          <span class="material-symbols-outlined text-primary" style="font-size: 24px;">photo_camera</span>
+        </button>
+        <!-- Main Text Input Box -->
+        <div class="flex-1 relative flex items-center">
+          <input
+            class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-4 pr-10 py-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-inner"
+            placeholder="Escreva sua dúvida ou aperte no microfone..." type="text">
+          <!-- Internal quick attachment or clear -->
+          <button class="absolute right-3 text-on-surface-variant hover:text-primary transition-colors"
+            title="Galeria de fotos" type="button">
+            <span class="material-symbols-outlined" style="font-size: 20px;">image</span>
+          </button>
+        </div>
+        <!-- Prominent Microphone Button (Tailored for agricultural field workers) -->
+        <button
+          class="p-3 bg-secondary-container text-on-secondary-container hover:bg-secondary hover:text-white rounded-xl border border-secondary flex items-center justify-center transition-all active:scale-95 flex-shrink-0 shadow-sm"
+          style="min-width: 48px; min-height: 48px;" title="Falar por áudio" type="button">
+          <span class="material-symbols-outlined" style="font-size: 26px;">mic</span>
+        </button>
+        <!-- Send Message Button -->
+        <button
+          class="p-3 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl flex items-center justify-center transition-all active:scale-95 flex-shrink-0 shadow"
+          style="min-width: 48px; min-height: 48px;" title="Enviar mensagem" type="button">
+          <span class="material-symbols-outlined text-white" style="font-size: 24px;">send</span>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-1.5 mt-1 text-[11px] text-on-surface-variant">
+        <span class="">Informações validadas pelos dados agroclimáticos oficiais do MAPA / Embrapa.</span>
+      </div>
+    </div>
+  </div>
+  <!-- BottomNavBar (Strict adherence to Shared Components JSON) -->
+  <nav
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface">
+    <!-- Tab 1: Assistente (Active) -->
+    <a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm active:scale-95 transition-all duration-150"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="chat" style="font-variation-settings: 'FILL' 1;">chat</span>
+      <span class="font-bold mt-0.5">Assistente</span>
+    </a>
+    <!-- Tab 2: ZARC Clima (Inactive) -->
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="cloud">cloud</span>
+      <span class="mt-0.5">Clima</span>
+    </a>
+    <!-- Tab 3: Minha Conta (Inactive) -->
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="person">person</span>
+      <span class="mt-0.5">Minha Conta</span>
+    </a>
+  </nav>
+
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+  <!--Replicar esse botão em todas as telas, para ter voz em tudo-->
+  <!-- Menu de acessibilidade -->
+  <div id="menu-acessibilidade">
+    <button id="botao-acessibilidade" type="button" aria-label="Abrir menu de acessibilidade">
+      <span class="material-symbols-outlined">volume_up</span>
+    </button>
+
+    <div id="painel-acessibilidade" hidden>
+      <h2>Acessibilidade</h2>
+
+      <button id="ler-pagina" type="button">
+        🔊 Ler página
+      </button>
+
+      <button id="pausar-leitura" type="button">
+        ⏸ Pausar
+      </button>
+
+      <button id="continuar-leitura" type="button">
+        ▶ Continuar
+      </button>
+
+      <button id="parar-leitura" type="button">
+        ⏹ Parar
+      </button>
+
+      <div class="controle-acessibilidade">
+        <label for="velocidade-leitura">
+          Velocidade da leitura
+        </label>
+
+        <input id="velocidade-leitura" type="range" min="0.5" max="2" step="0.1" value="1">
+
+        <span id="valor-velocidade">1x</span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    #menu-acessibilidade {
+      position: fixed;
+      left: 24px;
+      bottom: 72px;
+      z-index: 9999;
+      font-family: Arial, sans-serif;
+    }
+
+    @media (max-width: 480px) {
+      #menu-acessibilidade {
+        left: 12px;
+        bottom: 72px;
+      }
+    }
+
+    /* Botão principal */
+    #botao-acessibilidade {
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      border: 3px solid #0057b8;
+      border-radius: 50%;
+      background: transparent;
+      color: #0057b8;
+      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    #botao-acessibilidade .material-symbols-outlined {
+      font-size: 30px;
+      line-height: 1;
+
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 500,
+        'GRAD' 0,
+        'opsz' 32;
+    }
+
+    #botao-acessibilidade:hover {
+      background: rgba(0, 87, 184, 0.12);
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    #botao-acessibilidade:active {
+      transform: scale(0.96);
+    }
+
+    #botao-acessibilidade:focus-visible {
+      outline: 3px solid #0057b8;
+      outline-offset: 3px;
+    }
+
+    /* Painel */
+    #painel-acessibilidade {
+      position: absolute;
+      left: 0;
+      bottom: 76px;
+      width: 300px;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid #d9e2ec;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: abrirMenuAcessibilidade 0.18s ease-out;
+    }
+
+    @keyframes abrirMenuAcessibilidade {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Título */
+    #painel-acessibilidade h2 {
+      margin: 0 0 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #17324d;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    /* Botões */
+    #painel-acessibilidade button {
+      width: 100%;
+      min-height: 44px;
+      margin-bottom: 9px;
+      padding: 10px 12px;
+      border: 1px solid #d6dee8;
+      border-radius: 8px;
+      background: #f5f8fb;
+      color: #17324d;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: left;
+      transition: background 0.15s ease, border-color 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    #painel-acessibilidade button:hover {
+      background: #e8f1fa;
+      border-color: #0057b8;
+      transform: translateY(-1px);
+    }
+
+    #painel-acessibilidade button:active {
+      transform: translateY(0);
+    }
+
+    #painel-acessibilidade button:focus-visible {
+      outline: 3px solid #ffcc00;
+      outline-offset: 2px;
+    }
+
+    /* Controle de velocidade */
+    .controle-acessibilidade {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e5e7eb;
+      color: #17324d;
+    }
+
+    .controle-acessibilidade label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    #velocidade-leitura {
+      width: 100%;
+      height: 5px;
+      accent-color: #0057b8;
+      cursor: pointer;
+    }
+
+    #valor-velocidade {
+      display: block;
+      margin-top: 7px;
+      color: #526579;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* Ajuste para telas menores */
+    @media (max-width: 480px) {
+      #menu-acessibilidade {
+        right: 16px;
+        bottom: 16px;
+      }
+
+      #painel-acessibilidade {
+        right: 0;
+        width: min(300px, calc(100vw - 32px));
+      }
+
+      #botao-acessibilidade {
+        width: 58px;
+        height: 58px;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const botao_acessibilidade = document.getElementById('botao-acessibilidade');
+      const painel_acessibilidade = document.getElementById('painel-acessibilidade');
+
+      const ler_pagina = document.getElementById('ler-pagina');
+      const pausar_leitura = document.getElementById('pausar-leitura');
+      const continuar_leitura = document.getElementById('continuar-leitura');
+      const parar_leitura = document.getElementById('parar-leitura');
+
+      const velocidade_leitura = document.getElementById('velocidade-leitura');
+      const valor_velocidade = document.getElementById('valor-velocidade');
+
+      const sintetizador = window.speechSynthesis;
+
+      let texto_leitura = '';
+
+      botao_acessibilidade.addEventListener('click', () => {
+        painel_acessibilidade.hidden = !painel_acessibilidade.hidden;
+      });
+
+      function obter_texto_pagina() {
+        const elementos_ignorados = document.querySelectorAll(
+          'script, style, noscript, #menu-acessibilidade, [aria-hidden="true"]'
+        );
+
+        elementos_ignorados.forEach((elemento) => {
+          elemento.dataset.leituraIgnorada = 'true';
+        });
+
+        texto_leitura = document.body.innerText
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        elementos_ignorados.forEach((elemento) => {
+          delete elemento.dataset.leituraIgnorada;
+        });
+
+        return texto_leitura;
+      }
+
+      function falar_pagina() {
+        if (!('speechSynthesis' in window)) {
+          alert('Seu navegador não possui suporte à leitura em voz alta.');
+          return;
+        }
+
+        sintetizador.cancel();
+
+        texto_leitura = obter_texto_pagina();
+
+        if (!texto_leitura) {
+          return;
+        }
+
+        const fala = new SpeechSynthesisUtterance(texto_leitura);
+
+        fala.lang = 'pt-BR';
+        fala.rate = Number(velocidade_leitura.value);
+        fala.pitch = 1;
+        fala.volume = 1;
+
+        const vozes = sintetizador.getVoices();
+
+        const voz_portugues = vozes.find((voz) => {
+          return voz.lang.toLowerCase() === 'pt-br';
+        });
+
+        if (voz_portugues) {
+          fala.voice = voz_portugues;
+        }
+
+        sintetizador.speak(fala);
+      }
+
+      ler_pagina.addEventListener('click', () => {
+        falar_pagina();
+      });
+
+      pausar_leitura.addEventListener('click', () => {
+        if (sintetizador.speaking) {
+          sintetizador.pause();
+        }
+      });
+
+      continuar_leitura.addEventListener('click', () => {
+        if (sintetizador.paused) {
+          sintetizador.resume();
+        }
+      });
+
+      parar_leitura.addEventListener('click', () => {
+        sintetizador.cancel();
+      });
+
+      velocidade_leitura.addEventListener('input', () => {
+        valor_velocidade.textContent = `${velocidade_leitura.value}x`;
+      });
+
+      sintetizador.addEventListener('voiceschanged', () => {
+        sintetizador.getVoices();
+      });
+    });
+  </script>

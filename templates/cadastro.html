@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR" style="">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title class="">Plant+Facil - Cadastro</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;family=Quicksand:wght@500;600;700&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-container": "#d9855b",
+            "secondary-container": "#98f4a7",
+            "primary-fixed": "#ffdbcc",
+            "surface-dim": "#cfdaf2",
+            "tertiary-fixed": "#ffddb8",
+            "tertiary": "#2d1900",
+            "tertiary-fixed-dim": "#eebe84",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#79db8d",
+            "on-tertiary": "#ffffff",
+            "on-background": "#111c2d",
+            "error-container": "#ffdad6",
+            "on-secondary-container": "#0c7234",
+            "inverse-primary": "#ffb693",
+            "primary-fixed-dim": "#ffb693",
+            "inverse-surface": "#263143",
+            "surface-container-high": "#dee8ff",
+            "surface-container-low": "#f0f3ff",
+            "primary-container": "#592100",
+            "on-secondary": "#ffffff",
+            "on-error": "#ffffff",
+            "secondary-fixed": "#9bf7aa",
+            "on-tertiary-fixed-variant": "#653e00",
+            "on-primary-fixed-variant": "#733511",
+            "surface-bright": "#f9f9ff",
+            "surface-container-highest": "#d8e3fb",
+            "surface-variant": "#d8e3fb",
+            "on-secondary-fixed-variant": "#005323",
+            "on-tertiary-fixed": "#2a1700",
+            "background": "#f9f9ff",
+            "on-primary-fixed": "#351000",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#e7eeff",
+            "outline-variant": "#dac1b7",
+            "primary": "#371200",
+            "on-primary": "#ffffff",
+            "on-surface": "#111c2d",
+            "on-error-container": "#93000a",
+            "on-surface-variant": "#54433c",
+            "tertiary-container": "#492c00",
+            "inverse-on-surface": "#ecf1ff",
+            "on-tertiary-container": "#fda518",
+            "surface": "#f9f9ff",
+            "outline": "#87736a",
+            "on-secondary-fixed": "#00210a",
+            "secondary": "#016d30",
+            "surface-tint": "#944a23"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-xl": "2rem",
+            "margin": "1rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Domine"],
+            "label-md": ["Work Sans"],
+            "label-sm": ["Work Sans"],
+            "headline-md": ["Domine"],
+            "label-lg": ["Work Sans"],
+            "headline-xl": ["Domine"],
+            "body-sm": ["Work Sans"],
+            "body-md": ["Work Sans"],
+            "body-lg": ["Work Sans"],
+            "headline-sm": ["Domine"]
+          },
+          "fontSize": {
+            "headline-lg": ["26px", { "lineHeight": "34px", "fontWeight": "700" }],
+            "label-md": ["14px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-lg": ["16px", { "lineHeight": "22px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+
+<body
+  class="bg-background text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-secondary-container selection:text-on-secondary-container"
+  style="font-family: Nunito, sans-serif;">
+  <!-- Linear/Task Flow: Navigation Shell automatically suppressed per destination rule to maintain complete focus on registration -->
+  <header class="w-full max-w-md mx-auto px-4 pt-6 pb-2 flex items-center justify-between">
+    <button aria-label="Voltar para tela anterior"
+      class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high active:scale-95 transition-all"
+      type="button">
+      <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+    </button>
+    <div
+      class="flex items-center gap-1.5 px-3 py-1 bg-surface-container-low rounded-full border border-outline-variant/40">
+      <span class="material-symbols-outlined text-secondary text-sm" data-icon="shield">shield</span>
+      <span class="font-label-sm text-label-sm text-on-surface-variant">Cadastro Oficial Plant+Facil</span>
+    </div>
+  </header>
+  <main class="w-full max-w-md mx-auto px-4 py-2 flex-1 flex flex-col justify-center">
+    <!-- Branding & Header Section -->
+    <div class="flex flex-col items-center text-center mb-6">
+      <div class="mb-4"><img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsD_jdWIDybTlS9ZE-H6SCyzlgTmr9OizXjq7vcK0LL7jztSbPcHBT7yBtLE-i4hb_MldQyzBoxgjaYWDTvNsmbUIjTXvMN2f9rEbXB3xKihYVz_9QlISmHi_jkqTZMJbBZFaIf01xztbsi8eZBV4mToMm5EnMV0Hznl_OVdrh7ccUfNFez8KPkOwFZbRYEbjW2phI7xrkTvQWXbdTM7cYte-C7FD2kBTmEgqBLfZ8dc1hHkKzQjHGiWCgApyi0X50lHo"
+          alt="Logo Plant+Facil" class="w-20 h-20 mx-auto object-contain rounded-2xl shadow-md"></div>
+      <h1 class="font-headline-lg text-headline-lg text-primary tracking-tight mb-2"
+        style="font-family: Quicksand, sans-serif; font-weight: 700;">Criar Conta no Plant+Facil</h1>
+      <p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs leading-relaxed">
+        Junte-se a milhares de produtores familiares e receba alertas seguros sobre a melhor época de plantar.
+      </p>
+    </div>
+    <!-- Registration Card -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 p-5 shadow-sm">
+      <form class="space-y-4" id="registerForm" onsubmit="event.preventDefault();">
+        <!-- Campo 1: Nome Completo -->
+        <div>
+          <label class="block font-label-md text-label-md text-on-surface mb-1.5 flex items-center justify-between"
+            for="fullName">
+            <span class="">Seu Nome Completo</span>
+            <span class="font-label-sm text-label-sm text-outline">Obrigatório</span>
+          </label>
+          <div class="relative flex items-center">
+            <div class="absolute left-3.5 pointer-events-none text-on-surface-variant flex items-center">
+              <span class="material-symbols-outlined text-xl" data-icon="person">person</span>
+            </div>
+            <input
+              class="w-full h-[54px] pl-11 pr-4 bg-surface-container-low/40 rounded border border-outline-variant text-on-surface placeholder:text-outline/70 font-body-md text-body-md focus:outline-none focus:ring-0 focus:border-primary focus:bg-surface-container-lowest transition-all"
+              id="fullName" name="fullName" placeholder="Ex: Maria de Souza" required="" type="text">
+          </div>
+          <p class="mt-1 font-label-sm text-label-sm text-on-surface-variant">Como deseja ser chamado no campo e nos
+            relatórios.</p>
+        </div>
+        <!-- Campo 2: E-mail -->
+        <div>
+          <label class="block font-label-md text-label-md text-on-surface mb-1.5 flex items-center justify-between"
+            for="email">
+            <span class="">Seu E-mail</span>
+            <span class="font-label-sm text-label-sm text-secondary font-medium">Alertas climáticos</span>
+          </label>
+          <div class="relative flex items-center">
+            <div class="absolute left-3.5 pointer-events-none text-on-surface-variant flex items-center">
+              <span class="material-symbols-outlined text-xl" data-icon="mail">mail</span>
+            </div>
+            <input
+              class="w-full h-[54px] pl-11 pr-4 bg-surface-container-low/40 rounded border border-outline-variant text-on-surface placeholder:text-outline/70 font-body-md text-body-md focus:outline-none focus:ring-0 focus:border-primary focus:bg-surface-container-lowest transition-all"
+              id="email" name="email" placeholder="seuemail@exemplo.com" required="" type="email">
+          </div>
+          <p class="mt-1 font-label-sm text-label-sm text-on-surface-variant">Onde você receberá as janelas de plantio
+            da sua região.</p>
+        </div>
+        <!-- Campo 3: Senha -->
+        <div>
+          <label class="block font-label-md text-label-md text-on-surface mb-1.5 flex items-center justify-between"
+            for="password">
+            <span class="">Crie uma Senha</span>
+            <span class="font-label-sm text-label-sm text-outline">Segurança</span>
+          </label>
+          <div class="relative flex items-center">
+            <div class="absolute left-3.5 pointer-events-none text-on-surface-variant flex items-center">
+              <span class="material-symbols-outlined text-xl" data-icon="lock">lock</span>
+            </div>
+            <input
+              class="w-full h-[54px] pl-11 pr-12 bg-surface-container-low/40 rounded border border-outline-variant text-on-surface placeholder:text-outline/70 font-body-md text-body-md focus:outline-none focus:ring-0 focus:border-primary focus:bg-surface-container-lowest transition-all"
+              id="password" minlength="6" name="password" placeholder="Digite sua senha" required="" type="password">
+            <button aria-label="Alternar visibilidade da senha"
+              class="absolute right-3 w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors focus:outline-none"
+              id="togglePassword" type="button">
+              <span class="material-symbols-outlined text-xl" data-icon="visibility" id="eyeIcon">visibility</span>
+            </button>
+          </div>
+          <div class="mt-1.5 flex items-center gap-1.5 text-secondary">
+            <span class="material-symbols-outlined text-sm font-semibold" data-icon="check_circle">check_circle</span>
+            <span class="font-label-sm text-label-sm text-secondary font-medium">Pelo menos 6 números ou letras fáceis
+              de lembrar</span>
+          </div>
+        </div>
+        <!-- Checkbox de Termos -->
+        <div class="pt-2">
+          <label class="flex items-start gap-3 cursor-pointer group select-none">
+            <div class="relative flex items-center pt-0.5">
+              <input checked=""
+                class="w-5 h-5 rounded-[0.125rem] border-outline text-secondary focus:ring-secondary/20 cursor-pointer"
+                id="terms" name="terms" required="" type="checkbox">
+            </div>
+            <span
+              class="font-body-sm text-body-sm text-on-surface leading-snug group-hover:text-primary transition-colors">
+              Concordo em receber alertas de clima e plantio no meu celular
+            </span>
+          </label>
+        </div>
+        <!-- Botão Principal de Submissão -->
+        <div class="pt-3">
+          <button
+            class="w-full h-[56px] bg-primary text-on-primary font-label-lg text-label-lg rounded flex items-center justify-center gap-2 shadow-sm hover:bg-primary-container active:scale-[0.99] transition-all duration-150 cursor-pointer"
+            type="submit" style="font-family: Quicksand, sans-serif; font-weight: 700; letter-spacing: 0.025em;">
+            <span class="">FINALIZAR MEU CADASTRO</span>
+            <span class="material-symbols-outlined text-xl" data-icon="task_alt">task_alt</span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- Banner Institucional de Confiança Agro -->
+    <div class="mt-4 p-3 bg-surface-container-low rounded-lg border border-outline-variant/40 flex items-center gap-3">
+      <div
+        class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-lg" data-icon="psychiatry">psychiatry</span>
+      </div>
+      <p class="font-label-sm text-label-sm text-on-surface-variant leading-tight">Planejamento climático oficial
+        sincronizado para agricultura familiar sustentável.</p>
+    </div>
+  </main>
+  <!-- Rodapé com Link para Login -->
+  <footer class="w-full max-w-md mx-auto px-4 py-5 text-center">
+    <div class="py-2 border-t border-outline-variant/30 flex flex-col items-center justify-center gap-1">
+      <p class="font-body-sm text-body-sm text-on-surface-variant">
+        Já tem uma conta cadastrada?
+      </p>
+      <a class="inline-flex items-center gap-1 font-label-md text-label-md text-secondary font-bold hover:underline active:scale-95 transition-all"
+        href="#login">
+        <span class="">Entrar agora</span>
+        <span class="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
+      </a>
+    </div>
+  </footer>
+  <!-- Interações Vanilla JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const togglePasswordBtn = document.getElementById('togglePassword');
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eyeIcon');
+
+      if (togglePasswordBtn && passwordInput && eyeIcon) {
+        togglePasswordBtn.addEventListener('click', () => {
+          const isPassword = passwordInput.getAttribute('type') === 'password';
+          passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+          eyeIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+          eyeIcon.setAttribute('data-icon', isPassword ? 'visibility_off' : 'visibility');
+        });
+      }
+    });
+  </script>
+
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+  <!--Replicar esse botão em todas as telas, para ter voz em tudo-->
+  <!-- Menu de acessibilidade -->
+  <div id="menu-acessibilidade">
+    <button id="botao-acessibilidade" type="button" aria-label="Abrir menu de acessibilidade">
+      <span class="material-symbols-outlined">volume_up</span>
+    </button>
+
+    <div id="painel-acessibilidade" hidden>
+      <h2>Acessibilidade</h2>
+
+      <button id="ler-pagina" type="button">
+        🔊 Ler página
+      </button>
+
+      <button id="pausar-leitura" type="button">
+        ⏸ Pausar
+      </button>
+
+      <button id="continuar-leitura" type="button">
+        ▶ Continuar
+      </button>
+
+      <button id="parar-leitura" type="button">
+        ⏹ Parar
+      </button>
+
+      <div class="controle-acessibilidade">
+        <label for="velocidade-leitura">
+          Velocidade da leitura
+        </label>
+
+        <input id="velocidade-leitura" type="range" min="0.5" max="2" step="0.1" value="1">
+
+        <span id="valor-velocidade">1x</span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    #menu-acessibilidade {
+      position: fixed;
+      left: 24px;
+      bottom: 72px;
+      z-index: 9999;
+      font-family: Arial, sans-serif;
+    }
+
+    @media (max-width: 480px) {
+      #menu-acessibilidade {
+        left: 12px;
+        bottom: 72px;
+      }
+    }
+
+    /* Botão principal */
+    #botao-acessibilidade {
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      border: 3px solid #0057b8;
+      border-radius: 50%;
+      background: transparent;
+      color: #0057b8;
+      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    #botao-acessibilidade .material-symbols-outlined {
+      font-size: 30px;
+      line-height: 1;
+
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 500,
+        'GRAD' 0,
+        'opsz' 32;
+    }
+
+    #botao-acessibilidade:hover {
+      background: rgba(0, 87, 184, 0.12);
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    #botao-acessibilidade:active {
+      transform: scale(0.96);
+    }
+
+    #botao-acessibilidade:focus-visible {
+      outline: 3px solid #0057b8;
+      outline-offset: 3px;
+    }
+
+    /* Painel */
+    #painel-acessibilidade {
+      position: absolute;
+      left: 0;
+      bottom: 76px;
+      width: 300px;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid #d9e2ec;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: abrirMenuAcessibilidade 0.18s ease-out;
+    }
+
+    @keyframes abrirMenuAcessibilidade {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Título */
+    #painel-acessibilidade h2 {
+      margin: 0 0 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #17324d;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    /* Botões */
+    #painel-acessibilidade button {
+      width: 100%;
+      min-height: 44px;
+      margin-bottom: 9px;
+      padding: 10px 12px;
+      border: 1px solid #d6dee8;
+      border-radius: 8px;
+      background: #f5f8fb;
+      color: #17324d;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: left;
+      transition: background 0.15s ease, border-color 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    #painel-acessibilidade button:hover {
+      background: #e8f1fa;
+      border-color: #0057b8;
+      transform: translateY(-1px);
+    }
+
+    #painel-acessibilidade button:active {
+      transform: translateY(0);
+    }
+
+    #painel-acessibilidade button:focus-visible {
+      outline: 3px solid #ffcc00;
+      outline-offset: 2px;
+    }
+
+    /* Controle de velocidade */
+    .controle-acessibilidade {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e5e7eb;
+      color: #17324d;
+    }
+
+    .controle-acessibilidade label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    #velocidade-leitura {
+      width: 100%;
+      height: 5px;
+      accent-color: #0057b8;
+      cursor: pointer;
+    }
+
+    #valor-velocidade {
+      display: block;
+      margin-top: 7px;
+      color: #526579;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* Ajuste para telas menores */
+    @media (max-width: 480px) {
+      #menu-acessibilidade {
+        right: 16px;
+        bottom: 16px;
+      }
+
+      #painel-acessibilidade {
+        right: 0;
+        width: min(300px, calc(100vw - 32px));
+      }
+
+      #botao-acessibilidade {
+        width: 58px;
+        height: 58px;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const botao_acessibilidade = document.getElementById('botao-acessibilidade');
+      const painel_acessibilidade = document.getElementById('painel-acessibilidade');
+
+      const ler_pagina = document.getElementById('ler-pagina');
+      const pausar_leitura = document.getElementById('pausar-leitura');
+      const continuar_leitura = document.getElementById('continuar-leitura');
+      const parar_leitura = document.getElementById('parar-leitura');
+
+      const velocidade_leitura = document.getElementById('velocidade-leitura');
+      const valor_velocidade = document.getElementById('valor-velocidade');
+
+      const sintetizador = window.speechSynthesis;
+
+      let texto_leitura = '';
+
+      botao_acessibilidade.addEventListener('click', () => {
+        painel_acessibilidade.hidden = !painel_acessibilidade.hidden;
+      });
+
+      function obter_texto_pagina() {
+        const elementos_ignorados = document.querySelectorAll(
+          'script, style, noscript, #menu-acessibilidade, [aria-hidden="true"]'
+        );
+
+        elementos_ignorados.forEach((elemento) => {
+          elemento.dataset.leituraIgnorada = 'true';
+        });
+
+        texto_leitura = document.body.innerText
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        elementos_ignorados.forEach((elemento) => {
+          delete elemento.dataset.leituraIgnorada;
+        });
+
+        return texto_leitura;
+      }
+
+      function falar_pagina() {
+        if (!('speechSynthesis' in window)) {
+          alert('Seu navegador não possui suporte à leitura em voz alta.');
+          return;
+        }
+
+        sintetizador.cancel();
+
+        texto_leitura = obter_texto_pagina();
+
+        if (!texto_leitura) {
+          return;
+        }
+
+        const fala = new SpeechSynthesisUtterance(texto_leitura);
+
+        fala.lang = 'pt-BR';
+        fala.rate = Number(velocidade_leitura.value);
+        fala.pitch = 1;
+        fala.volume = 1;
+
+        const vozes = sintetizador.getVoices();
+
+        const voz_portugues = vozes.find((voz) => {
+          return voz.lang.toLowerCase() === 'pt-br';
+        });
+
+        if (voz_portugues) {
+          fala.voice = voz_portugues;
+        }
+
+        sintetizador.speak(fala);
+      }
+
+      ler_pagina.addEventListener('click', () => {
+        falar_pagina();
+      });
+
+      pausar_leitura.addEventListener('click', () => {
+        if (sintetizador.speaking) {
+          sintetizador.pause();
+        }
+      });
+
+      continuar_leitura.addEventListener('click', () => {
+        if (sintetizador.paused) {
+          sintetizador.resume();
+        }
+      });
+
+      parar_leitura.addEventListener('click', () => {
+        sintetizador.cancel();
+      });
+
+      velocidade_leitura.addEventListener('input', () => {
+        valor_velocidade.textContent = `${velocidade_leitura.value}x`;
+      });
+
+      sintetizador.addEventListener('voiceschanged', () => {
+        sintetizador.getVoices();
+      });
+    });
+  </script>
