@@ -39,6 +39,7 @@ class Config:
     FORECAST_TTL_SECONDS = int(os.getenv("FORECAST_TTL_SECONDS", "10800"))  # 3 h
     FORECAST_STALE_MAX_SECONDS = 24 * 3600  # provider fora: aceita run antigo até 24 h (degradado)
     FORECAST_DAYS = 10
+    GEO_DIR = os.getenv("GEO_DIR", str(INSTANCE_DIR / "geo"))  # malhas IBGE por UF (fora do git)
     HTTP_TIMEOUT = (3, 8)
 
     # Domínio

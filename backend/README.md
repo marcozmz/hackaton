@@ -47,6 +47,7 @@ flask data import-zarc --file ../arquivos/tabua-de-risco-safra-2026-2027.csv \
 python scripts/extract_cultivares.py ../arquivos/siszarc_cronograma.csv.gz ../arquivos/cultivares_2026-2027.csv.gz --season 2026-2027
 flask data import-zarc-cultivares --file ../arquivos/cultivares_2026-2027.csv.gz --season 2026-2027
 flask data import-sisser --file ../arquivos/dados_abertos_psr_2025_sisser.xlsx   # seguro rural (agregado)
+flask data import-malhas                          # limites municipais IBGE p/ o mapa (~3 MB, instance/geo)
 flask data list-versions
 ```
 
@@ -77,6 +78,9 @@ pytest               # testes (domínio puro + API com mini-ZARC sintético)
 | `GET /api/v1/recommendations/planting?place=Araraquara SP&crop=milho&soil=2` | **recomendação de janela de plantio** |
 | `GET /api/v1/weather/outlook?place=Araraquara SP` | previsão de 7 dias já interpretada (Open-Meteo) |
 | `GET /api/v1/insurance/summary?place=Rio Verde GO&crop=milho` | seguro rural (PSR) agregado da região |
+| `GET /api/v1/geo/municipalities/{ibge}` | ponto (centroide) + limite do município (GeoJSON) |
+| `GET /api/v1/geo/layers/zarc-risk?uf=SP&crop=milho&soil=2` | camada do estado: situação de plantio de hoje por município |
+| `GET /api/v1/geo/legend` | legenda semântica do mapa |
 | `GET /api/v1/sources` | fontes, licenças, versões e data de extração |
 
 Parâmetros úteis da recomendação: `level=simple|standard|technical`, `date=AAAA-MM-DD`
@@ -102,6 +106,15 @@ Parâmetros úteis da recomendação: `level=simple|standard|technical`, `date=A
 - Bloco `insurance` + ação "pergunte sobre o seguro rural: para ter direito à subvenção, plante dentro do ZARC".
   É **informativo**: nunca altera o risco. A base aberta não traz sinistros (indenização vem vazia).
 - Várias planilhas (uma por ano, 2016–2025) podem ser passadas com `--file` repetido.
+
+### Mapa (desejável, implementado)
+
+- **Backend prepara o significado; frontend desenha** (Leaflet ou similar; tiles de terceiros, ex.: OpenStreetMap com atribuição).
+- Limites municipais do IBGE (`qualidade=minima`, já simplificados) em arquivos estáticos por UF — sem PostGIS.
+- Camada `zarc-risk`: para cada município da UF, a situação **hoje** com a mesma lógica da recomendação
+  (solo conservador, ciclos em união, sequeiro): `low | medium | high | out_of_window | no_data` + texto pronto.
+  **Sem cores e sem códigos do ZARC** na resposta: o frontend mapeia `level` → cor usando `legend`.
+- Cache de 6 h por UF × cultura × solo × decêndio; respostas com gzip (SP ≈ 77 KB).
 
 ### Como a recomendação é decidida
 

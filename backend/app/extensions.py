@@ -1,4 +1,5 @@
 from flask_caching import Cache
+from flask_compress import Compress
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -24,6 +25,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
 cache = Cache()
+compress = Compress()  # gzip: GeoJSON e respostas grandes em rede lenta no campo
 cors = CORS()
 limiter = Limiter(key_func=get_remote_address)
 

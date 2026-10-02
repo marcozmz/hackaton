@@ -37,7 +37,7 @@ class EngineResult:
         return self.findings[0] if self.findings else None
 
 
-def _risk_from(sev: Severity) -> RiskLevel:
+def risk_from_severity(sev: Severity) -> RiskLevel:
     if sev <= Severity.INFO:
         return RiskLevel.LOW
     if sev == Severity.ATTENTION:
@@ -78,7 +78,7 @@ def aggregate(ctx: AgroContext, findings: list[Finding], rules_used: list[dict])
         ]
     else:
         worst = max((f.severity for f in findings), default=Severity.OK)
-        risk = _risk_from(worst)
+        risk = risk_from_severity(worst)
         if any(f.code in UNFAVORABLE_CODES for f in findings):
             status = Status.UNFAVORABLE
         elif worst >= Severity.ATTENTION:

@@ -221,6 +221,16 @@ evidence:
   insurance_uptake: ["Apólices em {year}: {policies} ({where})", "Área segurada: {area_ha} ha", "Subvenção federal: {subsidy_pct}% do prêmio"]
   insurance_uptake_any_crop: ["Apólices em {year}, todas as culturas: {policies} ({where})"]
 
+map:
+  legend:
+    low: "Bom para plantar agora (risco baixo)"
+    medium: "Dá para plantar, com atenção (risco médio)"
+    high: "Dá para plantar, mas o risco é alto"
+    out_of_window: "Fora do período de plantio"
+    no_data: "Sem zoneamento oficial"
+  feature_label: "{name}: {legend}"
+  title: "{crop} em {uf} — situação de {period}"
+
 risk_words:
   low: "baixo"
   medium: "médio"
