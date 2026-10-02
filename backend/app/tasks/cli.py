@@ -8,11 +8,24 @@ import click
 from flask import current_app
 from flask.cli import AppGroup
 
-from app.ingestion import catalog_seed, ibge_malhas, ibge_municipios, sisser, zarc, zarc_cultivars
+from app.config import BASE_DIR, INSTANCE_DIR
+from app.extensions import db
+from app.ingestion import (
+    catalog_seed,
+    download,
+    ibge_malhas,
+    ibge_municipios,
+    maintenance,
+    sisser,
+    zarc,
+    zarc_cultivars,
+)
 from app.repositories import source_repo
 
-
 data_cli = AppGroup("data", help="Importação e versionamento das bases oficiais.")
+
+DEFAULT_RAW = BASE_DIR / "data" / "raw"  # bases oficiais baixadas (fora do git)
+CULTIVAR_SEASON = "2026-2027"
 
 
 def _date(value: str | None) -> date | None:
@@ -71,6 +84,64 @@ def import_malhas(ufs):
     """Limites municipais do IBGE (GeoJSON por UF) para o mapa."""
     geo_dir = Path(current_app.config["GEO_DIR"])
     click.echo(ibge_malhas.run(geo_dir, list(ufs) or None).render())
+
+
+@data_cli.command("download")
+@click.option("--dir", "raw_dir", default=str(DEFAULT_RAW), type=click.Path(path_type=Path), show_default=True)
+@click.option("--only", multiple=True, help="parte do nome do arquivo (ex.: --only sisser)")
+def download_cmd(raw_dir, only):
+    """Baixa as bases oficiais (MAPA, IBGE) com retomada. Pode demorar: o portal do MAPA é lento."""
+    download.download_all(raw_dir, list(only) or None, echo=click.echo)
+
+
+@data_cli.command("bootstrap")
+@click.option("--dir", "raw_dir", default=str(DEFAULT_RAW), type=click.Path(path_type=Path), show_default=True)
+@click.option("--download/--no-download", "do_download", default=True, show_default=True,
+              help="baixar o que faltar antes de importar")
+def bootstrap(raw_dir, do_download):
+    """Monta o banco do zero: download → seeds → municípios → ZARC → cultivares → SISSER → malhas."""
+    raw = Path(raw_dir)
+    if do_download:
+        click.echo("== 1/7 download das bases"); download.download_all(raw, echo=click.echo)
+    click.echo("== 2/7 seeds"); seed.callback()
+    click.echo("== 3/7 municípios IBGE")
+    click.echo(ibge_municipios.run(raw / "ibge_municipios.csv", raw / "ibge_estados.csv").render())
+    click.echo("== 4/7 ZARC (safra 2026/27 + perenes) — alguns minutos")
+    click.echo(zarc.run([raw / "tabua-de-risco-safra-2026-2027.csv",
+                         raw / "tabua-de-risco-perene-olericola-sem-safra.csv"]).render())
+    click.echo("== 5/7 ZARC cultivares — reduzindo o arquivo oficial (alguns minutos)")
+    reduced = raw / f"cultivares_{CULTIVAR_SEASON}.csv.gz"
+    if not reduced.exists():
+        r = zarc_cultivars.extract_distinct(raw / "siszarc_cronograma.csv.gz", reduced, [CULTIVAR_SEASON])
+        click.echo(f"  lidas={r['read']} distintas={r['distinct']} truncado={r['truncated']}")
+    click.echo(zarc_cultivars.run(reduced, [CULTIVAR_SEASON]).render())
+    click.echo("== 6/7 SISSER (seguro rural, agregado)")
+    click.echo(sisser.run([raw / "dados_abertos_psr_2025_sisser.xlsx"]).render())
+    click.echo("== 7/7 malhas municipais (mapa)")
+    click.echo(ibge_malhas.run(Path(current_app.config["GEO_DIR"])).render())
+    click.echo("Pronto. Rode `flask run` e abra http://127.0.0.1:5000")
+
+
+@data_cli.command("prune")
+def prune():
+    """Apaga os dados de versões antigas (superseded/failed) para diminuir o banco."""
+    click.echo(maintenance.prune_superseded())
+
+
+@data_cli.command("export-db")
+@click.option("--out", default="plantefacil-db.zip", type=click.Path(path_type=Path), show_default=True)
+def export_db(out):
+    """Empacota o banco pronto (compactado) + malhas do mapa num .zip para a equipe."""
+    click.echo(maintenance.export_db(out, Path(current_app.config["GEO_DIR"])))
+
+
+@data_cli.command("import-db")
+@click.option("--file", "zip_path", required=True, type=click.Path(exists=True, path_type=Path))
+def import_db(zip_path):
+    """Restaura o .zip gerado por export-db em backend/instance (substitui o banco local)."""
+    db.session.remove()
+    db.engine.dispose()
+    click.echo(maintenance.import_db(zip_path, INSTANCE_DIR))
 
 
 @data_cli.command("list-versions")
