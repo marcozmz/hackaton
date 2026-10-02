@@ -15,6 +15,7 @@ from app.security.auth import (
     safe_next,
 )
 from app.services.account_service import AccountService
+from app.services.alert_service import AlertService
 from app.services.chat_service import ChatService
 from app.services.crop_service import CropService
 from app.services.recommendation_service import RecommendationService
@@ -82,7 +83,7 @@ def perfil():
                                              crop=c["slug"], soil=farm["soil_group"] or "")})
     return render_template("perfil.html", user=user, farm=farm, lavouras=lavouras,
                            crops=catalog_repo.list_crops(), soils=CropService().soils(),
-                           novo=request.args.get("novo"), season=_season())
+                           novo=request.args.get("novo"), season=_season(), alerts_on=AlertService().enabled())
 
 
 def _season() -> str | None:
@@ -131,6 +132,34 @@ def trocar_email():
     except AppError as e:
         return _json_error(e)
     return jsonify({"ok": True, "email": current_user().email})
+
+
+@bp.post("/perfil/avisos")
+@login_required
+def salvar_avisos():
+    """Opt-in do aviso diário por e-mail (enviado pelo Make.com)."""
+    check_csrf()
+    d = request.get_json(silent=True) or {}
+    AlertService().set_opt_in(current_user(), bool(d.get("on")))
+    return jsonify({"ok": True, "on": current_user().email_alerts_since is not None})
+
+
+@bp.post("/perfil/avisos/teste")
+@login_required
+@limiter.limit("3 per hour")
+def testar_aviso():
+    """Manda agora um aviso para o próprio e-mail, para o agricultor ver como chega."""
+    check_csrf()
+    user = current_user()
+    if user.email_alerts_since is None:
+        return _json_error(AppError("Marque primeiro a opção de receber avisos."))
+    try:
+        AlertService().send(user)
+    except AppError as e:
+        return _json_error(e)
+    except Exception:  # noqa: BLE001 — falha do serviço externo
+        return _json_error(AppError("Não conseguimos enviar agora. Tente de novo mais tarde."))
+    return jsonify({"ok": True})
 
 
 @bp.get("/perfil/meus-dados")

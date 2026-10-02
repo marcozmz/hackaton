@@ -47,9 +47,11 @@ def create_app(env: str | None = None) -> Flask:
     app.register_blueprint(web_bp)
     register_error_handlers(app)
 
-    from app.tasks.cli import data_cli
+    from app.tasks.cli import alerts_cli, data_cli
 
     app.cli.add_command(data_cli)
+    app.cli.add_command(alerts_cli)
+    _init_alerts_scheduler(app)
 
     @app.after_request
     def _security_headers(resp):
@@ -58,3 +60,22 @@ def create_app(env: str | None = None) -> Flask:
         return resp
 
     return app
+
+
+def _init_alerts_scheduler(app: Flask) -> None:
+    """Aviso diário por e-mail: liga na 1ª requisição (só quando o servidor está servindo, não em `flask db ...`).
+    No modo debug só o processo filho do reloader agenda, para não mandar em dobro."""
+    if not (app.config.get("MAKE_WEBHOOK_URL") and app.config.get("ALERTS_SCHEDULER")) or app.testing:
+        return
+    if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
+        return
+    started = False
+
+    @app.before_request
+    def _start_alerts():
+        nonlocal started
+        if not started:
+            started = True
+            from app.services.alert_service import start_scheduler
+
+            start_scheduler(app)

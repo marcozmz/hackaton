@@ -153,3 +153,26 @@ def list_versions(dataset):
             f"{mark} {ds.code:<20} #{v.id:<4} {v.status:<10} {v.version_label:<40} "
             f"linhas={v.row_count:<8} extraído={v.extracted_at}"
         )
+
+
+alerts_cli = AppGroup("avisos", help="Aviso diário por e-mail (webhook do Make.com).")
+
+
+@alerts_cli.command("enviar")
+@click.option("--previa", is_flag=True, help="Só mostra quantos iriam e os campos, sem enviar.")
+def alerts_send(previa: bool):
+    """Envia agora o aviso para todos que aceitaram (o servidor já faz isso sozinho todo dia às 6h)."""
+    from app.models.farmer import User
+    from app.services.alert_service import AlertService
+
+    svc = AlertService()
+    if previa:
+        users = db.session.scalars(db.select(User).where(User.email_alerts_since.is_not(None))).all()
+        payloads = [p for p in (svc.payload(u) for u in users) if p]
+        click.echo(f"aceitaram: {len(users)} · com roça e cultura: {len(payloads)}")
+        if payloads:
+            click.echo(f"campos: {', '.join(payloads[0])}")
+        return
+    if not svc.enabled():
+        raise click.ClickException("MAKE_WEBHOOK_URL não está no .env.")
+    click.echo(svc.send_all())
