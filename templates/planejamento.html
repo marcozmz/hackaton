@@ -142,6 +142,7 @@
   </style>
   <link rel="manifest" href="{{ url_for('web.manifest') }}">
   <meta name="theme-color" content="#016d30">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
 </head>
 
 <body class="bg-background text-on-surface antialiased min-h-screen pb-28">
@@ -150,7 +151,7 @@
     class="sticky top-0 z-40 bg-surface border-b border-outline-variant/60 shadow-[0_2px_8px_rgba(17,28,45,0.04)] print:static">
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-6">
       <div class="flex items-center gap-8">
-        <div class="flex items-center gap-3">
+        <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
             <svg class="w-7 h-7 text-secondary-container" fill="currentColor" viewBox="0 0 100 100">
               <path d="M50 15 C30 35 25 55 25 70 C25 82 36 90 50 90 C64 90 75 82 75 70 C75 55 70 35 50 15 Z" fill="#92f5a4"></path>
@@ -162,7 +163,7 @@
             <h1 class="font-headline-sm text-headline-sm text-primary tracking-tight leading-none">Plant+Facil</h1>
             <p class="font-label-sm text-label-sm text-on-surface-variant font-normal">Planejamento da Roça</p>
           </div>
-        </div>
+        </a>
         <div class="hidden md:flex items-center gap-2">
           {% if season %}
           <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">

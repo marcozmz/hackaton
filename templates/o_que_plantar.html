@@ -10,12 +10,12 @@
 <body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
   <header class="bg-surface border-b border-outline-variant sticky top-0 z-40">
     <div class="flex items-center w-full px-4 h-16 max-w-5xl mx-auto gap-2">
-      <a href="{{ url_for('web.inicio', nova=1) }}" class="p-2 -ml-2 text-on-surface-variant rounded-full" aria-label="Voltar">
+      <a href="{{ url_for('inicio.html', nova=1) }}" class="p-2 -ml-2 text-on-surface-variant rounded-full" aria-label="Voltar">
         <span class="material-symbols-outlined">arrow_back</span></a>
-      <div class="flex flex-col">
+      <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex flex-col">
         <span class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
         <span class="font-label-sm text-label-sm text-on-surface-variant">O que plantar agora?</span>
-      </div>
+      </a>
     </div>
   </header>
   <div class="bg-surface-container-low border-b border-outline-variant">

@@ -116,6 +116,7 @@
   </script>
   <link rel="manifest" href="{{ url_for('web.manifest') }}">
   <meta name="theme-color" content="#016d30">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
 </head>
 
 <body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
@@ -123,7 +124,7 @@
   <header
     class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-40">
     <div class="flex justify-between items-center w-full px-4 h-16 max-w-5xl mx-auto">
-      <div class="flex items-center gap-2">
+      <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-2">
         <img
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeLnNvmArmr0PbK93DS6-vQqZjJVZ2XAO93LU9X2-Mor8lignDlRGn83UAnNedK7iZ3_sR95mmZ-DATUXWrdq0enGo7uVsOtDF6N9xlU9KZ0D0G41GUQ4CWnuLfzmPjmO2pZPe7fOrg5jwMvMSvwl1OJ_aMdLqYB_jUJu7KO7QgxKZlSUmCXW_DuTe6x1kHzNJWcq69wcmu2h82Ujp9H9-haA1pp5FIfbG35U9WVgoydioNx1xHggPIR7pVsqXGIIm8Z8"
           alt="Logo Plant+Facil" class="w-9 h-9 object-contain rounded-xl shadow-sm">
@@ -133,7 +134,7 @@
           <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Plant+Facil - Clima e
             Plantio</span>
         </div>
-      </div>
+      </a>
       <button aria-label="Histórico de consultas"
         class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container text-on-surface-variant hover:text-primary active:scale-95 transition-all duration-150">
         <span class="material-symbols-outlined" data-icon="history">history</span>

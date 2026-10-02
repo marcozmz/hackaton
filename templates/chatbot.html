@@ -138,6 +138,7 @@
       border-radius: 4px;
     }
   </style>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
 </head>
 
 <body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen">
@@ -146,7 +147,7 @@
     class="fixed top-0 left-0 right-0 z-40 bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline">
     <div class="flex justify-between items-center w-full px-4 h-16 max-w-5xl mx-auto">
       <!-- Leading Icon / Brand identity -->
-      <div class="flex items-center gap-3">
+      <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-3">
         <img
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGg1Xn2puTmfWcHXN_UxAaY8G1Lid4lqigN5z3EBQVmeC8o3OG9CXQX0RqzvdkIapQLJau2tK2xcDB_adiw_x9pSazb58tK9jY7EOlXkCvW9uKvfJnZva2r7vHP-DluXVHW9DxNwU2C3OleRl_xT_5bp2_BsqwfLYO88XxlKrT6t_DDJYIvGCAaeKzen773yJVtA_zGb38Tsg67P05h1VDa1ALMy3QcaFXC2oKFLo7Vi7yoygtahuimBD82uOuFXNMiBs"
           alt="Logo Plant+Facil" class="w-9 h-9 object-contain rounded-xl shadow-sm">
@@ -164,7 +165,7 @@
             <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Responde com dados oficiais</span>
           </div>
         </div>
-      </div>
+      </a>
       <!-- Action buttons: Limpar / Novo Diálogo -->
       <div class="flex items-center gap-2">
         <button id="limpar"

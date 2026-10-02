@@ -114,6 +114,7 @@
       },
     }
   </script>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
 </head>
 
 <body
@@ -135,9 +136,9 @@
   <main class="w-full max-w-md mx-auto px-4 py-2 flex-1 flex flex-col justify-center">
     <!-- Branding & Header Section -->
     <div class="flex flex-col items-center text-center mb-6">
-      <div class="mb-4"><img
+      <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="mb-4 inline-block"><img
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsD_jdWIDybTlS9ZE-H6SCyzlgTmr9OizXjq7vcK0LL7jztSbPcHBT7yBtLE-i4hb_MldQyzBoxgjaYWDTvNsmbUIjTXvMN2f9rEbXB3xKihYVz_9QlISmHi_jkqTZMJbBZFaIf01xztbsi8eZBV4mToMm5EnMV0Hznl_OVdrh7ccUfNFez8KPkOwFZbRYEbjW2phI7xrkTvQWXbdTM7cYte-C7FD2kBTmEgqBLfZ8dc1hHkKzQjHGiWCgApyi0X50lHo"
-          alt="Logo Plant+Facil" class="w-20 h-20 mx-auto object-contain rounded-2xl shadow-md"></div>
+          alt="Logo Plant+Facil" class="w-20 h-20 mx-auto object-contain rounded-2xl shadow-md"></a>
       <h1 class="font-headline-lg text-headline-lg text-primary tracking-tight mb-2"
         style="font-family: Quicksand, sans-serif; font-weight: 700;">Criar Conta no Plant+Facil</h1>
       <p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs leading-relaxed">
@@ -262,6 +263,11 @@
         href="{{ url_for('web.login') }}">
         <span class="">Entrar agora</span>
         <span class="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
+      </a>
+      <a class="mt-2 inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant hover:underline active:scale-95 transition-all"
+        href="{{ url_for('web.inicio') }}">
+        <span class="material-symbols-outlined text-base" data-icon="home">home</span>
+        <span class="">Voltar ao início</span>
       </a>
     </div>
   </footer>
