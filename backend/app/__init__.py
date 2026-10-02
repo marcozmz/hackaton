@@ -6,7 +6,7 @@ import os
 
 from flask import Flask
 
-from app.config import CONFIGS, INSTANCE_DIR
+from app.config import CONFIGS, INSTANCE_DIR, TEMPLATES_DIR
 from app.errors import register_error_handlers
 from app.extensions import cache, compress, cors, db, limiter, migrate
 
@@ -17,7 +17,7 @@ def create_app(env: str | None = None) -> Flask:
     if hasattr(cfg, "validate"):
         cfg.validate()
 
-    app = Flask(__name__, instance_path=str(INSTANCE_DIR))
+    app = Flask(__name__, instance_path=str(INSTANCE_DIR), template_folder=str(TEMPLATES_DIR))
     app.config.from_object(cfg)
     app.json.ensure_ascii = False
     app.json.sort_keys = False
@@ -41,6 +41,10 @@ def create_app(env: str | None = None) -> Flask:
     from app.api.v1 import create_blueprint
 
     app.register_blueprint(create_blueprint())
+
+    from app.web import bp as web_bp
+
+    app.register_blueprint(web_bp)
     register_error_handlers(app)
 
     from app.tasks.cli import data_cli

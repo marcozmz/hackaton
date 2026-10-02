@@ -16,7 +16,7 @@ def forecast_ref(fc) -> dict:
     return {
         "id": "open_meteo",
         "name": "Open-Meteo (previsão do tempo)",
-        "version": fc.provider,
+        "version": None,
         "fetched_at": fc.fetched_at.isoformat(timespec="seconds"),
         "extracted_at": fc.fetched_at.date().isoformat(),
     }

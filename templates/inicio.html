@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <title>Plant+Facil - Onde e o que plantar</title>
+  {% include '_head.html' %}
+</head>
+
+<body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
+  <header class="bg-surface border-b border-outline-variant sticky top-0 z-40">
+    <div class="flex items-center w-full px-4 h-16 max-w-5xl mx-auto gap-2">
+      <span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">potted_plant</span>
+      <div class="flex flex-col">
+        <span class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
+        <span class="font-label-sm text-label-sm text-on-surface-variant">Quando plantar, com base em dados oficiais</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-xl mx-auto px-4 pt-6 space-y-5">
+    <section class="space-y-1">
+      <h1 class="font-headline-lg text-headline-lg text-primary">Vamos ver se é hora de plantar?</h1>
+      <p class="text-on-surface-variant">Responda 3 perguntas. A gente consulta o calendário oficial do governo (ZARC), a previsão do tempo e te explica.</p>
+    </section>
+
+    {% if error %}
+    <div class="bg-error-container text-on-error-container rounded-xl p-4 space-y-2" role="alert">
+      <p class="font-label-md text-label-md flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-lg">info</span>{{ error }}
+      </p>
+      {% if candidates %}
+      <div class="flex flex-wrap gap-2">
+        {% for c in candidates %}
+          {% if c.ibge_code %}
+          <a class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 font-label-md text-label-md text-on-surface"
+             href="{{ url_for('web.clima', municipality=c.ibge_code, crop=form.get('crop'), soil=form.get('soil')) }}">{{ c.name }} - {{ c.uf }}</a>
+          {% else %}
+          <a class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 font-label-md text-label-md text-on-surface"
+             href="{{ url_for('web.clima', place=form.get('place'), municipality=form.get('municipality'), crop=c.slug, soil=form.get('soil')) }}">{{ c.name }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <form action="{{ url_for('web.clima') }}" method="get" class="space-y-5" id="consulta">
+      <!-- 1. Onde -->
+      <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-3">
+        <label for="place" class="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
+          <span class="bg-secondary text-on-secondary rounded-full w-7 h-7 inline-flex items-center justify-center text-sm">1</span>
+          Onde fica a sua roça?
+        </label>
+        <input id="place" name="place" list="municipios" autocomplete="off" value="{{ form.get('place', '') }}"
+          placeholder="Ex.: Araraquara SP" maxlength="80"
+          class="w-full rounded-lg border-outline-variant bg-surface-container-low px-3 py-3 text-body-lg">
+        <datalist id="municipios"></datalist>
+        <button type="button" id="usar-gps"
+          class="w-full flex items-center justify-center gap-2 border border-secondary text-secondary rounded-lg py-2.5 font-label-md text-label-md">
+          <span class="material-symbols-outlined text-base">my_location</span> Usar a localização do celular
+        </button>
+        <p id="gps-status" class="text-body-sm text-on-surface-variant" aria-live="polite"></p>
+      </div>
+
+      <!-- 2. O quê -->
+      <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-3">
+        <label for="crop" class="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
+          <span class="bg-secondary text-on-secondary rounded-full w-7 h-7 inline-flex items-center justify-center text-sm">2</span>
+          O que você quer plantar?
+        </label>
+        <input id="crop" name="crop" required list="culturas" value="{{ form.get('crop', '') }}" maxlength="80"
+          placeholder="Ex.: milho, feijão de corda, aipim…"
+          class="w-full rounded-lg border-outline-variant bg-surface-container-low px-3 py-3 text-body-lg">
+        <datalist id="culturas">
+          {% for c in crops %}<option value="{{ c.official_name }}">{% endfor %}
+        </datalist>
+        <div class="flex flex-wrap gap-2">
+          {% for c in crops %}
+          <button type="button" data-crop="{{ c.official_name }}"
+            class="chip-cultura bg-surface-container-low border border-outline-variant rounded-full px-3 py-1.5 font-label-md text-label-md">{{ c.official_name }}</button>
+          {% endfor %}
+        </div>
+        <p class="text-body-sm text-on-surface-variant">Pode escrever do seu jeito: "macaxeira", "aipim", "feijão de corda"…</p>
+      </div>
+
+      <!-- 3. Solo -->
+      <fieldset class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-3">
+        <legend class="font-headline-sm text-headline-sm text-primary flex items-center gap-2 mb-2">
+          <span class="bg-secondary text-on-secondary rounded-full w-7 h-7 inline-flex items-center justify-center text-sm">3</span>
+          Como é a sua terra?
+        </legend>
+        {% for s in soils %}
+        <label class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/30">
+          <input type="radio" name="soil" value="{{ s.id }}" class="mt-1 text-secondary" {% if form.get('soil') == s.id|string %}checked{% endif %}>
+          <span><strong class="font-label-lg text-label-lg">{{ s.name }}</strong><br>
+            <span class="text-body-sm text-on-surface-variant">{{ s.description }}</span></span>
+        </label>
+        {% endfor %}
+        <label class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/30">
+          <input type="radio" name="soil" value="" class="mt-1 text-secondary" {% if not form.get('soil') %}checked{% endif %}>
+          <span><strong class="font-label-lg text-label-lg">Não sei</strong><br>
+            <span class="text-body-sm text-on-surface-variant">A gente mostra o período mais seguro para qualquer terra.</span></span>
+        </label>
+      </fieldset>
+
+      <button type="submit"
+        class="w-full bg-primary text-on-primary rounded-xl py-4 font-headline-sm text-headline-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all">
+        <span class="material-symbols-outlined">search</span> Analisar
+      </button>
+    </form>
+
+    <p class="text-body-sm text-on-surface-variant text-center pb-4">
+      Não pedimos nome, CPF nem endereço. A localização do celular só é usada para achar o município.
+    </p>
+  </main>
+
+  <script>
+    // Chips de cultura preenchem o campo.
+    document.querySelectorAll('.chip-cultura').forEach((b) =>
+      b.addEventListener('click', () => { document.getElementById('crop').value = b.dataset.crop; }));
+
+    // Autocomplete de município (API do próprio backend).
+    const place = document.getElementById('place');
+    let timer;
+    place.addEventListener('input', () => {
+      clearTimeout(timer);
+      const q = place.value.trim();
+      if (q.length < 3) return;
+      timer = setTimeout(async () => {
+        const r = await fetch(`/api/v1/location/municipalities?q=${encodeURIComponent(q.replace(/\s+[A-Za-z]{2}$/, ''))}&limit=8`);
+        if (!r.ok) return;
+        const { items } = await r.json();
+        document.getElementById('municipios').innerHTML =
+          items.map((m) => `<option value="${m.name} ${m.uf}">`).join('');
+      }, 250);
+    });
+
+    // GPS: coordenada vai só para o NOSSO backend, que acha o município (nada de serviços de terceiros).
+    document.getElementById('usar-gps').addEventListener('click', () => {
+      const status = document.getElementById('gps-status');
+      if (!navigator.geolocation) { status.textContent = 'Seu celular não permite localização aqui.'; return; }
+      status.textContent = 'Procurando sua localização…';
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const lat = pos.coords.latitude.toFixed(2), lon = pos.coords.longitude.toFixed(2);
+        const r = await fetch(`/api/v1/location/resolve?lat=${lat}&lon=${lon}`);
+        if (!r.ok) { status.textContent = 'Não achei o município. Escreva o nome, por favor.'; return; }
+        const m = await r.json();
+        place.value = `${m.name} ${m.uf}`;
+        status.textContent = `Você está em ${m.name} - ${m.uf}? Se não for, corrija acima.`;
+      }, () => { status.textContent = 'Não consegui pegar a localização. Escreva o nome do município.'; },
+      { enableHighAccuracy: false, timeout: 10000 });
+    });
+  </script>
+</body>
+
+</html>

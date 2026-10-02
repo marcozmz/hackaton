@@ -1,4 +1,4 @@
-"""Seguro rural: informativo, nunca altera o risco."""
+"""Seguro rural: informativo (severidade OK, peso baixo → ação fica no fim da lista; nunca altera o risco)."""
 from __future__ import annotations
 
 from app.domain.context import AgroContext, InsuranceFacts
@@ -20,14 +20,14 @@ class InsuranceHintRule:
         ev = Evidence(SOURCE, ins.dataset_version_id, {"year": ins.year, "scope": ins.scope})
         if ins.stat is None:
             return [
-                Finding("insurance_available", Severity.INFO, 0.2, ev, self.id, self.version,
+                Finding("insurance_available", Severity.OK, 0.2, ev, self.id, self.version,
                         params={"year": ins.year}, actions=("consider_insurance",))
             ]
         s = ins.stat
         code = "insurance_uptake" if ins.about_crop else "insurance_uptake_any_crop"
         return [
             Finding(
-                code, Severity.INFO, 0.25, ev, self.id, self.version,
+                code, Severity.OK, 0.25, ev, self.id, self.version,
                 params={
                     "year": ins.year,
                     "policies": s["policies_count"],

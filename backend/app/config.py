@@ -10,6 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Carrega o .env ANTES de os atributos abaixo lerem os.getenv (senão o .env é ignorado).
 load_dotenv(BASE_DIR / ".env")
 INSTANCE_DIR = BASE_DIR / "instance"
+TEMPLATES_DIR = BASE_DIR.parent / "templates"  # frontend Jinja da equipe (raiz do repositório)
 
 
 class Config:

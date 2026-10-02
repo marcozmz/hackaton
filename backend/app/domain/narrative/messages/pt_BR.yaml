@@ -148,7 +148,7 @@ gaps:
 
 weather_conditions:
   heavy_rain: "Chuva forte"
-  moderate_rain: "Chuva moderada a forte"
+  moderate_rain: "Chuva moderada"
   rain: "Chuva"
   light_rain: "Chuva fraca"
   dry: "Sem chuva"

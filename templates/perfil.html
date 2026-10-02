@@ -446,18 +446,18 @@
     class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest dark:bg-inverse-surface shadow-md">
     <!-- Item 1: Assistente (Inactive) -->
     <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high rounded-lg transition-all tactile-press"
-      href="#">
+      href="{{ url_for('web.assistente') }}">
       <span class="material-symbols-outlined" data-icon="chat">chat</span>
       <span class="mt-0.5">Assistente</span>
     </a>
     <!-- Item 2: ZARC Clima (Inactive) -->
     <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high rounded-lg transition-all tactile-press"
-      href="#"><span class="material-symbols-outlined" data-icon="cloud">cloud</span>
+      href="{{ url_for('web.inicio') }}"><span class="material-symbols-outlined" data-icon="cloud">cloud</span>
       <span class="mt-0.5">Clima e Plantio</span></a>
     <!-- Item 3: Minha Conta (ACTIVE - Profile Context) -->
     <a aria-current="page"
       class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm transition-all tactile-press"
-      href="#">
+      href="{{ url_for('web.perfil') }}">
       <span class="material-symbols-outlined" data-icon="person"
         style="font-variation-settings: 'FILL' 1;">person</span>
       <span class="mt-0.5 font-bold">Minha Conta</span>

@@ -370,19 +370,19 @@
     class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface">
     <!-- Tab 1: Assistente (Active) -->
     <a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm active:scale-95 transition-all duration-150"
-      href="#">
+      href="{{ url_for('web.assistente') }}">
       <span class="material-symbols-outlined" data-icon="chat" style="font-variation-settings: 'FILL' 1;">chat</span>
       <span class="font-bold mt-0.5">Assistente</span>
     </a>
     <!-- Tab 2: ZARC Clima (Inactive) -->
     <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
-      href="#">
+      href="{{ url_for('web.inicio') }}">
       <span class="material-symbols-outlined" data-icon="cloud">cloud</span>
       <span class="mt-0.5">Clima</span>
     </a>
     <!-- Tab 3: Minha Conta (Inactive) -->
     <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
-      href="#">
+      href="{{ url_for('web.perfil') }}">
       <span class="material-symbols-outlined" data-icon="person">person</span>
       <span class="mt-0.5">Minha Conta</span>
     </a>
