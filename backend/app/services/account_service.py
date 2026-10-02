@@ -92,6 +92,7 @@ class AccountService:
             "conta": {"nome": user.display_name, "email": user.email, "criada_em": user.created_at.isoformat(),
                       "preferencias": {"tema": user.theme, "letra": user.font_size, "linguagem": user.language_level}},
             "propriedade": self.farm_view(user) if farm else None,
+            "atividades": [{"data": t.on_date.isoformat(), "titulo": t.title, "feita": t.done} for t in user.tasks],
         }
 
     # --- propriedade ---------------------------------------------------------

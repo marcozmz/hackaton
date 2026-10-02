@@ -121,3 +121,4 @@ def _inject_ui():
 
 
 from app.web import account  # noqa: E402,F401  (registra as rotas de conta no mesmo blueprint)
+from app.web import planning  # noqa: E402,F401  (aba Planejamento)
