@@ -231,6 +231,27 @@ map:
   feature_label: "{name}: {legend}"
   title: "{crop} em {uf} — situação de {period}"
 
+# --- Planejamento (calendário) ---
+planning:
+  levels:
+    ideal: "Plantio indicado (risco baixo)"
+    attention: "Plantio com atenção (risco 30–40%)"
+    prep: "Preparar a terra (o período abre em seguida)"
+    out: "Fora do período de plantio"
+    no_data: "Sem zoneamento oficial"
+  rain_legend: "Chuva prevista (≥ 10 mm)"
+  suggestions:
+    sow: ["Semear {crop}", "Dia dentro do período oficial de plantio (risco de {risk}%)."]
+    sow_attention: ["Semear {crop} com atenção", "Dentro do período oficial, mas com risco de {risk}%. Se puder, prefira os dias em verde."]
+    avoid_sowing_heavy_rain: ["Evite semear neste dia", "Chuva forte prevista (cerca de {mm} mm): a semente pode ser lavada e a terra fica encharcada."]
+    rain_helps: ["Chuva ajuda a germinar", "Previsão de cerca de {mm} mm: boa umidade para a semente."]
+    use_indicated_seed: ["Use semente indicada", "Há {n} cultivares indicadas para o seu estado (ZARC – Cultivares)."]
+    prepare_soil: ["Preparar a terra", "O período de plantio começa em {start_text}. Deixe a terra pronta e as sementes separadas."]
+    buy_indicated_seed: ["Separar sementes indicadas", "Escolha entre as {n} cultivares indicadas para o seu estado."]
+    heavy_rain_day: ["Chuva forte prevista", "Cerca de {mm} mm: evite mexer na terra neste dia."]
+    out_of_window: ["Fora do período de plantio", "O próximo período indicado vai de {label}."]
+    no_data: ["Sem zoneamento oficial", "Não há calendário oficial (ZARC) desta cultura no seu município. Procure a assistência técnica (Emater/ATER)."]
+
 risk_words:
   low: "baixo"
   medium: "médio"

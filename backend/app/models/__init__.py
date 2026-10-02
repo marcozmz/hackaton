@@ -2,7 +2,7 @@
 (files/03-database.md)."""
 from app.models.catalog import Crop, CropAlias, CropVariety, SoilType, VarietyZone
 from app.models.climate import ForecastDaily, ForecastRun
-from app.models.farmer import Farm, Planting, User
+from app.models.farmer import Farm, FarmTask, Planting, User
 from app.models.insurance import InsuranceStat
 from app.models.provenance import DataSource, Dataset, DatasetVersion
 from app.models.territory import Municipality, State
@@ -16,6 +16,7 @@ __all__ = [
     "Dataset",
     "DatasetVersion",
     "Farm",
+    "FarmTask",
     "ForecastDaily",
     "ForecastRun",
     "InsuranceStat",

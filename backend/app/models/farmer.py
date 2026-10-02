@@ -6,9 +6,10 @@ Nome é só "como quer ser chamado". Excluir a conta apaga tudo (cascata).
 from __future__ import annotations
 
 import uuid
+import datetime as dt
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, Float, ForeignKey, SmallInteger, String, UniqueConstraint
+from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, Float, ForeignKey, SmallInteger, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.extensions import db
@@ -38,6 +39,7 @@ class User(db.Model):
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     farms: Mapped[list["Farm"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    tasks: Mapped[list["FarmTask"]] = relationship(cascade="all, delete-orphan")
 
     @property
     def farm(self) -> "Farm | None":
@@ -74,3 +76,16 @@ class Planting(db.Model):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     farm: Mapped[Farm] = relationship(back_populates="plantings")
+
+
+class FarmTask(db.Model):
+    """Atividade do agricultor no calendário de planejamento (só o que ele escreve)."""
+
+    __tablename__ = "farm_task"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), index=True)
+    on_date: Mapped[dt.date] = mapped_column(Date, index=True)
+    title: Mapped[str] = mapped_column(String(120))
+    crop_id: Mapped[int | None] = mapped_column(ForeignKey("crop.id"))
+    done: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
