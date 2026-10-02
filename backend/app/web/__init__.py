@@ -145,7 +145,17 @@ def _inject_ui():
         "csrf_token": csrf_token,
         "ui_html_class": "dark" if user and user.theme == "dark" else "",
         "ui_html_style": f"font-size:{font}",
+        "crop_emoji": crop_emoji,
     }
+
+
+CROP_EMOJI = {"milho": "🌽", "feijao": "🫘", "feijao-caupi": "🫛", "mandioca": "🍠", "arroz": "🌾",
+              "amendoim": "🥜", "soja": "🌱", "algodao": "☁️"}
+
+
+def crop_emoji(slug: str) -> str:
+    """Ícone simples e reconhecível por cultura (no lugar do ícone genérico 'grain')."""
+    return CROP_EMOJI.get(slug, "🌱")
 
 
 from app.web import account  # noqa: E402,F401  (registra as rotas de conta no mesmo blueprint)

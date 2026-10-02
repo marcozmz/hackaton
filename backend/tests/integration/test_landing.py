@@ -45,5 +45,6 @@ def test_landing_links_into_the_app(client):
 def test_landing_main_button_goes_to_last_result(client):
     client.get("/clima", query_string={"municipality": ARARAQUARA, "crop": "milho", "soil": "2"})
     html = client.get("/").get_data(as_text=True)
-    i = html.index("Abrir o Plant+Fácil")
-    assert 'href="/clima"' in html[i - 400:i]
+    i = html.index('<span class="sm:hidden">Abrir</span>')
+    start = html.rindex("<a ", 0, i)
+    assert 'href="/clima"' in html[start:i]

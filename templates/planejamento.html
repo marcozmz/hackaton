@@ -7,7 +7,7 @@
   <title>Planejamento - {{ crop.name }} em {{ place.name }} - Plant+Facil</title>
   <!-- Material Symbols Outlined -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
     rel="stylesheet">
   <!-- Fonts: Domine (Headlines) & Work Sans (Labels/Body) -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -16,7 +16,7 @@
     href="https://fonts.googleapis.com/css2?family=Domine:wght@500;600;700&amp;family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap"
     rel="stylesheet">
   <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
     rel="stylesheet">
   <!-- Tailwind CSS v3 -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -205,7 +205,7 @@
           {% set on = c.slug == crop.slug %}
           <a href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=c.slug, soil=soil_param, mes=cal.selected.date.strftime('%Y-%m')) }}"
             class="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl font-label-md text-label-md active:scale-95 transition-all {{ 'bg-secondary text-on-secondary shadow-sm' if on else 'bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low' }}">
-            <span class="material-symbols-outlined text-[18px] {{ '' if on else 'text-outline' }}" {% if on %}style="font-variation-settings: 'FILL' 1;"{% endif %}>grain</span><span>{{ c.official_name }}</span></a>
+            <span class="text-base leading-none" aria-hidden="true">{{ crop_emoji(c.slug) }}</span><span>{{ c.official_name }}</span></a>
           {% endfor %}
         </div>
       </div>

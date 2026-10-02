@@ -11,10 +11,10 @@
     href="https://fonts.googleapis.com/css2?family=Domine:wght@600;700&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap"
     rel="stylesheet">
   <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
     rel="stylesheet">
   <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
     rel="stylesheet">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
@@ -229,7 +229,7 @@
         <a role="tab" aria-selected="{{ 'true' if active else 'false' }}"
           href="{{ url_for('web.clima', place=query.get('place'), municipality=query.get('municipality') or rec.location.ibge_code, crop=c.slug, soil=query.get('soil', '')) }}"
           class="{{ 'bg-primary text-on-primary shadow-sm' if active else 'bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low' }} font-label-md text-label-md px-4 py-2 rounded-full whitespace-nowrap flex items-center gap-1.5 active:scale-95 transition-all">
-          <span class="material-symbols-outlined text-base {{ '' if active else 'text-outline' }}">grain</span>
+          <span class="text-base leading-none" aria-hidden="true">{{ crop_emoji(c.slug) }}</span>
           {{ c.official_name }}
         </a>
         {% endfor %}
