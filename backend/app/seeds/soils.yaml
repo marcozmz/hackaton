@@ -1,0 +1,25 @@
+# Códigos de solo do ZARC (dicionário de dados da Tábua de Risco 2026).
+# group_code = opção simples que o agricultor escolhe:
+#   1 areia · 2 meio-termo · 3 barro
+# AD1–AD6 (água disponível) foram aproximadas ao grupo textural (AD baixa ≈ arenoso).
+groups:
+  - code: 1
+    name_simple: "Terra com mais areia"
+    description_simple: "Terra solta, que seca rápido depois da chuva."
+  - code: 2
+    name_simple: "Terra meio-termo"
+    description_simple: "Nem muito arenosa, nem muito barrenta."
+  - code: 3
+    name_simple: "Terra barrenta (argilosa)"
+    description_simple: "Terra que gruda, segura bem a água."
+
+soil_types:
+  - {zarc_code: 1,  group_code: 1, name_technical: "Tipo 1 – Arenoso"}
+  - {zarc_code: 2,  group_code: 2, name_technical: "Tipo 2 – Textura média"}
+  - {zarc_code: 3,  group_code: 3, name_technical: "Tipo 3 – Argiloso"}
+  - {zarc_code: 11, group_code: 1, name_technical: "AD1 – Água disponível muito baixa"}
+  - {zarc_code: 12, group_code: 1, name_technical: "AD2 – Água disponível baixa"}
+  - {zarc_code: 13, group_code: 2, name_technical: "AD3 – Água disponível média-baixa"}
+  - {zarc_code: 14, group_code: 2, name_technical: "AD4 – Água disponível média-alta"}
+  - {zarc_code: 15, group_code: 3, name_technical: "AD5 – Água disponível alta"}
+  - {zarc_code: 16, group_code: 3, name_technical: "AD6 – Água disponível muito alta"}

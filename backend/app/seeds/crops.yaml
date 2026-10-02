@@ -1,0 +1,115 @@
+# Catálogo do MVP: identidade oficial + nomes regionais + como a cultura aparece nas bases.
+#
+# zarc_names:     valores exatos de `Nome_cultura` na Tábua de Risco (cada um vira uma "variante").
+# cultivar_match: como casar `Cultura` do arquivo ZARC – Cultivares (texto normalizado:
+#                 sem acento, minúsculo). Casa se começar com algum `include` e não contiver nenhum `exclude`.
+# aliases:        nomes que o agricultor pode digitar. kind ∈ official|common|regional|scientific|abbreviation|misspelling
+#                 uf (opcional) = alias só vale naquele estado.
+
+crops:
+  - slug: milho
+    official_name: Milho
+    scientific_name: Zea mays
+    category: grão
+    zarc_names: ["Milho 1ª Safra", "Milho 2ª Safra"]
+    cultivar_match: {include: ["milho"], exclude: ["pipoca", "braquiaria"]}
+    aliases:
+      - {alias: "milho", kind: official}
+      - {alias: "milho grão", kind: common}
+      - {alias: "milho safrinha", kind: common}
+      - {alias: "milho de segunda safra", kind: common}
+      - {alias: "zea mays", kind: scientific}
+      - {alias: "mio", kind: misspelling}
+
+  - slug: feijao
+    official_name: Feijão
+    scientific_name: Phaseolus vulgaris
+    category: grão
+    zarc_names: ["Feijão", "Feijão 2ª Safra"]
+    cultivar_match: {include: ["feijao"], exclude: ["caupi", "vigna", "corda", "macassar"]}
+    aliases:
+      - {alias: "feijão", kind: official}
+      - {alias: "feijão comum", kind: common}
+      - {alias: "feijão carioca", kind: common}
+      - {alias: "feijão preto", kind: common}
+      - {alias: "feijão das águas", kind: common}
+      - {alias: "feijão da seca", kind: common}
+      - {alias: "phaseolus vulgaris", kind: scientific}
+      - {alias: "fejão", kind: misspelling}
+
+  - slug: feijao-caupi
+    official_name: Feijão-caupi
+    scientific_name: Vigna unguiculata
+    category: grão
+    zarc_names: ["Feijão Caupi"]
+    cultivar_match: {include: ["feijao caupi", "caupi", "feijao de corda", "vigna"], exclude: []}
+    aliases:
+      - {alias: "feijão-caupi", kind: official}
+      - {alias: "caupi", kind: common}
+      - {alias: "feijão-de-corda", kind: regional}
+      - {alias: "feijão macassar", kind: regional}
+      - {alias: "macassar", kind: regional}
+      - {alias: "feijão-fradinho", kind: regional}
+      - {alias: "feijão-de-praia", kind: regional}
+      - {alias: "feijão verde", kind: regional}
+      - {alias: "vigna unguiculata", kind: scientific}
+
+  - slug: arroz
+    official_name: Arroz
+    scientific_name: Oryza sativa
+    category: grão
+    zarc_names: ["Arroz"]
+    cultivar_match: {include: ["arroz"], exclude: ["irrigado"]}
+    aliases:
+      - {alias: "arroz", kind: official}
+      - {alias: "arroz de sequeiro", kind: common}
+      - {alias: "arroz de terras altas", kind: common}
+      - {alias: "oryza sativa", kind: scientific}
+
+  - slug: mandioca
+    official_name: Mandioca
+    scientific_name: Manihot esculenta
+    category: raiz
+    zarc_names: ["Mandioca (aipim, macaxeira)"]
+    cultivar_match: {include: ["mandioca"], exclude: []}
+    aliases:
+      - {alias: "mandioca", kind: official}
+      - {alias: "aipim", kind: regional}
+      - {alias: "macaxeira", kind: regional}
+      - {alias: "mandioca mansa", kind: common}
+      - {alias: "mandioca de mesa", kind: common}
+      - {alias: "manihot esculenta", kind: scientific}
+      - {alias: "maniva", kind: regional}
+
+  - slug: amendoim
+    official_name: Amendoim
+    scientific_name: Arachis hypogaea
+    category: grão
+    zarc_names: ["Amendoim"]
+    cultivar_match: {include: ["amendoim"], exclude: []}
+    aliases:
+      - {alias: "amendoim", kind: official}
+      - {alias: "mendoim", kind: misspelling}
+      - {alias: "arachis hypogaea", kind: scientific}
+
+  - slug: soja
+    official_name: Soja
+    scientific_name: Glycine max
+    category: grão
+    zarc_names: ["Soja"]
+    cultivar_match: {include: ["soja"], exclude: []}
+    aliases:
+      - {alias: "soja", kind: official}
+      - {alias: "soya", kind: misspelling}
+      - {alias: "glycine max", kind: scientific}
+
+  - slug: algodao
+    official_name: Algodão
+    scientific_name: Gossypium hirsutum
+    category: fibra
+    zarc_names: ["Algodão Herbáceo"]
+    cultivar_match: {include: ["algodao"], exclude: []}
+    aliases:
+      - {alias: "algodão", kind: official}
+      - {alias: "algodão herbáceo", kind: common}
+      - {alias: "gossypium hirsutum", kind: scientific}
