@@ -11,6 +11,7 @@ from app.domain.engine import thresholds as th
 from app.domain.engine.finding import Evidence, Finding
 from app.domain.risk import Severity
 from app.domain.zarc import combine
+from app.domain import sowing
 
 SOURCE = "open_meteo"
 
@@ -117,3 +118,34 @@ class ForecastSowingMoistureRule:
                 )
             ]
         return []
+
+
+class BestSowingDayRule:
+    """Otimização: dentro da janela, qual o melhor dia para semear nos próximos dias?"""
+
+    id, version = "best_sowing_day", "1.0"
+
+    def applies(self, ctx: AgroContext) -> bool:
+        z = ctx.facts.get("zarc")
+        return bool(_fc(ctx) and _fc(ctx).days and z and z.zones)
+
+    def evaluate(self, ctx: AgroContext) -> list[Finding]:
+        fc = _fc(ctx)
+        windows = combine(ctx.facts["zarc"].zones).windows
+        scores = sowing.score_days(windows, list(fc.days), ctx.as_of)
+        in_window = [s for s in scores if s.risk_pct is not None]
+        if not in_window:
+            return []  # nenhum dia do horizonte na janela: o achado de janela já explica
+        best = sowing.best_day(scores)
+        ranking = sorted((s for s in scores if s.score is not None), key=lambda s: -s.score)[:3]
+        data = {"ranking": [{"date": s.date.isoformat(), "score": s.score} for s in ranking]}
+        if best is None:
+            return [Finding("no_good_sowing_day", Severity.INFO, 0.7, _ev(fc, data), self.id, self.version,
+                            params={"n_days": len(scores)}, actions=("wait_better_day",))]
+        return [Finding(
+            "best_sowing_day", Severity.OK, 1.05, _ev(fc, {**data, "best": best.date.isoformat(), "score": best.score}),
+            self.id, self.version,
+            params={"best_date": best.date.isoformat(), "best_score": best.score, "best_risk": best.risk_pct,
+                    "sowing_reasons": best.reasons, "ranking": data["ranking"]},
+            actions=("plant_on_best_day",),
+        )]

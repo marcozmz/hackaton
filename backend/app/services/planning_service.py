@@ -8,7 +8,7 @@ from urllib.parse import quote
 from flask import current_app
 from sqlalchemy import and_, select
 
-from app.domain import planning
+from app.domain import planning, sowing
 from app.domain.context import CropRef, MunicipalityRef, ZoneFacts
 from app.domain.decendio import MONTHS_FULL
 from app.domain.narrative.narrator import Narrator, SafeDict, date_text
@@ -93,6 +93,11 @@ class PlanningService:
         if selected is None:
             selected = today if (today.year, today.month) == (year, month) else first
         weeks = planning.month_grid(year, month, windows, has_zarc, forecast, today, selected, counts)
+        best = sowing.best_day(sowing.score_days(windows, list(forecast.values()), today)) if has_zarc and forecast else None
+        if best:
+            for w in weeks:
+                for c in w:
+                    c.best = c.date == best.date
         cell = next(c for w in weeks for c in w if c.date == selected) if any(
             c.date == selected for w in weeks for c in w) else None
         window = planning.current_or_next_window(windows, selected) if has_zarc else None
@@ -124,6 +129,8 @@ class PlanningService:
                 "tasks": day_tasks,
             },
             "window": window,
+            "best_day": {"date": best.date, "label": long_date(best.date),
+                         "reasons": Narrator().sowing_reason_texts(best.reasons)} if best else None,
             "google_calendar_url": self._gcal(m, crop, selected, suggestions, day_tasks),
         }
 

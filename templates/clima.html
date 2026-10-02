@@ -114,6 +114,8 @@
       }
     };
   </script>
+  <link rel="manifest" href="{{ url_for('web.manifest') }}">
+  <meta name="theme-color" content="#016d30">
 </head>
 
 <body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
@@ -273,6 +275,23 @@
               class="font-label-sm text-label-sm text-on-surface font-semibold bg-surface-container-highest px-2 py-0.5 rounded">{{ rec.soil.name if rec.soil else 'Não informada (período mais seguro)' }}</span>
           </div>
         </div>
+        {% if rec.best_day.status == 'ok' %}
+        <!-- Melhor dia para semear (otimização ZARC + previsão) -->
+        <div class="rounded-lg p-3 border-2 border-secondary bg-secondary-container/40 flex items-start gap-3">
+          <span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">star</span>
+          <div>
+            <p class="font-label-md text-label-md text-on-surface-variant">Melhor dia para semear nos próximos dias</p>
+            <p class="font-headline-sm text-headline-sm text-primary font-bold">{{ rec.best_day.label|capitalize }}</p>
+            <p class="font-body-sm text-body-sm text-on-surface">{{ rec.best_day.reasons|join(' · ') }}</p>
+            <a class="text-xs font-bold text-secondary underline" href="{{ url_for('web.planejamento', municipality=rec.location.ibge_code, crop=rec.crop.slug, soil=query.get('soil', ''), dia=rec.best_day.date) }}">ver no calendário</a>
+          </div>
+        </div>
+        {% elif rec.best_day.status == 'none' %}
+        <div class="rounded-lg p-3 border border-outline-variant bg-surface-container-low flex items-start gap-3">
+          <span class="material-symbols-outlined text-outline text-2xl">event_busy</span>
+          <p class="font-body-sm text-body-sm text-on-surface">Nos próximos dias nenhum dia está bom para semear (temporal ou pouca chuva). Confira de novo a previsão em alguns dias.</p>
+        </div>
+        {% endif %}
         <!-- Orientação prática -->
         <div class="bg-secondary-container/30 border-l-4 border-secondary p-3 rounded-r-lg" id="texto-para-ouvir"
           data-fala="{{ v.speech }}">
@@ -291,6 +310,10 @@
               class="inline-flex items-center gap-1.5 bg-surface-container-lowest border border-secondary text-secondary rounded-lg px-3 py-2 font-label-md text-label-md">
               <span class="material-symbols-outlined text-base">volume_up</span> Ouvir
             </button>
+            <a href="{{ whatsapp }}" target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 bg-[#25D366] text-white rounded-lg px-3 py-2 font-label-md text-label-md">
+              <span class="material-symbols-outlined text-base">share</span> Mandar no WhatsApp
+            </a>
             <button type="button" id="explicar-simples"
               class="inline-flex items-center gap-1.5 bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg px-3 py-2 font-label-md text-label-md">
               <span class="material-symbols-outlined text-base">auto_awesome</span> Explicar de um jeito mais simples
@@ -339,6 +362,22 @@
       </div>
     </section>
 
+    {% if others %}
+    <!-- O que mais dá para plantar agora (mesma lógica, outras culturas) -->
+    <section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-2">
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="font-headline-sm text-headline-sm text-primary font-bold">Também dá para plantar agora aqui</h2>
+        <a class="text-sm font-bold text-secondary underline" href="{{ url_for('web.o_que_plantar', municipality=rec.location.ibge_code, soil=query.get('soil', '')) }}">ver todas</a>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        {% for o in others %}
+        <a href="{{ url_for('web.clima', municipality=rec.location.ibge_code, crop=o.crop.slug, soil=query.get('soil', '')) }}"
+          class="bg-secondary-container/40 border border-secondary rounded-full px-3 py-1.5 font-label-md text-label-md text-on-surface">
+          {{ o.crop.name }} · risco {{ o.risk_pct }}%{% if o.best_day %} · ⭐ {{ o.best_day.label.split(',')[0] }}{% endif %}</a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
     <!-- Previsão do tempo para os próximos 7 dias -->
     {% if v.days %}
     <section class="space-y-3">

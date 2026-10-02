@@ -111,6 +111,14 @@ findings:
     simple: "Existe seguro rural com ajuda do governo (PSR) para proteger a sua lavoura."
     standard: "O Programa de Subvenção ao Seguro Rural (PSR) pode reduzir o custo do seguro."
     technical: "Sem apólices PSR suficientes na região em {year} para exibir agregados (k < 3)."
+  best_sowing_day:
+    simple: "O melhor dia para semear nos próximos dias é {best_day_text}: {why_text}."
+    standard: "Melhor dia para semear: {best_day_text} ({why_text})."
+    technical: "Otimização do dia de semeadura: {best_day_text} (pontuação {best_score}; {why_text})."
+  no_good_sowing_day:
+    simple: "Nos próximos dias nenhum dia está bom para semear (temporal ou pouca chuva). Espere a previsão melhorar."
+    standard: "Nenhum dia dos próximos {n_days} reúne risco oficial aceitável e boa umidade sem temporal."
+    technical: "Nenhum dia do horizonte de {n_days} dias atingiu a pontuação mínima de semeadura."
   location_approximate:
     simple: "Entendemos que você está em {municipality} ({uf}). Se não for, corrija o lugar."
     standard: "Localização aproximada: {municipality}/{uf}."
@@ -132,6 +140,8 @@ actions:
   plan_around_rain: "Programe o plantio para aproveitar a chuva de {day}."
   wait_soil_moisture: "Espere uma boa chuva antes de semear: terra seca atrapalha a germinação."
   check_forecast_later: "Confira a previsão do tempo mais tarde."
+  plant_on_best_day: "Se for semear agora, prefira {best_day_text}."
+  wait_better_day: "Espere alguns dias e confira de novo a previsão antes de semear."
   consider_insurance: "Pergunte no banco ou na cooperativa sobre o seguro rural com ajuda do governo: para ter direito, plante dentro do período do zoneamento (ZARC)."
 
 assumptions:
@@ -218,6 +228,7 @@ evidence:
   forecast_dry_spell: ["Chuva somada em {n_days} dias: {mm_total} mm"]
   forecast_good_moisture: ["Chuva somada em {n_days} dias: {mm_total} mm"]
   location_approximate: ["Município identificado por: {resolved_by_text}"]
+  best_sowing_day: ["Melhor dia: {best_day_text}", "Por quê: {why_text}", "Fontes: ZARC (risco) + Open-Meteo (chuva)"]
   insurance_uptake: ["Apólices em {year}: {policies} ({where})", "Área segurada: {area_ha} ha", "Subvenção federal: {subsidy_pct}% do prêmio"]
   insurance_uptake_any_crop: ["Apólices em {year}, todas as culturas: {policies} ({where})"]
 
@@ -230,6 +241,21 @@ map:
     no_data: "Sem zoneamento oficial"
   feature_label: "{name}: {legend}"
   title: "{crop} em {uf} — situação de {period}"
+
+# Razões do melhor dia de semeadura (domain/sowing.py)
+sowing_reasons:
+  zarc_risk: "risco oficial de {risk}%"
+  rain_after: "{mm} mm de chuva nos 3 dias seguintes para a semente nascer"
+  some_rain_after: "um pouco de chuva depois ({mm} mm)"
+  dry_after: "pouca chuva nos dias seguintes ({mm} mm)"
+  moist_day: "terra úmida no dia"
+  soaked_day: "terra encharcada no dia ({mm} mm)"
+  storm_next_day: "temporal no dia seguinte ({mm} mm)"
+  storm_after: "temporal {days} dias depois ({mm} mm)"
+  hot_day: "muito calor ({t}°C)"
+  short_forecast: "previsão ainda curta para os dias seguintes"
+  out_of_window: "fora do período oficial"
+  storm_on_day: "temporal no dia ({mm} mm)"
 
 # --- Planejamento (calendário) ---
 planning:

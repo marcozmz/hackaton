@@ -5,6 +5,7 @@ from app.domain.engine.rules.context_rules import (
     SoilUnspecifiedRule,
 )
 from app.domain.engine.rules.forecast_rules import (
+    BestSowingDayRule,
     ForecastAvailabilityRule,
     ForecastHeavyRainRule,
     ForecastSowingMoistureRule,
@@ -21,5 +22,6 @@ RULES = [
     ForecastAvailabilityRule(),
     ForecastHeavyRainRule(),
     ForecastSowingMoistureRule(),
+    BestSowingDayRule(),
     InsuranceHintRule(),
 ]

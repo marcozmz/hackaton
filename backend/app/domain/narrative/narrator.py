@@ -38,6 +38,14 @@ def date_text(iso: str | None) -> str:
     return f"{d.day} de {MONTHS_FULL[d.month - 1]}"
 
 
+WEEKDAYS = ["segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"]
+
+
+def weekday_date_text(iso: str) -> str:
+    d = date.fromisoformat(iso)
+    return f"{WEEKDAYS[d.weekday()]}, {d.day} de {MONTHS_FULL[d.month - 1]}"
+
+
 @dataclass
 class Narrative:
     title: str
@@ -79,7 +87,15 @@ class Narrator:
                 p[f"{key}_text"] = date_text(p[key])
         if "options_open" in p:
             p["options_open_text"] = ", ".join(p["options_open"])
+        if p.get("best_date"):
+            p["best_day_text"] = weekday_date_text(p["best_date"])
+        if p.get("sowing_reasons"):
+            p["why_text"] = ", ".join(self.sowing_reason_texts(p["sowing_reasons"]))
         return p
+
+    def sowing_reason_texts(self, reasons) -> list[str]:
+        tpl = self.m["sowing_reasons"]
+        return [tpl[c].format_map(SafeDict(prm)) for c, prm in reasons if c in tpl]
 
     def narrate(self, ctx: AgroContext, result: EngineResult) -> Narrative:
         level = ctx.language_level

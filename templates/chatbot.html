@@ -327,6 +327,7 @@
                   <span class="font-label-sm text-label-sm text-on-surface-variant block">Sementes indicadas</span>
                   <span class="font-label-md text-label-md font-bold text-secondary">${card.varieties || 0} cultivares</span></div>
               </div>
+              ${card.best_day ? `<div class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-amber-500" style="font-size:18px;font-variation-settings:'FILL' 1">star</span><span>Melhor dia para semear: <strong>${esc(card.best_day)}</strong></span></div>` : ''}
               <a href="${esc(card.link)}" class="text-sm font-bold text-secondary flex items-center gap-1">Ver orientação completa
                 <span class="material-symbols-outlined text-base">arrow_forward</span></a>
               <div class="text-xs text-on-surface-variant flex items-center gap-1.5">
@@ -346,6 +347,7 @@
         if (card.type === 'list') {
           return `<div class="mt-3 text-sm"><p class="font-bold text-primary">${esc(card.title)}</p>
             <p class="text-on-surface-variant mt-1">${(card.items || []).map(esc).join(' · ')}</p>
+            ${card.link ? `<a href="${esc(card.link)}" class="text-sm font-bold text-secondary underline">Ver tudo</a>` : ''}
             <p class="text-xs text-on-surface-variant mt-1">Fonte: ${esc(card.source)}</p></div>`;
         }
         return '';
@@ -368,6 +370,9 @@
                 <div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between flex-wrap gap-2">
                   <button type="button" data-ouvir="${id}" class="flex items-center gap-2 bg-secondary text-on-secondary px-4 py-2 rounded-lg font-label-md text-label-md shadow-sm active:scale-95">
                     <span class="material-symbols-outlined text-white" style="font-size:20px">volume_up</span>Ouvir resposta</button>
+                  <a target="_blank" rel="noopener noreferrer" href="https://wa.me/?text=${encodeURIComponent((r.text || '').slice(0, 600) + '\nFonte: dados oficiais (ZARC/MAPA). Via Plant+Facil ' + location.origin)}"
+                    class="flex items-center gap-1.5 bg-[#25D366] text-white px-3 py-2 rounded-lg font-label-md text-label-md">
+                    <span class="material-symbols-outlined" style="font-size:18px">share</span>WhatsApp</a>
                   ${r.generated_by === 'llm' ? '<span class="text-[11px] text-outline">Texto simplificado por IA, conferido com os dados</span>' : ''}
                 </div>
               </div>
