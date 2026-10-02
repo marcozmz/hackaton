@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" style="">
+<html lang="pt-BR" class="{{ ui_html_class }}" style="{{ ui_html_style }}">
 
 <head>
   <meta charset="utf-8">
@@ -150,7 +150,15 @@
           recomendações de plantio.</p>
       </div>
       <!-- Login Form -->
-      <form class="space-y-4" id="loginForm" onsubmit="event.preventDefault();">
+      <form class="space-y-4" id="loginForm" method="post" action="{{ url_for('web.login') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+        {% if error %}
+        <div class="bg-error-container text-on-error-container rounded-lg p-3 text-sm font-semibold flex items-center gap-2" role="alert">
+          <span class="material-symbols-outlined text-base">error</span>{{ error }}
+        </div>
+        {% endif %}
+
         <!-- Field 1: Email -->
         <div>
           <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1.5" for="emailInput">
@@ -161,7 +169,7 @@
               class="material-symbols-outlined absolute left-3.5 text-outline text-[22px] pointer-events-none">mail</span>
             <input
               class="w-full pl-11 pr-4 h-[54px] bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface font-body-md text-body-md placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-              id="emailInput" name="email" placeholder="ex: joao.silva@email.com" required="" type="email">
+              id="emailInput" name="email" placeholder="ex: joao.silva@email.com" required="" type="email" value="{{ form.get('email', '') }}">
           </div>
         </div>
         <!-- Field 2: Password with Eye Toggle -->
@@ -170,10 +178,9 @@
             <label class="block font-label-sm text-label-sm text-on-surface-variant" for="passwordInput">
               Sua Senha
             </label>
-            <a class="font-label-sm text-label-sm text-primary hover:underline font-semibold focus:outline-none focus:ring-1 focus:ring-primary rounded"
-              href="#">
-              Esqueci minha senha
-            </a>
+            <span class="font-label-sm text-label-sm text-on-surface-variant" title="Ainda não enviamos e-mails: fale com a equipe para redefinir">
+              Esqueceu? Fale com a equipe
+            </span>
           </div>
           <div class="relative flex items-center">
             <span
@@ -193,7 +200,7 @@
           <label class="flex items-center gap-3 cursor-pointer select-none">
             <input
               class="w-5 h-5 rounded-[0.125rem] border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
-              id="rememberMe" name="remember" type="checkbox">
+              id="rememberMe" name="remember" type="checkbox" value="1">
             <span class="font-body-sm text-body-sm text-on-surface">Lembrar de mim neste celular</span>
           </label>
         </div>

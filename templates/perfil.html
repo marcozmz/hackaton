@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" style="">
+<html lang="pt-BR" class="{{ ui_html_class }}" style="{{ ui_html_style }}">
 
 <head>
   <meta charset="utf-8">
@@ -149,7 +149,7 @@
       <div class="flex items-center gap-3">
         <a aria-label="Voltar para início"
           class="p-2 -ml-2 text-on-surface-variant hover:bg-surface-container-high rounded-full tactile-press flex items-center justify-center"
-          href="#">
+          href="{{ url_for('web.inicio') }}">
           <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
         </a>
         <div class="flex items-center gap-2">
@@ -172,7 +172,6 @@
   </header>
   <!-- Main Content Layout -->
   <main class="w-full max-w-4xl mx-auto px-4 pt-6 space-y-6 flex-1">
-    <!-- Title Section with Rural warmth -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
       <div>
         <h2 class="font-headline-lg text-headline-lg text-primary font-bold tracking-tight">Meu Perfil &amp;
@@ -180,19 +179,27 @@
         <p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Ajustes práticos e acessibilidade pensados
           para o seu trabalho no campo.</p>
       </div>
-      <div
-        class="inline-flex items-center gap-1.5 self-start sm:self-auto px-3 py-1 bg-surface-container-low border border-outline-variant rounded-full text-on-surface text-xs font-semibold">
-        <span class="material-symbols-outlined text-secondary text-sm" data-icon="verified">verified</span>
-        <span class="">Conectado offline e no pasto</span>
-      </div>
+      <form method="post" action="{{ url_for('web.sair') }}" class="self-start sm:self-auto">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit"
+          class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container-low border border-outline-variant rounded-full text-on-surface text-xs font-semibold hover:bg-surface-container">
+          <span class="material-symbols-outlined text-secondary text-sm">logout</span> Sair
+        </button>
+      </form>
     </div>
-    <!-- Bento Grid Container -->
+
+    {% if novo %}
+    <div class="bg-secondary-container/40 border border-secondary rounded-xl p-4 flex items-start gap-3">
+      <span class="material-symbols-outlined text-secondary">waving_hand</span>
+      <p class="font-body-md text-body-md text-on-surface">Conta criada! Agora conte como é a sua roça
+        (<strong>Editar Dados</strong>) para o Plant+Facil já abrir com a orientação certa.</p>
+    </div>
+    {% endif %}
+
     <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
-      <!-- Producer Profile Card (Span 12) -->
-      <section
-        class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+      <!-- Cartão do produtor -->
+      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
         <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-          <!-- Friendly Avatar with Straw Hat styling/Rural warmth -->
           <div class="relative">
             <div
               class="w-24 h-24 rounded-full bg-secondary-container border-2 border-secondary p-1 flex items-center justify-center overflow-hidden shadow-inner">
@@ -204,238 +211,187 @@
               <span class="material-symbols-outlined text-sm leading-none" data-icon="agriculture">agriculture</span>
             </span>
           </div>
-          <!-- Info Details -->
           <div class="flex-1 text-center sm:text-left space-y-2">
             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h3 class="font-headline-md text-headline-md text-on-surface font-bold">Maria de Souza</h3>
-              <!-- Verified Badge -->
+              <h3 class="font-headline-md text-headline-md text-on-surface font-bold" id="display-name">{{ user.display_name }}</h3>
+              {% if season %}
               <span
-                class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2.5 py-1 rounded-full text-xs font-bold border border-secondary/20">Safra
-                2024/2025</span>
+                class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2.5 py-1 rounded-full text-xs font-bold border border-secondary/20">{{ season }}</span>
+              {% endif %}
             </div>
-            <div
-              class="flex flex-col sm:flex-row sm:items-center gap-2 text-on-surface-variant font-label-md text-label-md">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 text-on-surface-variant font-label-md text-label-md">
               <span class="inline-flex items-center gap-1">
-                <span class="material-symbols-outlined text-secondary text-base"
-                  data-icon="location_on">location_on</span>
-                <span id="display-location" class="">Araraquara - SP</span>
+                <span class="material-symbols-outlined text-secondary text-base" data-icon="location_on">location_on</span>
+                <span id="display-location">{% if farm %}{{ farm.municipality.name }} - {{ farm.municipality.uf }}{% if farm.name %} • {{ farm.name }}{% endif %}{% else %}Propriedade ainda não cadastrada{% endif %}</span>
               </span>
               <span class="hidden sm:inline text-outline-variant">•</span>
               <span class="inline-flex items-center gap-1">
-                <span class="material-symbols-outlined text-primary-container text-base"
-                  data-icon="potted_plant">potted_plant</span>
-                <span id="display-culturas" class="">Milho Safrinha, Feijão e Hortaliças</span>
+                <span class="material-symbols-outlined text-primary-container text-base" data-icon="potted_plant">potted_plant</span>
+                <span id="display-culturas">{% if farm and farm.crops %}{{ farm.crops|map(attribute='name')|join(', ') }}{% else %}Nenhuma cultura escolhida{% endif %}</span>
               </span>
             </div>
-            <!-- Fast Stats Row -->
             <div class="pt-2 grid grid-cols-2 sm:grid-cols-3 gap-2 max-w-lg">
               <div class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant">
                 <p class="text-xs text-on-surface-variant font-medium">Área Cultivada</p>
-                <p class="text-sm font-bold text-on-surface" id="display-area">18,5 Hectares</p>
+                <p class="text-sm font-bold text-on-surface" id="display-area">{% if farm and farm.area_ha %}{{ ('%.1f' % farm.area_ha).replace('.', ',') }} Hectares{% else %}—{% endif %}</p>
               </div>
               <div class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant">
-                <p class="text-xs text-on-surface-variant font-medium">Solo Predominante</p>
-                <p class="text-sm font-bold text-on-surface" id="display-solo">Tipo 2 (Argiloso)</p>
+                <p class="text-xs text-on-surface-variant font-medium">Tipo de Terra</p>
+                <p class="text-sm font-bold text-on-surface" id="display-solo">{{ farm.soil_name if farm else '—' }}</p>
               </div>
-              <div
-                class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant col-span-2 sm:col-span-1">
-                <p class="text-xs text-on-surface-variant font-medium">Enquadramento</p>
-                <p class="text-sm font-bold text-secondary" id="display-pronaf">Pronaf Grupo B</p>
+              <div class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant col-span-2 sm:col-span-1">
+                <p class="text-xs text-on-surface-variant font-medium">E-mail de acesso</p>
+                <p class="text-sm font-bold text-secondary truncate" id="display-user-email">{{ user.email }}</p>
               </div>
             </div>
           </div>
-          <!-- Edit Profile Action -->
           <button
             class="self-stretch sm:self-auto px-4 py-2.5 bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant rounded-lg font-label-md text-label-md font-semibold tactile-press flex items-center justify-center gap-1.5 cursor-pointer"
-            onclick="openEditModal()">
+            onclick="openEditModal()" type="button">
             <span class="material-symbols-outlined text-base" data-icon="edit">edit</span>
             Editar Dados
           </button>
         </div>
       </section>
-      <!-- Section: Aparência e Tema da Tela (Light vs Dark mode for outdoors) - Span 12 or 7 -->
-      <section
-        class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4 md:col-span-12">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
-              <span class="material-symbols-outlined" data-icon="brightness_6">brightness_6</span>
-            </div>
-            <div>
-              <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Aparência e Luz da Tela</h3>
-              <p class="font-label-sm text-label-sm text-on-surface-variant">Ajuste o visual para enxergar com nitidez
-                sob o sol quente da roça</p>
-            </div>
+
+      <!-- Minhas lavouras hoje (recomendação real de cada cultura) -->
+      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined">grass</span>
+          </div>
+          <div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Minhas lavouras hoje</h3>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Situação de plantio pelo calendário oficial (ZARC), para a sua propriedade</p>
           </div>
         </div>
-        <!-- 2 Visual Big Cards for Outdoor / Night Reading -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-          <!-- Light Mode (Dia de Sol) - SELECTED -->
-          <label
-            class="relative flex flex-col justify-between p-4 rounded-xl border-2 border-secondary bg-surface-container-low cursor-pointer shadow-sm tactile-press transition-all">
-            <input checked="" class="sr-only" name="theme_mode" type="radio" value="light">
-            <div class="flex justify-between items-start mb-3">
-              <div
-                class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-inner">
-                <span class="material-symbols-outlined text-2xl" data-icon="light_mode"
-                  style="font-variation-settings: 'FILL' 1;">light_mode</span>
-              </div>
-              <span class="flex items-center justify-center w-6 h-6 rounded-full bg-secondary text-on-secondary">
-                <span class="material-symbols-outlined text-base font-bold" data-icon="check">check</span>
-              </span>
-            </div>
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span class="font-headline-sm text-headline-sm text-on-surface font-bold">Modo Claro</span>
-                <span
-                  class="text-xs bg-secondary-fixed text-on-secondary-fixed font-bold px-1.5 py-0.5 rounded">Ativo</span>
-              </div>
-              <p class="font-label-md text-label-md text-secondary font-semibold mt-0.5">Dia de Sol na Roça</p>
-              <p class="font-body-sm text-body-sm text-on-surface-variant mt-1.5">Fundo claro de alto contraste.
-                Recomendado para enxergar debaixo de sol forte no plantio.</p>
-            </div>
-          </label>
-          <!-- Dark Mode (Descanso Noturno) -->
-          <label
-            class="relative flex flex-col justify-between p-4 rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest cursor-pointer tactile-press transition-all opacity-85 hover:opacity-100">
-            <input class="sr-only" name="theme_mode" type="radio" value="dark">
-            <div class="flex justify-between items-start mb-3">
-              <div
-                class="w-12 h-12 rounded-full bg-inverse-surface text-secondary-fixed flex items-center justify-center shadow-inner">
-                <span class="material-symbols-outlined text-2xl" data-icon="dark_mode">dark_mode</span>
-              </div>
-              <div class="w-6 h-6 rounded-full border-2 border-outline-variant"></div>
-            </div>
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span class="font-headline-sm text-headline-sm text-on-surface font-bold">Modo Escuro</span>
-              </div>
-              <p class="font-label-md text-label-md text-on-surface-variant font-semibold mt-0.5">Descanso Noturno</p>
-              <p class="font-body-sm text-body-sm text-on-surface-variant mt-1.5">Fundo escuro suave para conferir a
-                previsão ou zoneamento à noite em casa sem cansar a vista.</p>
-            </div>
-          </label>
-        </div>
-      </section>
-      <!-- Section: Voz e Áudio do Assistente (Span 12 or 5) -->
-      <!-- Section: Tamanho das Letras (Fácil Leitura) (Span 12) -->
-      <section
-        class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
-              <span class="material-symbols-outlined" data-icon="format_size">format_size</span>
-            </div>
-            <div>
-              <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Tamanho das Letras (Fácil Leitura)
-              </h3>
-              <p class="font-label-sm text-label-sm text-on-surface-variant">Aumente o tamanho para ler sem esforço na
-                roça ou com sol nos olhos</p>
-            </div>
-          </div>
-          <span
-            class="text-xs text-secondary font-bold bg-secondary-container px-2.5 py-1 rounded-full self-start sm:self-auto">
-            Ajuste Instantâneo
-          </span>
-        </div>
-        <!-- 3 Big Buttons for Font Size -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <!-- Normal -->
-          <button
-            class="flex flex-col items-center justify-center p-4 rounded-xl border border-outline-variant bg-surface-container-low hover:bg-surface-container tactile-press text-center transition-all"
-            onclick="changeFontSize('normal', this)" type="button">
-            <span class="text-sm font-bold text-on-surface-variant">Aa</span>
-            <span class="font-label-md text-label-md text-on-surface font-bold mt-1">Normal (Padrão)</span>
-            <span class="text-xs text-on-surface-variant">Letras compactas</span>
-          </button>
-          <!-- Grande (RECOMENDADO / ATIVO) -->
-          <button
-            class="relative flex flex-col items-center justify-center p-4 rounded-xl border-2 border-secondary bg-secondary-container/20 text-center shadow-sm ring-2 ring-secondary/20 tactile-press transition-all font-size-btn"
-            onclick="changeFontSize('grande', this)" type="button">
-            <span
-              class="absolute top-2 right-2 bg-secondary text-on-secondary text-[10px] font-bold px-1.5 py-0.5 rounded-full active-badge">
-              Ativo
-            </span>
-            <span class="text-xl font-bold text-secondary">Aa</span>
-            <span class="font-label-lg text-label-lg text-on-surface font-bold mt-1">Grande (Recomendado)</span>
-            <span class="text-xs text-secondary font-semibold">Mais confortável na lida</span>
-          </button>
-          <!-- Muito Grande -->
-          <button
-            class="flex flex-col items-center justify-center p-4 rounded-xl border border-outline-variant bg-surface-container-low hover:bg-surface-container tactile-press text-center transition-all font-size-btn"
-            onclick="changeFontSize('muito-grande', this)" type="button">
-            <span class="text-2xl font-bold text-on-surface">Aa</span>
-            <span class="font-label-lg text-label-lg text-on-surface font-bold mt-1">Muito Grande</span>
-            <span class="text-xs text-on-surface-variant">Maior nitidez e leitura rápida</span>
-          </button>
-        </div>
-        <!-- Interactive Preview Box (Domain Specific Context) -->
-        <div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 mt-2">
-          <div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3">
-            <span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
-              <span class="material-symbols-outlined text-sm text-secondary" data-icon="preview">preview</span>
-              Demonstração do Tamanho Escolhido
-            </span>
-            <span class="text-xs text-secondary font-semibold" id="preview-size-indicator">Tamanho: 18px (Grande)</span>
-          </div>
-          <div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant space-y-2">
+        {% if lavouras %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {% for l in lavouras %}
+          {% set tone = {'favorable': 'border-secondary', 'attention': 'border-tertiary-fixed-dim', 'unfavorable': 'border-error', 'no_data': 'border-outline-variant'}[l.status] %}
+          {% set icon = {'favorable': 'check_circle', 'attention': 'warning', 'unfavorable': 'block', 'no_data': 'help'}[l.status] %}
+          <a href="{{ l.link }}" class="block rounded-xl border-2 {{ tone }} p-4 hover:bg-surface-container-low transition-all">
             <div class="flex items-center gap-2">
-              <span
-                class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container">
-                <span class="material-symbols-outlined text-lg" data-icon="cloud_done">cloud_done</span>
-              </span>
-              <p class="text-lg font-bold text-on-surface" id="preview-title">Alerta de Chuva e Plantio (Araraquara -
-                SP)</p>
+              <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">{{ icon }}</span>
+              <span class="font-label-lg text-label-lg font-bold text-on-surface">{{ l.crop.name }}</span>
             </div>
-            <p class="text-base text-on-surface-variant leading-relaxed" id="preview-text">
-              "Assim ficarão os avisos de chuva e plantio no seu celular. Janela ideal para o Milho Safrinha abre no 1º
-              decêndio de Fevereiro com <strong class="text-secondary font-bold">Risco Baixo (menor que 20%)</strong>."
-            </p>
-            <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
-              <span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded font-semibold">Solo
-                Tipo 2: Liberado</span>
-              <span class="bg-surface-container text-on-surface px-2 py-0.5 rounded">Safra 2024/2025</span>
-            </div>
+            <p class="font-body-sm text-body-sm text-on-surface mt-1">{{ l.title }}</p>
+            {% if l.window %}<p class="text-xs text-on-surface-variant mt-1">Janela: {{ l.window }}</p>{% endif %}
+            <p class="text-xs text-secondary font-semibold mt-2 flex items-center gap-1">Ver detalhes <span class="material-symbols-outlined text-sm">arrow_forward</span></p>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="font-body-sm text-body-sm text-on-surface-variant">Cadastre o município e as culturas em <strong>Editar Dados</strong> para ver aqui, toda vez que entrar, se é hora de plantar.</p>
+        {% endif %}
+      </section>
+
+      <!-- Aparência -->
+      <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4 md:col-span-12">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined" data-icon="brightness_6">brightness_6</span>
+          </div>
+          <div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Aparência e Luz da Tela</h3>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Ajuste o visual para enxergar com nitidez sob o sol quente da roça</p>
           </div>
         </div>
-      </section>
-      <!-- Section: Estilo da Letra (Fonte) (Span 12) -->
-      <section
-        class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="flex items-start gap-3">
-            <div
-              class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-2xl" data-icon="mark_email_read">mark_email_read</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          {% for value, title, sub, desc, ic in [('light', 'Modo Claro', 'Dia de Sol na Roça', 'Fundo claro de alto contraste. Recomendado para enxergar debaixo de sol forte no plantio.', 'light_mode'), ('dark', 'Modo Escuro', 'Descanso Noturno', 'Fundo escuro suave para conferir a previsão ou zoneamento à noite em casa sem cansar a vista.', 'dark_mode')] %}
+          <label class="theme-card relative flex flex-col justify-between p-4 rounded-xl cursor-pointer tactile-press transition-all {{ 'border-2 border-secondary bg-surface-container-low shadow-sm' if user.theme == value else 'border border-outline-variant bg-surface-container-lowest' }}">
+            <input class="sr-only" name="theme_mode" type="radio" value="{{ value }}" {% if user.theme == value %}checked{% endif %}>
+            <div class="flex justify-between items-start mb-3">
+              <div class="w-12 h-12 rounded-full {{ 'bg-secondary-container text-on-secondary-container' if value == 'light' else 'bg-inverse-surface text-secondary-fixed' }} flex items-center justify-center shadow-inner">
+                <span class="material-symbols-outlined text-2xl">{{ ic }}</span>
+              </div>
             </div>
             <div>
-              <h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">Envio Automático de Boletins por
-                E-mail</h4>
-              <p class="font-body-sm text-body-sm text-on-surface-variant">Relatórios climáticos, alertas de geada e
-                seca enviados automaticamente para o e-mail cadastrado.</p>
+              <span class="font-headline-sm text-headline-sm text-on-surface font-bold">{{ title }}</span>
+              <p class="font-label-md text-label-md text-secondary font-semibold mt-0.5">{{ sub }}</p>
+              <p class="font-body-sm text-body-sm text-on-surface-variant mt-1.5">{{ desc }}</p>
             </div>
-          </div>
-          <div class="flex flex-wrap items-center gap-3"><span class="text-sm font-bold text-secondary"
-              id="display-user-email">Ativado para maria.souza@sitio.com.br</span><button
-              class="px-3 py-1.5 bg-surface-container-lowest border border-outline-variant rounded-lg text-xs font-bold text-on-surface hover:bg-surface-container"
-              onclick="promptChangeEmail()">Alterar E-mail</button></div>
+          </label>
+          {% endfor %}
         </div>
       </section>
-      <!-- Section: Notificações Rápidas no WhatsApp & SMS (Rural Utility) -->
-      <!-- Big Save Action Section -->
-      <div class="md:col-span-12 pt-4 pb-6 flex flex-col sm:flex-row items-center justify-end gap-3">
+
+      <!-- Tamanho das letras -->
+      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined" data-icon="format_size">format_size</span>
+          </div>
+          <div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Tamanho das Letras (Fácil Leitura)</h3>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Vale para todas as telas do Plant+Facil</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {% for value, label, sub, aa in [('normal', 'Normal (Padrão)', 'Letras compactas', 'text-sm'), ('grande', 'Grande (Recomendado)', 'Mais confortável na lida', 'text-xl'), ('muito-grande', 'Muito Grande', 'Maior nitidez e leitura rápida', 'text-2xl')] %}
+          <button type="button" data-font="{{ value }}"
+            class="font-size-btn relative flex flex-col items-center justify-center p-4 rounded-xl text-center tactile-press transition-all {{ 'border-2 border-secondary bg-secondary-container/20 ring-2 ring-secondary/20' if user.font_size == value else 'border border-outline-variant bg-surface-container-low hover:bg-surface-container' }}">
+            <span class="{{ aa }} font-bold text-on-surface">Aa</span>
+            <span class="font-label-md text-label-md text-on-surface font-bold mt-1">{{ label }}</span>
+            <span class="text-xs text-on-surface-variant">{{ sub }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Nível de linguagem (usado nas orientações e no assistente) -->
+      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined">record_voice_over</span>
+          </div>
+          <div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Jeito de explicar</h3>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Como você prefere ler as orientações</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {% for value, label, sub in [('simple', 'Bem simples', 'Frases curtas, sem termos técnicos'), ('standard', 'Com números', 'Simples, mostrando % e datas'), ('technical', 'Técnico', 'Termos do ZARC e detalhes')] %}
+          <button type="button" data-level="{{ value }}"
+            class="level-btn flex flex-col items-center justify-center p-4 rounded-xl text-center tactile-press transition-all {{ 'border-2 border-secondary bg-secondary-container/20' if user.language_level == value else 'border border-outline-variant bg-surface-container-low hover:bg-surface-container' }}">
+            <span class="font-label-lg text-label-lg text-on-surface font-bold">{{ label }}</span>
+            <span class="text-xs text-on-surface-variant">{{ sub }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Privacidade (LGPD) -->
+      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined">shield_person</span>
+          </div>
+          <div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Seus dados</h3>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Guardamos só: como te chamar, e-mail, município, área, tipo de terra e culturas. Nada de CPF, telefone ou endereço.</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" onclick="promptChangeEmail()"
+            class="px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface hover:bg-surface-container">Alterar e-mail</button>
+          <a href="{{ url_for('web.meus_dados') }}"
+            class="px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface hover:bg-surface-container">Baixar meus dados</a>
+          <form method="post" action="{{ url_for('web.excluir_conta') }}"
+            onsubmit="return confirm('Apagar sua conta e todos os dados da sua roça? Isso não pode ser desfeito.');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="px-3 py-2 bg-error-container border border-error rounded-lg text-sm font-bold text-on-error-container">Excluir minha conta</button>
+          </form>
+        </div>
+      </section>
+
+      <div class="md:col-span-12 pt-2 pb-6 flex flex-col sm:flex-row items-center justify-end gap-3">
+        <span id="pref-status" class="text-sm text-secondary font-semibold" aria-live="polite"></span>
         <button
           class="w-full sm:w-auto px-6 py-3.5 bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant rounded-lg font-label-lg text-label-lg font-bold tactile-press flex items-center justify-center gap-2"
           onclick="restoreDefaults()" type="button">
           <span class="material-symbols-outlined text-lg" data-icon="restart_alt">restart_alt</span>
           Restaurar Padrões
-        </button>
-        <!-- Primary Action Button: Earthy deep brown / green robust action -->
-        <button
-          class="w-full sm:w-auto px-8 py-3.5 bg-secondary hover:bg-secondary/90 text-on-secondary rounded-lg font-label-lg text-label-lg font-bold shadow-md hover:shadow-lg tactile-press flex items-center justify-center gap-2 transition-all"
-          onclick="alert('Preferências salvas com sucesso!')" type="button">
-          <span class="material-symbols-outlined text-xl" data-icon="save">save</span>
-          SALVAR PREFERÊNCIAS
         </button>
       </div>
     </div>
@@ -471,18 +427,6 @@
   </div>
   <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
   <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
-  <!-- Light/Dark interactive switcher micro-interaction for testing under real sun -->
-  <script>
-    document.querySelectorAll('input[name="theme_mode"]').forEach(input => {
-      input.addEventListener('change', (e) => {
-        if (e.target.value === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      });
-    });
-  </script>
   <div aria-labelledby="modal-title" aria-modal="true"
     class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm transition-all duration-200"
     id="edit-profile-modal" role="dialog">
@@ -490,386 +434,214 @@
       class="bg-surface-container-lowest text-on-surface rounded-t-3xl sm:rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-outline-variant p-5 sm:p-6 flex flex-col gap-5">
       <div class="flex items-start justify-between border-b border-outline-variant pb-3">
         <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center flex-shrink-0">
+          <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center flex-shrink-0">
             <span class="material-symbols-outlined text-2xl">agriculture</span>
           </div>
           <div>
-            <h3 class="font-headline-sm text-headline-sm text-primary font-bold" id="modal-title">Dados da Propriedade
-              &amp; Lavoura</h3>
-            <p class="font-body-sm text-body-sm text-on-surface-variant">Complete as informações da sua terra para
-              calibrar os alertas do Plant+Facil e Pronaf.</p>
+            <h3 class="font-headline-sm text-headline-sm text-primary font-bold" id="modal-title">Dados da Propriedade &amp; Lavoura</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Com isso o Plant+Facil já abre com a orientação da sua roça.</p>
           </div>
-        </div><button aria-label="Fechar"
+        </div>
+        <button aria-label="Fechar" type="button"
           class="p-1.5 text-on-surface-variant hover:bg-surface-container rounded-full transition-all cursor-pointer"
           onclick="closeEditModal()"><span class="material-symbols-outlined text-xl">close</span></button>
       </div>
-      <form class="flex flex-col gap-4" onsubmit="event.preventDefault(); saveModalData();">
-        <div class="space-y-1.5"><label
-            class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5"><span
-              class="material-symbols-outlined text-secondary text-base">location_on</span> Localização da Propriedade
-            (Cidade - UF)</label><button
+      <form class="flex flex-col gap-4" id="farm-form" onsubmit="event.preventDefault(); saveModalData();">
+        <div class="space-y-1.5">
+          <label class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5" for="input-nome">
+            <span class="material-symbols-outlined text-secondary text-base">badge</span> Como podemos te chamar</label>
+          <input class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-medium"
+            id="input-nome" maxlength="60" value="{{ user.display_name }}">
+        </div>
+        <div class="space-y-1.5">
+          <label class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5" for="input-propriedade">
+            <span class="material-symbols-outlined text-secondary text-base">location_on</span> Município da propriedade (Cidade UF)</label>
+          <button
             class="w-full flex items-center justify-center gap-2 p-2.5 bg-secondary-container/20 hover:bg-secondary-container/30 border border-secondary/40 text-secondary font-bold text-xs rounded-lg transition-all cursor-pointer"
             id="btn-detect-gps" onclick="detectGPSLocation()" type="button"><span
-              class="material-symbols-outlined text-base" id="gps-btn-icon">my_location</span> <span id="gps-btn-text"
-              class="">Pegar Minha Localização Atual (GPS)</span></button>
-          <div
-            class="text-xs text-secondary font-semibold bg-secondary-container/30 px-2.5 py-1.5 rounded flex items-center gap-1.5"
-            id="gps-feedback"><span class="material-symbols-outlined text-sm">check_circle</span> Araraquara - SP |
-            Localização padrão configurada</div><input
-            class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-medium text-on-surface focus:outline-none focus:border-secondary"
-            id="input-propriedade" placeholder="Ex: Araraquara - SP" type="text" value="Araraquara - SP">
+              class="material-symbols-outlined text-base" id="gps-btn-icon">my_location</span> <span id="gps-btn-text">Pegar Minha Localização Atual (GPS)</span></button>
+          <div class="text-xs font-semibold px-2.5 py-1.5 rounded flex items-center gap-1.5 hidden" id="gps-feedback"></div>
+          <input class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-medium text-on-surface focus:outline-none focus:border-secondary"
+            id="input-propriedade" placeholder="Ex: Araraquara SP" type="text" list="municipios-modal" autocomplete="off"
+            value="{{ farm.place if farm else '' }}">
+          <datalist id="municipios-modal"></datalist>
+          <input class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm"
+            id="input-sitio" placeholder="Nome do sítio (opcional)" maxlength="80" value="{{ farm.name or '' if farm else '' }}">
         </div>
-        <div class="space-y-1.5"><label
-            class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5"
-            for="input-area"><span class="material-symbols-outlined text-primary-container text-base">square_foot</span>
-            Área Cultivada (Hectares)</label>
+        <div class="space-y-1.5">
+          <label class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5" for="input-area">
+            <span class="material-symbols-outlined text-primary-container text-base">square_foot</span> Área Cultivada (Hectares, opcional)</label>
           <div class="relative"><input
               class="w-full px-3 py-2 pr-12 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface focus:outline-none focus:border-secondary"
-              id="input-area" step="0.1" type="number" value="18.5"><span
+              id="input-area" step="0.1" min="0" type="number" value="{{ farm.area_ha if farm and farm.area_ha else '' }}"><span
               class="absolute right-3 top-2 text-xs font-bold text-on-surface-variant">ha</span></div>
         </div>
-        <div class="space-y-1.5"><label
-            class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5"><span
-              class="material-symbols-outlined text-primary text-base">layers</span> Tipo de Solo Predominante
-            (Plant+Facil)</label>
-          <div class="grid grid-cols-1 gap-2"><label
-              class="flex items-center gap-2.5 p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer"><input
-                class="text-secondary" name="modal_solo" type="radio" value="Tipo 1 (Arenoso)">
-              <div class="text-xs"><span class="font-bold text-on-surface">Solo Tipo 1 (Arenoso)</span><span
-                  class="text-on-surface-variant block">Menor retenção de água, exige atenção hídrica</span></div>
-            </label><label
-              class="flex items-center gap-2.5 p-2 rounded-lg border-2 border-secondary bg-secondary-container/20 cursor-pointer"><input
-                checked="" class="text-secondary" name="modal_solo" type="radio" value="Tipo 2 (Argiloso)">
-              <div class="text-xs"><span class="font-bold text-secondary">Solo Tipo 2 (Médio / Argiloso) -
-                  Selecionado</span><span class="text-on-surface-variant block">Boa retenção, ideal para milho, feijão e
-                  rotação</span></div>
-            </label><label
-              class="flex items-center gap-2.5 p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer"><input
-                class="text-secondary" name="modal_solo" type="radio" value="Tipo 3 (Muito Argiloso)">
-              <div class="text-xs"><span class="font-bold text-on-surface">Solo Tipo 3 (Muito Argiloso)</span><span
-                  class="text-on-surface-variant block">Alta retenção hídrica em períodos de veranico</span></div>
-            </label></div>
+        <div class="space-y-1.5">
+          <span class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-primary text-base">layers</span> Tipo de Terra</span>
+          <div class="grid grid-cols-1 gap-2">
+            {% for s in soils %}
+            <label class="flex items-center gap-2.5 p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/20">
+              <input class="text-secondary" name="modal_solo" type="radio" value="{{ s.id }}" {% if farm and farm.soil_group == s.id %}checked{% endif %}>
+              <div class="text-xs"><span class="font-bold text-on-surface">{{ s.name }}</span><span class="text-on-surface-variant block">{{ s.description }}</span></div>
+            </label>
+            {% endfor %}
+            <label class="flex items-center gap-2.5 p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/20">
+              <input class="text-secondary" name="modal_solo" type="radio" value="" {% if not farm or not farm.soil_group %}checked{% endif %}>
+              <div class="text-xs"><span class="font-bold text-on-surface">Não sei</span><span class="text-on-surface-variant block">Usamos o período mais seguro para qualquer terra</span></div>
+            </label>
+          </div>
         </div>
-        <div class="space-y-1.5"><label
-            class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5"><span
-              class="material-symbols-outlined text-secondary text-base">potted_plant</span> Culturas e Lavouras
-            Produzidas</label>
-          <div class="flex flex-wrap gap-2" id="culturas-container"><button
-              class="px-2.5 py-1 rounded-full text-xs font-bold border border-secondary bg-secondary-container text-on-secondary-container flex items-center gap-1 cursor-pointer"
-              onclick="toggleCultura(this)" type="button"><span class="">🌽 Milho Safrinha</span><span
-                class="material-symbols-outlined text-xs">check</span></button><button
-              class="px-2.5 py-1 rounded-full text-xs font-bold border border-secondary bg-secondary-container text-on-secondary-container flex items-center gap-1 cursor-pointer"
-              onclick="toggleCultura(this)" type="button"><span class="">🌱 Feijão Comum</span><span
-                class="material-symbols-outlined text-xs">check</span></button><button
-              class="px-2.5 py-1 rounded-full text-xs font-bold border border-secondary bg-secondary-container text-on-secondary-container flex items-center gap-1 cursor-pointer"
-              onclick="toggleCultura(this)" type="button"><span class="">🥬 Hortaliças</span><span
-                class="material-symbols-outlined text-xs">check</span></button><button
-              class="px-2.5 py-1 rounded-full text-xs font-bold border border-outline-variant bg-surface-container-low text-on-surface hover:bg-surface-container flex items-center gap-1 cursor-pointer"
-              onclick="toggleCultura(this)" type="button"><span class="">🌾 Soja</span></button><button
-              class="px-2.5 py-1 rounded-full text-xs font-bold border border-outline-variant bg-surface-container-low text-on-surface hover:bg-surface-container flex items-center gap-1 cursor-pointer"
-              onclick="toggleCultura(this)" type="button"><span class="">🥔 Mandioca</span></button><button
-              class="px-2.5 py-1 rounded-full text-xs font-bold border border-outline-variant bg-surface-container-low text-on-surface hover:bg-surface-container flex items-center gap-1 cursor-pointer"
-              onclick="toggleCultura(this)" type="button"><span class="">☕ Café</span></button></div>
+        <div class="space-y-1.5">
+          <span class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-secondary text-base">potted_plant</span> Culturas que você planta</span>
+          {% set mine = farm.crops|map(attribute='slug')|list if farm else [] %}
+          <div class="flex flex-wrap gap-2" id="culturas-container">
+            {% for c in crops %}
+            <button type="button" data-slug="{{ c.slug }}" aria-pressed="{{ 'true' if c.slug in mine else 'false' }}"
+              class="cultura-chip px-2.5 py-1 rounded-full text-xs font-bold border flex items-center gap-1 cursor-pointer {{ 'border-secondary bg-secondary-container text-on-secondary-container' if c.slug in mine else 'border-outline-variant bg-surface-container-low text-on-surface hover:bg-surface-container' }}">
+              {{ c.official_name }}
+            </button>
+            {% endfor %}
+          </div>
         </div>
-        <div class="space-y-1.5"><label
-            class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5"
-            for="input-pronaf"><span class="material-symbols-outlined text-secondary text-base">verified_user</span>
-            Enquadramento Pronaf / DAP / CAF</label><select
-            class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-medium text-on-surface focus:outline-none focus:border-secondary cursor-pointer"
-            id="input-pronaf">
-            <option value="Pronaf Grupo B">Pronaf Grupo B (Microprodutor)</option>
-            <option value="Pronaf Grupo A/C">Pronaf Grupo A/C</option>
-            <option value="CAF Ativo / Pronaf Padrão">CAF Ativo / Pronaf Padrão</option>
-            <option value="Não sei informar">Não sei informar</option>
-          </select></div>
-        <div class="pt-3 border-t border-outline-variant flex flex-col sm:flex-row gap-2.5 justify-end"><button
-            class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container text-on-surface text-sm font-semibold transition-all cursor-pointer"
-            onclick="closeEditModal()" type="button">Cancelar</button><button
-            class="w-full sm:w-auto px-6 py-3 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-sm font-bold shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
-            type="submit"><span class="material-symbols-outlined text-lg">check_circle</span> SALVAR DADOS DA
-            ROÇA</button></div>
+        <p id="farm-error" class="hidden text-sm font-semibold text-error" role="alert"></p>
+        <div class="pt-3 border-t border-outline-variant flex flex-col sm:flex-row gap-2.5 justify-end">
+          <button class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container text-on-surface text-sm font-semibold transition-all cursor-pointer"
+            onclick="closeEditModal()" type="button">Cancelar</button>
+          <button class="w-full sm:w-auto px-6 py-3 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-sm font-bold shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
+            type="submit" id="farm-save"><span class="material-symbols-outlined text-lg">check_circle</span> SALVAR DADOS DA ROÇA</button>
+        </div>
       </form>
     </div>
   </div>
   <script>
+    const CSRF = '{{ csrf_token() }}';
+    const postJSON = (url, body) => fetch(url, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF }, body: JSON.stringify(body),
+    }).then(async (r) => ({ ok: r.ok, data: await r.json().catch(() => ({})) }));
+
     function openEditModal() {
-      const m = document.getElementById('edit-profile-modal');
-      if (m) {
-        m.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-      }
+      document.getElementById('edit-profile-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
     }
-
     function closeEditModal() {
-      const m = document.getElementById('edit-profile-modal');
-      if (m) {
-        m.classList.add('hidden');
-        document.body.style.overflow = '';
-      }
+      document.getElementById('edit-profile-modal').classList.add('hidden');
+      document.body.style.overflow = '';
     }
+    {% if novo or not farm %}document.addEventListener('DOMContentLoaded', openEditModal);{% endif %}
 
-    function toggleCultura(btn) {
-      const isSelected = btn.classList.contains('bg-secondary-container');
-      if (isSelected) {
-        btn.classList.remove('bg-secondary-container', 'border-secondary', 'text-on-secondary-container');
-        btn.classList.add('bg-surface-container-low', 'border-outline-variant', 'text-on-surface');
-        const checkIcon = btn.querySelector('.material-symbols-outlined');
-        if (checkIcon) checkIcon.remove();
-      } else {
-        btn.classList.remove('bg-surface-container-low', 'border-outline-variant', 'text-on-surface');
-        btn.classList.add('bg-secondary-container', 'border-secondary', 'text-on-secondary-container');
-        if (!btn.querySelector('.material-symbols-outlined')) {
-          const icon = document.createElement('span');
-          icon.className = 'material-symbols-outlined text-xs';
-          icon.innerText = 'check';
-          btn.appendChild(icon);
-        }
-      }
-    }
+    document.querySelectorAll('.cultura-chip').forEach((b) => b.addEventListener('click', () => {
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', on);
+      b.classList.toggle('border-secondary', on); b.classList.toggle('bg-secondary-container', on);
+      b.classList.toggle('text-on-secondary-container', on);
+      b.classList.toggle('border-outline-variant', !on); b.classList.toggle('bg-surface-container-low', !on);
+    }));
 
-    async function detectGPSLocation() {
+    // Autocomplete de município (backend próprio)
+    const inputProp = document.getElementById('input-propriedade');
+    let timer;
+    inputProp.addEventListener('input', () => {
+      clearTimeout(timer);
+      const q = inputProp.value.trim().replace(/\s+[A-Za-z]{2}$/, '');
+      if (q.length < 3) return;
+      timer = setTimeout(async () => {
+        const r = await fetch(`/api/v1/location/municipalities?q=${encodeURIComponent(q)}&limit=8`);
+        if (!r.ok) return;
+        const { items } = await r.json();
+        document.getElementById('municipios-modal').innerHTML = items.map((m) => `<option value="${m.name} ${m.uf}">`).join('');
+      }, 250);
+    });
+
+    // GPS → nosso backend acha o município (a coordenada não vai para terceiros nem é gravada)
+    function detectGPSLocation() {
       const fb = document.getElementById('gps-feedback');
-      const btnIcon = document.getElementById('gps-btn-icon');
-      const btnText = document.getElementById('gps-btn-text');
-      const btn = document.getElementById('btn-detect-gps');
-      const inputProp = document.getElementById('input-propriedade');
-
-      if (btn) btn.disabled = true;
-      if (btnIcon) {
-        btnIcon.innerText = 'sync';
-        btnIcon.classList.add('animate-spin');
-      }
-      if (btnText) btnText.innerText = 'Buscando coordenadas via GPS...';
-
-      if (fb) {
-        fb.className = 'text-xs text-primary font-semibold bg-surface-container px-2.5 py-1.5 rounded flex items-center gap-1.5 border border-outline-variant';
-        fb.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> Conectando ao GPS e identificando município...';
-      }
-
-      const applyLocationSuccess = (cidadeEstado, coordsText) => {
-        if (btn) btn.disabled = false;
-        if (btnIcon) {
-          btnIcon.innerText = 'my_location';
-          btnIcon.classList.remove('animate-spin');
-        }
-        if (btnText) btnText.innerText = 'Pegar Minha Localização Atual (GPS)';
-
-        const localFormatado = cidadeEstado + ' • Sítio Boa Esperança';
-        if (inputProp) {
-          inputProp.value = localFormatado;
-          inputProp.classList.add('ring-2', 'ring-secondary');
-          setTimeout(() => inputProp.classList.remove('ring-2', 'ring-secondary'), 1200);
-        }
-
-        if (fb) {
-          fb.className = 'text-xs text-secondary font-semibold bg-secondary-container/30 border border-secondary/30 px-2.5 py-1.5 rounded flex items-center gap-1.5 animate-pulse';
-          fb.innerHTML = `<span class="material-symbols-outlined text-sm text-secondary font-bold">check_circle</span> Localização obtida com sucesso: ${cidadeEstado}! (${coordsText || 'Precisão Alta'})`;
-          setTimeout(() => fb.classList.remove('animate-pulse'), 1000);
-        }
+      const show = (msg, ok) => {
+        fb.classList.remove('hidden');
+        fb.className = `text-xs font-semibold px-2.5 py-1.5 rounded flex items-center gap-1.5 ${ok ? 'text-secondary bg-secondary-container/30' : 'text-error bg-error-container'}`;
+        fb.textContent = msg;
       };
-
-      const getCityStateFromCoords = async (latitude, longitude) => {
-        try {
-          // Tenta OpenStreetMap Nominatim API com timeout
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`, {
-            signal: controller.signal,
-            headers: { 'Accept-Language': 'pt-BR' }
-          });
-          clearTimeout(timeoutId);
-
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data.address) {
-              const addr = data.address;
-              const city = addr.city || addr.town || addr.municipality || addr.village || addr.county || 'Araraquara';
-              let state = addr.state || 'São Paulo';
-              // Se o estado for por extenso, abreviar para sigla comum brasileira quando aplicável
-              const stateMap = {
-                'São Paulo': 'SP', 'Minas Gerais': 'MG', 'Goiás': 'GO', 'Paraná': 'PR',
-                'Rio Grande do Sul': 'RS', 'Santa Catarina': 'SC', 'Mato Grosso': 'MT',
-                'Mato Grosso do Sul': 'MS', 'Bahia': 'BA', 'Rio de Janeiro': 'RJ'
-              };
-              const uf = stateMap[state] || (state.length === 2 ? state.toUpperCase() : 'SP');
-              return `${city} - ${uf}`;
-            }
-          }
-        } catch (e) {
-          // Fallback secundário usando BigDataCloud client API gratuito sem chave
-          try {
-            const bdcRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=pt`);
-            if (bdcRes.ok) {
-              const bdcData = await bdcRes.json();
-              const city = bdcData.city || bdcData.locality || 'Araraquara';
-              const uf = bdcData.principalSubdivisionCode ? bdcData.principalSubdivisionCode.replace('BR-', '') : 'SP';
-              return `${city} - ${uf}`;
-            }
-          } catch (err) {
-            // Ignora erro e recorre ao fallback padrão
-          }
-        }
-        return 'Araraquara - SP';
-      };
-
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          async (pos) => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-            const accuracy = pos.coords.accuracy ? Math.round(pos.coords.accuracy) + 'm' : 'alta';
-
-            let detectedCityState = 'Araraquara - SP';
-            try {
-              detectedCityState = await getCityStateFromCoords(lat, lon);
-            } catch (e) {
-              detectedCityState = 'Araraquara - SP';
-            }
-
-            applyLocationSuccess(detectedCityState, `Lat ${lat.toFixed(3)}°, Long ${lon.toFixed(3)}° • ±${accuracy}`);
-          },
-          (err) => {
-            // Fallback gracioso imediato para Araraquara - SP se permissão for negada ou indisponível
-            setTimeout(() => {
-              applyLocationSuccess('Araraquara - SP', 'Satélite Agro ZARC • Sinal 4G/GPS');
-            }, 500);
-          },
-          { timeout: 5000, enableHighAccuracy: true, maximumAge: 60000 }
-        );
-      } else {
-        setTimeout(() => {
-          applyLocationSuccess('Araraquara - SP', 'Modo Rural Simulado');
-        }, 500);
-      }
+      if (!navigator.geolocation) { show('Seu aparelho não permite localização aqui. Digite o município.', false); return; }
+      show('Procurando sua localização…', true);
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const lat = pos.coords.latitude.toFixed(2), lon = pos.coords.longitude.toFixed(2);
+        const r = await fetch(`/api/v1/location/resolve?lat=${lat}&lon=${lon}`);
+        if (!r.ok) { show('Não achei o município. Digite o nome, por favor.', false); return; }
+        const m = await r.json();
+        inputProp.value = `${m.name} ${m.uf}`;
+        show(`Você está em ${m.name} - ${m.uf}? Se não for, corrija abaixo.`, true);
+      }, () => show('Não consegui pegar a localização. Digite o município.', false), { timeout: 10000 });
     }
 
-    // Retrocompatibilidade
-    function simulateGPS() {
-      detectGPSLocation();
-    }
-
-    function saveModalData() {
-      const inputProp = document.getElementById('input-propriedade');
-      const inputArea = document.getElementById('input-area');
-      const selectedSolo = document.querySelector('input[name="modal_solo"]:checked');
-      const inputPronaf = document.getElementById('input-pronaf');
-
-      if (inputProp && inputProp.value.trim()) {
-        const locValue = inputProp.value.trim();
-        const displayLoc = document.getElementById('display-location');
-        if (displayLoc) {
-          displayLoc.textContent = locValue.replace('•', '|');
-        }
-        const previewTitle = document.getElementById('preview-title');
-        if (previewTitle) {
-          const cityPart = locValue.split('•')[0].split('|')[0].trim();
-          previewTitle.textContent = `Alerta de Chuva e Plantio (${cityPart || 'Araraquara - SP'})`;
-        }
-      }
-
-      if (inputArea && inputArea.value) {
-        const displayArea = document.getElementById('display-area');
-        if (displayArea) {
-          displayArea.textContent = `${parseFloat(inputArea.value).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} Hectares`;
-        }
-      }
-
-      if (selectedSolo) {
-        const displaySolo = document.getElementById('display-solo');
-        if (displaySolo) {
-          displaySolo.textContent = selectedSolo.value;
-        }
-      }
-
-      if (inputPronaf) {
-        const displayPronaf = document.getElementById('display-pronaf');
-        if (displayPronaf) {
-          displayPronaf.textContent = inputPronaf.value;
-        }
-      }
-
-      // Atualizar culturas na tela de acordo com os selecionados no modal
-      const activeCulturas = [];
-      const culturasBtns = document.querySelectorAll('#culturas-container button.bg-secondary-container');
-      culturasBtns.forEach(b => {
-        const txt = b.querySelector('span:not(.material-symbols-outlined)');
-        if (txt) activeCulturas.push(txt.textContent.trim());
+    async function saveModalData() {
+      const err = document.getElementById('farm-error');
+      const btn = document.getElementById('farm-save');
+      err.classList.add('hidden');
+      btn.disabled = true;
+      const soil = document.querySelector('input[name="modal_solo"]:checked');
+      const crops = [...document.querySelectorAll('.cultura-chip[aria-pressed="true"]')].map((b) => b.dataset.slug);
+      const nome = document.getElementById('input-nome').value.trim();
+      if (nome) await postJSON('/perfil/preferencias', { name: nome });
+      const { ok, data } = await postJSON('/perfil/propriedade', {
+        place: inputProp.value.trim(),
+        name: document.getElementById('input-sitio').value.trim(),
+        area_ha: document.getElementById('input-area').value,
+        soil_group: soil ? soil.value : '',
+        crops,
       });
-      const displayCulturas = document.getElementById('display-culturas');
-      if (displayCulturas && activeCulturas.length > 0) {
-        displayCulturas.textContent = activeCulturas.join(', ');
+      btn.disabled = false;
+      if (!ok) {
+        const e = data.error || {};
+        const cands = (e.details && e.details.candidates) || [];
+        err.textContent = (e.message || 'Não foi possível salvar.') +
+          (cands.length ? ' Opções: ' + cands.map((c) => `${c.name} ${c.uf}`).join(', ') : '');
+        err.classList.remove('hidden');
+        return;
       }
-
-      closeEditModal();
+      window.location.assign('/perfil'); // recarrega com as lavouras recalculadas
     }
 
-    function promptChangeEmail() {
-      const current = 'maria.souza@sitio.com.br';
-      const novoEmail = prompt('Digite o novo e-mail para receber os relatórios e boletins ZARC:', current);
-      if (novoEmail && novoEmail.trim() !== '') {
-        const display = document.getElementById('display-user-email');
-        if (display) {
-          display.textContent = `Ativado para ${novoEmail.trim()}`;
-        }
-      }
-    }
+    // Preferências: salvam na hora
+    const status = document.getElementById('pref-status');
+    const savePref = async (body, apply) => {
+      const { ok } = await postJSON('/perfil/preferencias', body);
+      status.textContent = ok ? 'Salvo ✓' : 'Não foi possível salvar';
+      if (ok && apply) apply();
+      setTimeout(() => { status.textContent = ''; }, 2000);
+    };
+    const selectIn = (nodes, el, on, off) => nodes.forEach((n) => {
+      on.forEach((c) => n.classList.toggle(c, n === el)); off.forEach((c) => n.classList.toggle(c, n !== el));
+    });
+    document.querySelectorAll('input[name="theme_mode"]').forEach((input) => input.addEventListener('change', (e) => {
+      const v = e.target.value;
+      selectIn(document.querySelectorAll('.theme-card'), e.target.closest('.theme-card'),
+        ['border-2', 'border-secondary', 'bg-surface-container-low'], ['border', 'border-outline-variant']);
+      savePref({ theme: v }, () => document.documentElement.classList.toggle('dark', v === 'dark'));
+    }));
+    const SIZES = { 'normal': '16px', 'grande': '18px', 'muito-grande': '21px' };
+    document.querySelectorAll('.font-size-btn').forEach((b) => b.addEventListener('click', () => {
+      selectIn(document.querySelectorAll('.font-size-btn'), b,
+        ['border-2', 'border-secondary', 'bg-secondary-container/20'], ['border', 'border-outline-variant', 'bg-surface-container-low']);
+      savePref({ font_size: b.dataset.font }, () => { document.documentElement.style.fontSize = SIZES[b.dataset.font]; });
+    }));
+    document.querySelectorAll('.level-btn').forEach((b) => b.addEventListener('click', () => {
+      selectIn(document.querySelectorAll('.level-btn'), b,
+        ['border-2', 'border-secondary', 'bg-secondary-container/20'], ['border', 'border-outline-variant', 'bg-surface-container-low']);
+      savePref({ language_level: b.dataset.level });
+    }));
 
-    function changeFontSize(size, btn) {
-      const previewText = document.getElementById('preview-text');
-      const previewSizeIndicator = document.getElementById('preview-size-indicator');
-
-      document.querySelectorAll('.font-size-btn, button[onclick^="changeFontSize"]').forEach(b => {
-        b.className = 'flex flex-col items-center justify-center p-4 rounded-xl border border-outline-variant bg-surface-container-low hover:bg-surface-container tactile-press text-center transition-all font-size-btn';
-        const badge = b.querySelector('.active-badge');
-        if (badge) badge.remove();
-      });
-
-      btn.className = 'relative flex flex-col items-center justify-center p-4 rounded-xl border-2 border-secondary bg-secondary-container/20 text-center shadow-sm ring-2 ring-secondary/20 tactile-press transition-all font-size-btn';
-      const badge = document.createElement('span');
-      badge.className = 'absolute top-2 right-2 bg-secondary text-on-secondary text-[10px] font-bold px-1.5 py-0.5 rounded-full active-badge';
-      badge.innerText = 'Ativo';
-      btn.appendChild(badge);
-
-      if (size === 'normal') {
-        if (previewText) {
-          previewText.className = 'text-sm text-on-surface-variant leading-relaxed';
-        }
-        if (previewSizeIndicator) previewSizeIndicator.textContent = 'Tamanho: 14px (Normal)';
-      } else if (size === 'grande') {
-        if (previewText) {
-          previewText.className = 'text-base text-on-surface-variant leading-relaxed';
-        }
-        if (previewSizeIndicator) previewSizeIndicator.textContent = 'Tamanho: 18px (Grande)';
-      } else if (size === 'muito-grande') {
-        if (previewText) {
-          previewText.className = 'text-lg text-on-surface-variant leading-relaxed';
-        }
-        if (previewSizeIndicator) previewSizeIndicator.textContent = 'Tamanho: 22px (Muito Grande)';
-      }
+    async function promptChangeEmail() {
+      const atual = document.getElementById('display-user-email').textContent.trim();
+      const novo = prompt('Digite o novo e-mail de acesso:', atual);
+      if (!novo || novo.trim() === atual) return;
+      const { ok, data } = await postJSON('/perfil/email', { email: novo.trim() });
+      if (ok) document.getElementById('display-user-email').textContent = data.email;
+      else status.textContent = (data.error && data.error.message) || 'Não foi possível alterar.';
     }
 
     function restoreDefaults() {
-      const displayLoc = document.getElementById('display-location');
-      if (displayLoc) displayLoc.textContent = 'Araraquara - SP | Sítio Boa Esperança';
-
-      const previewTitle = document.getElementById('preview-title');
-      if (previewTitle) previewTitle.textContent = 'Alerta de Chuva e Plantio (Araraquara - SP)';
-
-      const inputProp = document.getElementById('input-propriedade');
-      if (inputProp) inputProp.value = 'Araraquara - SP • Sítio Boa Esperança';
-
-      const displayArea = document.getElementById('display-area');
-      if (displayArea) displayArea.textContent = '18,5 Hectares';
-
-      const displaySolo = document.getElementById('display-solo');
-      if (displaySolo) displaySolo.textContent = 'Tipo 2 (Argiloso)';
-
-      const displayPronaf = document.getElementById('display-pronaf');
-      if (displayPronaf) displayPronaf.textContent = 'Pronaf Grupo B';
-
-      alert('Configurações restauradas para o padrão do campo (Araraquara - SP)!');
+      savePref({ theme: 'light', font_size: 'grande', language_level: 'simple' }, () => window.location.reload());
     }
   </script>
 

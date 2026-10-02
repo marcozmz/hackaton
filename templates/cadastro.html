@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" style="">
+<html lang="pt-BR" class="{{ ui_html_class }}" style="{{ ui_html_style }}">
 
 <head>
   <meta charset="utf-8">
@@ -121,7 +121,7 @@
   style="font-family: Nunito, sans-serif;">
   <!-- Linear/Task Flow: Navigation Shell automatically suppressed per destination rule to maintain complete focus on registration -->
   <header class="w-full max-w-md mx-auto px-4 pt-6 pb-2 flex items-center justify-between">
-    <button aria-label="Voltar para tela anterior"
+    <button aria-label="Voltar para tela anterior" onclick="history.length > 1 ? history.back() : location.assign('/')"
       class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high active:scale-95 transition-all"
       type="button">
       <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
@@ -129,7 +129,7 @@
     <div
       class="flex items-center gap-1.5 px-3 py-1 bg-surface-container-low rounded-full border border-outline-variant/40">
       <span class="material-symbols-outlined text-secondary text-sm" data-icon="shield">shield</span>
-      <span class="font-label-sm text-label-sm text-on-surface-variant">Cadastro Oficial Plant+Facil</span>
+      <span class="font-label-sm text-label-sm text-on-surface-variant">Cadastro Plant+Facil</span>
     </div>
   </header>
   <main class="w-full max-w-md mx-auto px-4 py-2 flex-1 flex flex-col justify-center">
@@ -141,17 +141,24 @@
       <h1 class="font-headline-lg text-headline-lg text-primary tracking-tight mb-2"
         style="font-family: Quicksand, sans-serif; font-weight: 700;">Criar Conta no Plant+Facil</h1>
       <p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs leading-relaxed">
-        Junte-se a milhares de produtores familiares e receba alertas seguros sobre a melhor época de plantar.
+        Guarde os dados da sua roça e receba a orientação de plantio pronta, toda vez que entrar.
       </p>
     </div>
     <!-- Registration Card -->
     <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 p-5 shadow-sm">
-      <form class="space-y-4" id="registerForm" onsubmit="event.preventDefault();">
+      <form class="space-y-4" id="registerForm" method="post" action="{{ url_for('web.cadastro') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if error %}
+        <div class="bg-error-container text-on-error-container rounded-lg p-3 text-sm font-semibold flex items-center gap-2" role="alert">
+          <span class="material-symbols-outlined text-base">error</span>{{ error }}
+        </div>
+        {% endif %}
+
         <!-- Campo 1: Nome Completo -->
         <div>
           <label class="block font-label-md text-label-md text-on-surface mb-1.5 flex items-center justify-between"
             for="fullName">
-            <span class="">Seu Nome Completo</span>
+            <span class="">Como podemos te chamar?</span>
             <span class="font-label-sm text-label-sm text-outline">Obrigatório</span>
           </label>
           <div class="relative flex items-center">
@@ -160,17 +167,17 @@
             </div>
             <input
               class="w-full h-[54px] pl-11 pr-4 bg-surface-container-low/40 rounded border border-outline-variant text-on-surface placeholder:text-outline/70 font-body-md text-body-md focus:outline-none focus:ring-0 focus:border-primary focus:bg-surface-container-lowest transition-all"
-              id="fullName" name="fullName" placeholder="Ex: Maria de Souza" required="" type="text">
+              id="fullName" name="fullName" placeholder="Ex: Maria" required="" type="text" maxlength="60" value="{{ form.get('fullName', '') }}">
           </div>
-          <p class="mt-1 font-label-sm text-label-sm text-on-surface-variant">Como deseja ser chamado no campo e nos
-            relatórios.</p>
+          <p class="mt-1 font-label-sm text-label-sm text-on-surface-variant">Pode ser só o primeiro nome ou apelido.
+            Não pedimos CPF, telefone nem endereço.</p>
         </div>
         <!-- Campo 2: E-mail -->
         <div>
           <label class="block font-label-md text-label-md text-on-surface mb-1.5 flex items-center justify-between"
             for="email">
             <span class="">Seu E-mail</span>
-            <span class="font-label-sm text-label-sm text-secondary font-medium">Alertas climáticos</span>
+            <span class="font-label-sm text-label-sm text-secondary font-medium">Para entrar na conta</span>
           </label>
           <div class="relative flex items-center">
             <div class="absolute left-3.5 pointer-events-none text-on-surface-variant flex items-center">
@@ -178,10 +185,10 @@
             </div>
             <input
               class="w-full h-[54px] pl-11 pr-4 bg-surface-container-low/40 rounded border border-outline-variant text-on-surface placeholder:text-outline/70 font-body-md text-body-md focus:outline-none focus:ring-0 focus:border-primary focus:bg-surface-container-lowest transition-all"
-              id="email" name="email" placeholder="seuemail@exemplo.com" required="" type="email">
+              id="email" name="email" placeholder="seuemail@exemplo.com" required="" type="email" maxlength="254" value="{{ form.get('email', '') }}">
           </div>
-          <p class="mt-1 font-label-sm text-label-sm text-on-surface-variant">Onde você receberá as janelas de plantio
-            da sua região.</p>
+          <p class="mt-1 font-label-sm text-label-sm text-on-surface-variant">Usado só para você entrar. Não enviamos
+            propaganda.</p>
         </div>
         <!-- Campo 3: Senha -->
         <div>
@@ -213,13 +220,14 @@
         <div class="pt-2">
           <label class="flex items-start gap-3 cursor-pointer group select-none">
             <div class="relative flex items-center pt-0.5">
-              <input checked=""
+              <input
                 class="w-5 h-5 rounded-[0.125rem] border-outline text-secondary focus:ring-secondary/20 cursor-pointer"
-                id="terms" name="terms" required="" type="checkbox">
+                id="terms" name="terms" required="" type="checkbox" value="1">
             </div>
             <span
               class="font-body-sm text-body-sm text-on-surface leading-snug group-hover:text-primary transition-colors">
-              Concordo em receber alertas de clima e plantio no meu celular
+              Concordo que o Plant+Facil guarde meu nome, e-mail e os dados da minha roça (município, área, tipo
+              de terra e culturas) para me dar orientações de plantio. Posso baixar ou apagar tudo quando quiser.
             </span>
           </label>
         </div>

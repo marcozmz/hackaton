@@ -132,6 +132,16 @@ Parâmetros úteis da recomendação: `level=simple|standard|technical`, `date=A
   (botão "explicar de forma mais simples"), com cache de 24 h e limite de 10/min.
 - No Jinja: `SimplifyService().simplify(rec, level)` com o `rec` de `RecommendationService().planting_advice(...)`.
 
+### Contas, perfil e assistente (ADR-17)
+
+- Páginas Jinja em `../templates`, blueprint `web` (`app/web/`) chamando os services.
+- Contas: senha com hash scrypt, sessão em cookie assinado, CSRF em todo POST (`app/security/auth.py`),
+  limite de 10 tentativas/min no login e cadastro. Só guardamos nome de tratamento, e-mail e dados da roça.
+- LGPD: consentimento no cadastro, `GET /perfil/meus-dados` (download) e `POST /perfil/excluir` (apaga tudo).
+- Assistente (`POST /assistente/mensagem`): regras escolhem a ferramenta (recomendação, previsão,
+  cultivares, seguro, glossário em `app/seeds/glossary.yaml`); a IA só reescreve, com guard.
+  Pragas/defensivos → recusa e indica a ATER. O servidor não guarda conversas.
+
 ### Como a recomendação é decidida
 
 1. **Localização** → município (código IBGE). **Cultura** → nome oficial (aliases: aipim, macaxeira…).

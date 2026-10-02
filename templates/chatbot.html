@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" style="">
+<html lang="pt-BR" class="{{ ui_html_class }}" style="{{ ui_html_style }}">
 
 <head>
   <meta charset="utf-8">
@@ -161,14 +161,13 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
             </span>
-            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Online • Responde na
-              hora</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Responde com dados oficiais</span>
           </div>
         </div>
       </div>
       <!-- Action buttons: Limpar / Novo Diálogo -->
       <div class="flex items-center gap-2">
-        <button
+        <button id="limpar"
           class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-high transition-all active:scale-95"
           title="Novo diálogo / Limpar conversa" type="button">
           <span class="material-symbols-outlined text-secondary" style="font-size: 20px;">history</span>
@@ -179,191 +178,60 @@
   </header>
   <!-- Main Chat Content Canvas -->
   <main class="flex-1 w-full max-w-5xl mx-auto pt-20 pb-44 px-4 overflow-y-auto custom-scroll">
-    <div class="flex flex-col gap-6 py-4">
-      <!-- Date / Context Badge Divider -->
+    <div class="flex flex-col gap-6 py-4" id="mensagens" aria-live="polite">
       <div class="flex justify-center my-1">
         <span
-          class="bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface-variant">Safra
-          Vigente 2024/2025 • Planejamento Oficial MAPA / Embrapa</span>
+          class="bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface-variant">{% if season %}{{ season }} • {% endif %}Calendário oficial ZARC (MAPA/Embrapa)</span>
       </div>
-      <!-- Assistant Message 1: Welcome -->
+      <!-- Boas-vindas -->
       <div class="flex items-start gap-3 max-w-3xl">
-        <!-- Assistant Avatar -->
-        <div
-          class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0 shadow-sm border border-outline-variant mt-0.5">
-          <img alt="Assistente Avatar" class="w-8 h-8 rounded-lg object-contain"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTkJ3Uxrk-e2D7dkcHOYkq5oBaziWmf-Qjv-fM-NBYQkrGwdXSY_cqC0FOta6ZS3EvvyDmG3Aq0-pSOByxWoFwa9KS8mXRIUk_FjnX1pvsPxhA0oBtwzDpOyRTSWAjpId6KY2BnRQIucpZ6UpCnIXu8F5dxjSn6C33o76lI9Ovy4PZUpoRqCP-au2v71rmvPk1X-D5QUqZxUUI8rpywZuJdlctBq4HSiRn1Lx1tpMjhTqhQRbS5vKPzIIK8YwBVQ8NsTM">
+        <div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0 shadow-sm border border-outline-variant mt-0.5">
+          <span class="material-symbols-outlined">potted_plant</span>
         </div>
         <div class="flex flex-col gap-2 w-full">
-          <div
-            class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-5 shadow-sm text-on-surface">
-            <p class="font-body-md text-body-md font-medium text-primary">Olá, compadre e comadre! Sou seu Assistente
-              Plant+Facil.</p>
-            <p class="font-body-md text-body-md mt-1.5 text-on-surface-variant">Me diga o que você deseja plantar ou
-              qual sua dúvida sobre o clima hoje. Estou pronto para consultar a melhor época de plantio na sua roça ou
-              dar dicas de manejo natural!</p>
+          <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-5 shadow-sm text-on-surface">
+            <p class="font-body-md text-body-md font-medium text-primary">Olá{% if current_user %}, {{ current_user.display_name.split()[0] }}{% endif %}! Sou o Assistente Plant+Facil.</p>
+            <p class="font-body-md text-body-md mt-1.5 text-on-surface-variant">Pergunte do seu jeito sobre quando plantar,
+              chuva nos próximos dias, sementes indicadas e seguro rural. Eu respondo com os dados oficiais.
+              {% if farm %}Estou considerando a sua roça em <strong>{{ farm.municipality.name }} - {{ farm.municipality.uf }}</strong>.{% else %}Diga a cidade na pergunta (ex.: "em Chapecó SC"){% if not current_user %} ou <a class="underline text-secondary" href="{{ url_for('web.login') }}">entre na sua conta</a>{% endif %}.{% endif %}</p>
           </div>
-          <!-- Quick Suggestion Action Chips -->
-          <div class="flex flex-wrap gap-2 pt-1">
-            <button
-              class="flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all"
-              type="button">
-              <span class="text-base">🌱</span>
-              <span class="font-label-sm text-label-sm font-semibold text-primary">Quando plantar milho na minha
-                região?</span>
+          <div class="flex flex-wrap gap-2 pt-1" data-sugestoes>
+            {% set c = farm.crops[0].name|lower if farm and farm.crops else 'milho' %}
+            {% for s in ['Quando plantar ' ~ c ~ ' na minha região?', 'Vai chover nos próximos dias?', 'Quais sementes de ' ~ c ~ ' são indicadas?', 'O que é o ZARC?'] %}
+            <button type="button" data-pergunta="{{ s }}"
+              class="sugestao flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all">
+              <span class="font-label-sm text-label-sm font-semibold text-primary">{{ s }}</span>
             </button>
-            <button
-              class="flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all"
-              type="button">
-              <span class="text-base">🌧️</span>
-              <span class="font-label-sm text-label-sm font-semibold text-primary">Qual a previsão de chuva para os
-                próximos dias?</span>
-            </button>
-            <button
-              class="flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all"
-              type="button">
-              <span class="text-base">🛡️</span>
-              <span class="font-label-sm text-label-sm font-semibold text-primary">Qual a melhor época de plantio para a
-                soja?</span>
-            </button>
-            <button
-              class="flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all"
-              type="button">
-              <span class="text-base">🐛</span>
-              <span class="font-label-sm text-label-sm font-semibold text-primary">Como combater lagarta na horta sem
-                agrotóxicos?</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- User Query Message -->
-      <div class="flex justify-end items-end gap-2 max-w-2xl ml-auto">
-        <div class="flex flex-col items-end">
-          <div class="bg-primary-container text-white px-5 py-3.5 rounded-xl rounded-br-xs shadow-sm">
-            <p class="font-body-md text-body-md text-white font-medium">
-              Posso plantar feijão esta semana aqui em Goiás?
-            </p>
-          </div>
-          <span class="font-label-sm text-label-sm text-on-surface-variant mt-1 mr-1">10:42 • Entregue</span>
-        </div>
-      </div>
-      <!-- Assistant Detailed Response with ZARC Card -->
-      <div class="flex items-start gap-3 max-w-3xl">
-        <div
-          class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0 shadow-sm border border-outline-variant mt-0.5">
-          <img alt="Assistente Avatar" class="w-8 h-8 rounded-lg object-contain"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAPssKRWuL8OrAJRcZURQ5s23qkuXnqy_Fq1gU91quPVWrp7LHF_AIwEmYuhtxOzTJ0sBF9h2C7-17kVTukFzAgFr3Qiy0Hpcb6FkMQR6XUCWOPTwwgHnmJAp5rvr_ATlH4OlTtZw3Pof4y_6G2Dg6pmElLZ0FoPGeNAckmb-smfNsKtKoRcxGWEpOuEAnLwoKRf3MOqt7PRekulsG5z1-rqzgKk-mRe9j4uBszlMpJ4WVqQkcPbOqfFGwXebRE58YLsk">
-        </div>
-        <div class="flex flex-col gap-3 w-full">
-          <!-- Text Body -->
-          <div
-            class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-5 shadow-sm text-on-surface">
-            <p class="font-body-md text-body-md">Segundo as recomendações oficiais de plantio da Embrapa, a janela atual
-              em <strong>Goiás</strong> apresenta <strong>Risco Baixo (≤ 20%)</strong>. A umidade do solo está favorável
-              e as chuvas regulares apoiam a germinação vigorosa nas próximas semanas.</p>
-            <!-- Domain-Specific ZARC Card -->
-            <div class="mt-4 p-4 rounded-lg bg-surface-container-low border border-outline-variant flex flex-col gap-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2.5">
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-secondary font-bold"
-                    style="font-size: 22px;">verified</span>
-                  <span class="font-headline-sm text-headline-sm text-primary">Feijão Comum (1ª Safra)</span>
-                </div>
-                <!-- Badge Plantio Recomendado -->
-                <span
-                  class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm font-bold flex items-center gap-1">
-                  <span class="material-symbols-outlined" style="font-size: 16px;">check_circle</span>
-                  Plantio Recomendado
-                </span>
-              </div>
-              <!-- Technical Climate Grid -->
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-left">
-                <div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
-                  <span class="font-label-sm text-label-sm text-on-surface-variant block">Janela Decendial</span>
-                  <span class="font-label-md text-label-md font-bold text-on-surface">Decêndio 2 (Outubro)</span>
-                </div>
-                <div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
-                  <span class="font-label-sm text-label-sm text-on-surface-variant block">Tipo de Solo</span>
-                  <span class="font-label-md text-label-md font-bold text-on-surface">Tipo 2 e Tipo 3 (Argiloso)</span>
-                </div>
-                <div
-                  class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant col-span-2 sm:col-span-1">
-                  <span class="font-label-sm text-label-sm text-on-surface-variant block">Índice Hídrico (ISNA)</span>
-                  <span class="font-label-md text-label-md font-bold text-secondary">0.78 (Muito Bom)</span>
-                </div>
-              </div>
-              <!-- Recommendation note -->
-              <div class="text-xs text-on-surface-variant flex items-center gap-1.5 mt-1">
-                <span class="material-symbols-outlined text-secondary" style="font-size: 16px;">info</span>
-                Atende às exigências de cobertura do Programa de Garantia da Atividade Agropecuária (Proagro/Pronaf).
-              </div>
-            </div>
-            <!-- Voice Output Action Button -->
-            <div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between flex-wrap gap-2">
-              <button
-                class="flex items-center gap-2 bg-secondary text-on-secondary px-4 py-2 rounded-lg font-label-md text-label-md shadow-sm active:scale-95 hover:opacity-95 transition-all"
-                type="button">
-                <span class="material-symbols-outlined text-white" style="font-size: 20px;">volume_up</span>
-                <span class="">Ouvir resposta em áudio</span>
-              </button>
-              <div class="flex items-center gap-2 text-on-surface-variant">
-                <button class="p-1.5 rounded hover:bg-surface-container-high transition-colors text-on-surface-variant"
-                  title="Gostei" type="button">
-                  <span class="material-symbols-outlined" style="font-size: 18px;">thumb_up</span>
-                </button>
-                <button class="p-1.5 rounded hover:bg-surface-container-high transition-colors text-on-surface-variant"
-                  title="Não gostei" type="button">
-                  <span class="material-symbols-outlined" style="font-size: 18px;">thumb_down</span>
-                </button>
-                <button class="p-1.5 rounded hover:bg-surface-container-high transition-colors text-on-surface-variant"
-                  title="Copiar resposta" type="button">
-                  <span class="material-symbols-outlined" style="font-size: 18px;">content_copy</span>
-                </button>
-              </div>
-            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
     </div>
   </main>
-  <!-- Fixed Bottom Conversation Input Bar -->
+  <!-- Barra de mensagem -->
   <div class="fixed bottom-14 left-0 right-0 z-30 bg-surface border-t border-outline-variant shadow-lg">
-    <div class="max-w-5xl mx-auto px-4 py-2.5">
+    <form class="max-w-5xl mx-auto px-4 py-2.5" id="form-chat" autocomplete="off">
       <div class="flex items-center gap-2">
-        <!-- Attach photo / camera button (For identifying crop pests) -->
-        <button
-          class="p-2.5 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container transition-all active:scale-95 flex items-center justify-center flex-shrink-0"
-          style="min-width: 44px; min-height: 44px;" title="Tirar foto da praga ou folha" type="button">
-          <span class="material-symbols-outlined text-primary" style="font-size: 24px;">photo_camera</span>
-        </button>
-        <!-- Main Text Input Box -->
         <div class="flex-1 relative flex items-center">
-          <input
-            class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-4 pr-10 py-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-inner"
-            placeholder="Escreva sua dúvida ou aperte no microfone..." type="text">
-          <!-- Internal quick attachment or clear -->
-          <button class="absolute right-3 text-on-surface-variant hover:text-primary transition-colors"
-            title="Galeria de fotos" type="button">
-            <span class="material-symbols-outlined" style="font-size: 20px;">image</span>
-          </button>
+          <input id="entrada" maxlength="500"
+            class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-4 pr-4 py-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-inner"
+            placeholder="Escreva sua dúvida ou aperte no microfone..." type="text" aria-label="Sua pergunta">
         </div>
-        <!-- Prominent Microphone Button (Tailored for agricultural field workers) -->
-        <button
+        <button id="microfone"
           class="p-3 bg-secondary-container text-on-secondary-container hover:bg-secondary hover:text-white rounded-xl border border-secondary flex items-center justify-center transition-all active:scale-95 flex-shrink-0 shadow-sm"
-          style="min-width: 48px; min-height: 48px;" title="Falar por áudio" type="button">
+          style="min-width: 48px; min-height: 48px;" title="Falar por áudio" type="button" aria-label="Falar por áudio">
           <span class="material-symbols-outlined" style="font-size: 26px;">mic</span>
         </button>
-        <!-- Send Message Button -->
-        <button
+        <button id="enviar"
           class="p-3 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl flex items-center justify-center transition-all active:scale-95 flex-shrink-0 shadow"
-          style="min-width: 48px; min-height: 48px;" title="Enviar mensagem" type="button">
+          style="min-width: 48px; min-height: 48px;" title="Enviar mensagem" type="submit" aria-label="Enviar">
           <span class="material-symbols-outlined text-white" style="font-size: 24px;">send</span>
         </button>
       </div>
       <div class="flex items-center justify-center gap-1.5 mt-1 text-[11px] text-on-surface-variant">
-        <span class="">Informações validadas pelos dados agroclimáticos oficiais do MAPA / Embrapa.</span>
+        <span>Respostas com dados oficiais: ZARC e Cultivares (MAPA), previsão Open-Meteo e seguro rural (SISSER). Não substitui a assistência técnica.</span>
       </div>
-    </div>
+    </form>
   </div>
   <!-- BottomNavBar (Strict adherence to Shared Components JSON) -->
   <nav
@@ -388,6 +256,185 @@
     </a>
   </nav>
 
+  <script>
+    (() => {
+      const CSRF = '{{ csrf_token() }}';
+      const KEY = 'plantfacil-chat'; // histórico só neste navegador (o servidor não guarda conversas)
+      const lista = document.getElementById('mensagens');
+      const form = document.getElementById('form-chat');
+      const entrada = document.getElementById('entrada');
+      const STATUS = {
+        favorable: ['check_circle', 'bg-secondary-container text-on-secondary-container', 'Bom momento'],
+        attention: ['warning', 'bg-tertiary-fixed text-on-tertiary-fixed', 'Com atenção'],
+        unfavorable: ['block', 'bg-error-container text-on-error-container', 'Ainda não'],
+        no_data: ['help', 'bg-surface-container-high text-on-surface', 'Sem dado oficial'],
+      };
+      let estado = { context: {}, historico: [] };
+      try { estado = JSON.parse(sessionStorage.getItem(KEY)) || estado; } catch (e) { /* sem storage */ }
+      const salvar = () => { try { sessionStorage.setItem(KEY, JSON.stringify(estado)); } catch (e) { /* ok */ } };
+
+      const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const hora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const rolar = () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+      const falar = (texto) => {
+        if (!('speechSynthesis' in window)) return;
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(texto);
+        u.lang = 'pt-BR'; u.rate = 0.95;
+        const voz = speechSynthesis.getVoices().find((v) => v.lang.toLowerCase() === 'pt-br');
+        if (voz) u.voice = voz;
+        speechSynthesis.speak(u);
+      };
+
+      function bolhaUsuario(texto, h) {
+        lista.insertAdjacentHTML('beforeend', `
+          <div class="flex justify-end items-end gap-2 max-w-2xl ml-auto">
+            <div class="flex flex-col items-end">
+              <div class="bg-primary-container text-white px-5 py-3.5 rounded-xl rounded-br-xs shadow-sm">
+                <p class="font-body-md text-body-md text-white font-medium">${esc(texto)}</p>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant mt-1 mr-1">${h}</span>
+            </div>
+          </div>`);
+      }
+
+      function cartao(card) {
+        if (!card) return '';
+        if (card.type === 'planting') {
+          const [ic, cls, rot] = STATUS[card.status] || STATUS.no_data;
+          return `
+            <div class="mt-4 p-4 rounded-lg bg-surface-container-low border border-outline-variant flex flex-col gap-3">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2.5">
+                <span class="font-headline-sm text-headline-sm text-primary">${esc(card.crop)} • ${esc(card.place)}</span>
+                <span class="${cls} px-3 py-1 rounded-full font-label-sm text-label-sm font-bold flex items-center gap-1">
+                  <span class="material-symbols-outlined" style="font-size:16px">${ic}</span>${rot}</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-left">
+                <div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant block">Janela de plantio</span>
+                  <span class="font-label-md text-label-md font-bold text-on-surface">${esc(card.window || 'Nenhuma indicada')}</span></div>
+                <div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant block">Tipo de terra</span>
+                  <span class="font-label-md text-label-md font-bold text-on-surface">${esc(card.soil)}</span></div>
+                <div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant col-span-2 sm:col-span-1">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant block">Sementes indicadas</span>
+                  <span class="font-label-md text-label-md font-bold text-secondary">${card.varieties || 0} cultivares</span></div>
+              </div>
+              <a href="${esc(card.link)}" class="text-sm font-bold text-secondary flex items-center gap-1">Ver orientação completa
+                <span class="material-symbols-outlined text-base">arrow_forward</span></a>
+              <div class="text-xs text-on-surface-variant flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-secondary" style="font-size:16px">info</span>Fonte: ${esc(card.source)}</div>
+            </div>`;
+        }
+        if (card.type === 'weather') {
+          const dias = (card.days || []).map((d) => `
+            <div class="bg-surface-container-lowest p-2 rounded border ${d.condition === 'heavy_rain' ? 'border-error' : 'border-outline-variant'} text-center">
+              <span class="block text-xs font-bold">${esc(d.weekday.slice(0, 3))}</span>
+              <span class="block text-xs">${Math.round(d.t_max)}° / ${Math.round(d.t_min)}°</span>
+              <span class="block text-xs ${d.condition === 'heavy_rain' ? 'text-error font-bold' : 'text-on-surface-variant'}">${Math.round(d.precip_mm || 0)} mm</span>
+            </div>`).join('');
+          return `<div class="mt-4 grid grid-cols-4 sm:grid-cols-7 gap-1.5">${dias}</div>
+                  <p class="text-xs text-on-surface-variant mt-2">${esc(card.place)} • Fonte: ${esc(card.source)}</p>`;
+        }
+        if (card.type === 'list') {
+          return `<div class="mt-3 text-sm"><p class="font-bold text-primary">${esc(card.title)}</p>
+            <p class="text-on-surface-variant mt-1">${(card.items || []).map(esc).join(' · ')}</p>
+            <p class="text-xs text-on-surface-variant mt-1">Fonte: ${esc(card.source)}</p></div>`;
+        }
+        return '';
+      }
+
+      function bolhaAssistente(r) {
+        const sug = (r.suggestions || []).map((s) => `
+          <button type="button" data-pergunta="${esc(s)}" class="sugestao bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3 py-1.5 text-left shadow-sm">
+            <span class="font-label-sm text-label-sm font-semibold text-primary">${esc(s)}</span></button>`).join('');
+        const id = 'm' + Math.random().toString(36).slice(2);
+        lista.insertAdjacentHTML('beforeend', `
+          <div class="flex items-start gap-3 max-w-3xl">
+            <div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0 shadow-sm border border-outline-variant mt-0.5">
+              <span class="material-symbols-outlined">potted_plant</span></div>
+            <div class="flex flex-col gap-2 w-full">
+              <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-5 shadow-sm text-on-surface">
+                <p class="font-body-md text-body-md" id="${id}">${esc(r.text)}</p>
+                ${r.source ? `<p class="text-xs text-on-surface-variant mt-2">Fonte: ${esc(r.source)}</p>` : ''}
+                ${cartao(r.card)}
+                <div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between flex-wrap gap-2">
+                  <button type="button" data-ouvir="${id}" class="flex items-center gap-2 bg-secondary text-on-secondary px-4 py-2 rounded-lg font-label-md text-label-md shadow-sm active:scale-95">
+                    <span class="material-symbols-outlined text-white" style="font-size:20px">volume_up</span>Ouvir resposta</button>
+                  ${r.generated_by === 'llm' ? '<span class="text-[11px] text-outline">Texto simplificado por IA, conferido com os dados</span>' : ''}
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2">${sug}</div>
+            </div>
+          </div>`);
+      }
+
+      function digitando() {
+        lista.insertAdjacentHTML('beforeend', `<div id="digitando" class="text-sm text-on-surface-variant pl-14">Consultando os dados…</div>`);
+        rolar();
+      }
+
+      async function perguntar(texto) {
+        texto = texto.trim();
+        if (!texto) return;
+        const h = hora();
+        bolhaUsuario(texto, h);
+        estado.historico.push({ papel: 'u', texto, h });
+        entrada.value = '';
+        digitando();
+        let r;
+        try {
+          const resp = await fetch('{{ url_for("web.assistente_mensagem") }}', {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF },
+            body: JSON.stringify({ text: texto, context: estado.context }),
+          });
+          r = await resp.json();
+          if (!resp.ok) r = { text: (r.error && r.error.message) || 'Não consegui responder agora.', suggestions: [] };
+        } catch (e) {
+          r = { text: 'Sem conexão no momento. Tente de novo.', suggestions: [] };
+        }
+        document.getElementById('digitando')?.remove();
+        if (r.context) estado.context = r.context;
+        estado.historico.push({ papel: 'a', r });
+        estado.historico = estado.historico.slice(-30);
+        salvar();
+        bolhaAssistente(r);
+        rolar();
+      }
+
+      // Reconstrói a conversa desta sessão do navegador
+      estado.historico.forEach((m) => (m.papel === 'u' ? bolhaUsuario(m.texto, m.h) : bolhaAssistente(m.r)));
+      if (estado.historico.length) rolar();
+
+      form.addEventListener('submit', (e) => { e.preventDefault(); perguntar(entrada.value); });
+      document.addEventListener('click', (e) => {
+        const s = e.target.closest('[data-pergunta]');
+        if (s) perguntar(s.dataset.pergunta);
+        const o = e.target.closest('[data-ouvir]');
+        if (o) falar(document.getElementById(o.dataset.ouvir)?.textContent || '');
+      });
+      document.getElementById('limpar')?.addEventListener('click', () => {
+        estado = { context: {}, historico: [] }; salvar(); window.location.reload();
+      });
+
+      // Microfone: reconhecimento de voz do próprio navegador (Chrome/Edge/Android)
+      const mic = document.getElementById('microfone');
+      const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Rec) { mic.title = 'Seu navegador não reconhece voz; digite a pergunta.'; mic.classList.add('opacity-50'); }
+      mic.addEventListener('click', () => {
+        if (!Rec) { entrada.placeholder = 'Seu navegador não reconhece voz. Digite a pergunta.'; return; }
+        const rec = new Rec();
+        rec.lang = 'pt-BR'; rec.interimResults = false; rec.maxAlternatives = 1;
+        mic.classList.add('animate-pulse');
+        entrada.placeholder = 'Pode falar…';
+        rec.onresult = (ev) => { const t = ev.results[0][0].transcript; entrada.value = t; perguntar(t); };
+        rec.onend = () => { mic.classList.remove('animate-pulse'); entrada.placeholder = 'Escreva sua dúvida ou aperte no microfone...'; };
+        rec.onerror = () => { entrada.placeholder = 'Não entendi o áudio. Tente de novo ou digite.'; };
+        rec.start();
+      });
+    })();
+  </script>
   <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
   <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
 

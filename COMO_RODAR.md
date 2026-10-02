@@ -43,7 +43,9 @@ O instalador: cria o ambiente virtual, instala as dependências, cria o `.env` a
 |---|---|
 | `/` | Consulta: onde, o quê, tipo de terra |
 | `/clima?place=Chapecó SC&crop=feijão&soil=3` | Resultado: semáforo do ZARC, janela, previsão, cultivares, avisos, seguro, mapa |
-| `/assistente`, `/perfil`, `/login`, `/cadastro` | Protótipos (funcionalidades futuras) |
+| `/cadastro`, `/login` | Conta (e-mail + senha). Só pedimos como te chamar e e-mail |
+| `/perfil` | Sua roça (município, área, terra, culturas), "Minhas lavouras hoje", tema/letra/linguagem, baixar ou excluir seus dados |
+| `/assistente` | Chat: quando plantar, chuva, sementes, seguro, "o que é ZARC?" — com microfone |
 | `/api/v1/...` | API JSON (ver `backend/README.md`) |
 
 ## IA (opcional)

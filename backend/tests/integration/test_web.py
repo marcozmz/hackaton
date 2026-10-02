@@ -39,6 +39,8 @@ def test_clima_missing_fields(client):
     assert code == 422 and "Diga onde você está" in html
 
 
-def test_team_prototype_pages(client):
-    for url in ("/assistente", "/perfil", "/login", "/cadastro"):
+def test_public_pages_and_profile_requires_login(client):
+    for url in ("/assistente", "/login", "/cadastro"):
         assert client.get(url).status_code == 200
+    r = client.get("/perfil")
+    assert r.status_code == 302 and "/login" in r.headers["Location"]

@@ -32,6 +32,12 @@ class Config:
     RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
     RATELIMIT_HEADERS_ENABLED = True
 
+    # Sessão (contas): cookie assinado, sem acesso por JS, mesmo site.
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "0") == "1"  # 1 em produção (HTTPS)
+    PERMANENT_SESSION_LIFETIME = 60 * 60 * 24 * 30  # "lembrar de mim": 30 dias
+
     CORS_ORIGINS = [o for o in os.getenv("CORS_ORIGINS", "*").split(",") if o]
 
     # Providers
@@ -80,6 +86,7 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     ENV = "production"
     DEBUG = False
+    SESSION_COOKIE_SECURE = True
 
     @classmethod
     def validate(cls) -> None:

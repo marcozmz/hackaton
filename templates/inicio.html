@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="{{ ui_html_class }}" style="{{ ui_html_style }}">
 
 <head>
   <title>Plant+Facil - Onde e o que plantar</title>
@@ -14,6 +14,14 @@
         <span class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
         <span class="font-label-sm text-label-sm text-on-surface-variant">Quando plantar, com base em dados oficiais</span>
       </div>
+      <div class="ml-auto flex items-center gap-2">
+        <a href="{{ url_for('web.assistente') }}" class="font-label-md text-label-md text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-base">chat</span><span class="hidden sm:inline">Assistente</span></a>
+        {% if current_user %}
+        <a href="{{ url_for('web.perfil') }}" class="font-label-md text-label-md bg-secondary-container text-on-secondary-container rounded-full px-3 py-1 flex items-center gap-1"><span class="material-symbols-outlined text-base">person</span>{{ current_user.display_name.split()[0] }}</a>
+        {% else %}
+        <a href="{{ url_for('web.login') }}" class="font-label-md text-label-md border border-secondary text-secondary rounded-full px-3 py-1">Entrar</a>
+        {% endif %}
+      </div>
     </div>
   </header>
 
@@ -23,6 +31,13 @@
       <p class="text-on-surface-variant">Responda 3 perguntas. A gente consulta o calendário oficial do governo (ZARC), a previsão do tempo e te explica.</p>
     </section>
 
+    {% if excluida %}
+    <div class="bg-secondary-container/40 text-on-surface rounded-xl p-4" role="status">Sua conta e os dados da sua roça foram apagados.</div>
+    {% endif %}
+    {% if current_user and not form.get('place') %}
+    <a href="{{ url_for('web.perfil') }}" class="block bg-surface-container-low border border-outline-variant rounded-xl p-3 text-body-sm">
+      Cadastre sua propriedade em <strong>Minha conta</strong> para este formulário já vir preenchido.</a>
+    {% endif %}
     {% if error %}
     <div class="bg-error-container text-on-error-container rounded-xl p-4 space-y-2" role="alert">
       <p class="font-label-md text-label-md flex items-center gap-1.5">
