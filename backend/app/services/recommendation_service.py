@@ -10,6 +10,7 @@ from flask import current_app
 from app.domain.context import AgroContext
 from app.domain.engine import ENGINE_VERSION, RecommendationEngine
 from app.domain.narrative import Narrator
+from app.domain.narrative.explainer import Explainer
 from app.domain.zarc import CYCLE_LABELS, MANAGEMENT_LABELS
 from app.extensions import cache
 from app.repositories import zarc_repo
@@ -135,10 +136,9 @@ class RecommendationService:
                 "source_id": "zarc_cultivares",
             },
             "actions": text.actions,
-            "explanation": {
-                "headline": text.reason,
-                "reasons": text.reasons,
-            },
+            "explanation": Explainer(self.narrator).explain(
+                ctx, result, text, {s["id"]: s for s in sources}
+            ),
             "confidence": {
                 "level": result.confidence_level.value,
                 "score": result.confidence_score,

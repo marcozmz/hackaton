@@ -150,6 +150,62 @@ weather_highlight:
   rainiest: "Dia mais chuvoso: {day} ({mm} mm)."
   none: "Sem dia de chuva relevante."
 
+# --- Explicação detalhada ("Por que recebi essa recomendação?") ---
+explanation:
+  headline:
+    simple: "Risco {risk_word}. Principal motivo: {main}"
+    standard: "Risco {risk_word}. Principal motivo: {main}"
+    technical: "risk_level={risk_level} (pior achado: {main_code}). {main}"
+  in_favor: "A favor: {text}"
+  confidence:
+    simple: "Confiança {confidence_word} nesta orientação."
+    standard: "Confiança {confidence_word} ({score}). {reduced}"
+    technical: "Confiança {score} (heurística de lacunas, não é probabilidade). {reduced}"
+  reduced_by: "Reduzida por: {items}."
+  not_reduced: "Nenhuma lacuna de dados."
+  period: "Hoje ({today}) está no período de {decendio_label}."
+  forecast_horizon: "Previsão analisada: próximos {n_days} dias."
+
+data_considered:
+  location: "Local: {municipality}/{uf} ({resolved_by_text})"
+  crop: "Cultura: {crop_name}{matched_text}"
+  soil: "Tipo de terra: {soil}"
+  soil_none: "Tipo de terra: não informado"
+  zarc: "Zoneamento: {version}"
+  varieties: "Cultivares: {count} indicadas para {uf}"
+  forecast: "Previsão do tempo: {provider}, atualizada em {fetched_at_text}"
+  management: "Cultivo considerado: sequeiro (sem irrigação)"
+
+resolved_by:
+  ibge_code: "código IBGE"
+  exact_name: "nome do município"
+  fuzzy_name: "nome aproximado"
+  cep: "CEP"
+  nearest_centroid: "localização do aparelho, município mais próximo"
+
+confidence_words:
+  high: "alta"
+  medium: "média"
+  low: "baixa"
+
+# Dados usados por achado (rótulo: valor). Variáveis = params do achado + evidência.
+evidence:
+  zarc_in_window: ["Risco do ZARC hoje: {risk_pct}%", "Janela oficial: {window_label}", "Ato oficial: {portarias_text}", "Base: {season}"]
+  zarc_out_of_window: ["Próxima janela oficial: {window_label}", "Risco nessa janela: a partir de {risk_pct}%", "Ato oficial: {portarias_text}"]
+  zarc_window_closing: ["Fim da janela: {window_end_text}"]
+  zarc_lower_risk_period: ["Período de risco {better_risk_pct}%: {better_label}"]
+  zarc_no_coverage: ["Município sem zoneamento de {crop} na safra vigente"]
+  zarc_no_window: ["Nenhum decêndio com risco aceitável (20, 30 ou 40%)"]
+  soil_unspecified: ["Solo não informado: janela comum a todos os tipos de terra"]
+  soil_ad_approximation: ["Classes do ZARC usadas: {soil_codes_text}"]
+  cultivar_available: ["{count} cultivares indicadas em {uf}", "Exemplos: {examples}"]
+  cultivar_unknown: ["Nenhuma cultivar listada para {uf}"]
+  forecast_heavy_rain: ["Chuva prevista: {mm} mm na {day} ({date_text})", "Limite de alerta: {threshold_int} mm/dia (provisório)"]
+  forecast_moderate_rain: ["Chuva prevista: {mm} mm na {day} ({date_text})"]
+  forecast_dry_spell: ["Chuva somada em {n_days} dias: {mm_total} mm"]
+  forecast_good_moisture: ["Chuva somada em {n_days} dias: {mm_total} mm"]
+  location_approximate: ["Município identificado por: {resolved_by_text}"]
+
 risk_words:
   low: "baixo"
   medium: "médio"
