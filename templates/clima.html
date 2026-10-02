@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-BR" style="">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Plant+Facil - Clima e Plantio</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Domine:wght@600;700&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary": "#ffffff",
+            "surface-variant": "#d8e3fb",
+            "on-tertiary-fixed-variant": "#614012",
+            "on-tertiary-container": "#fda518",
+            "on-tertiary": "#ffffff",
+            "surface-container-highest": "#d8e3fb",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-tertiary-fixed": "#2a1700",
+            "on-secondary-container": "#0c7234",
+            "surface-container": "#e7eeff",
+            "surface-container-low": "#f0f3ff",
+            "on-secondary-fixed": "#00210a",
+            "secondary": "#016d30",
+            "on-error-container": "#93000a",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#54433c",
+            "outline-variant": "#dac1b7",
+            "inverse-primary": "#ffb693",
+            "on-error": "#ffffff",
+            "inverse-surface": "#263143",
+            "on-primary-fixed-variant": "#76330d",
+            "secondary-fixed": "#95f8a7",
+            "secondary-fixed-dim": "#79db8d",
+            "inverse-on-surface": "#ecf1ff",
+            "primary-fixed-dim": "#ffb693",
+            "primary-container": "#78350f",
+            "tertiary-fixed": "#ffddb7",
+            "surface-container-high": "#dee8ff",
+            "primary-fixed": "#ffdbcc",
+            "on-primary-container": "#d9855b",
+            "surface-bright": "#f9f9ff",
+            "tertiary-container": "#492c00",
+            "surface-dim": "#cfdaf2",
+            "primary": "#371200",
+            "background": "#f9f9ff",
+            "secondary-container": "#98f4a7",
+            "on-secondary-fixed-variant": "#005323",
+            "on-background": "#111c2d",
+            "on-surface": "#111c2d",
+            "on-primary-fixed": "#351000",
+            "error": "#ba1a1a",
+            "surface": "#f9f9ff",
+            "surface-tint": "#914b26",
+            "on-secondary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "#2d1900",
+            "outline": "#87736a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "space-md": "1rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "label-sm": ["Work Sans"],
+            "headline-lg": ["Domine"],
+            "headline-xl": ["Domine"],
+            "label-lg": ["Work Sans"],
+            "headline-md": ["Domine"],
+            "headline-sm": ["Domine"],
+            "body-lg": ["Work Sans"],
+            "body-md": ["Work Sans"],
+            "label-md": ["Work Sans"],
+            "body-sm": ["Work Sans"]
+          },
+          "fontSize": {
+            "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+            "headline-lg": ["26px", { "lineHeight": "34px", "fontWeight": "700" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "label-lg": ["16px", { "lineHeight": "22px", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-md": ["14px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
+  <!-- TopAppBar Component (from Shared Components JSON) -->
+  <header
+    class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-40">
+    <div class="flex justify-between items-center w-full px-4 h-16 max-w-5xl mx-auto">
+      <div class="flex items-center gap-2">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeLnNvmArmr0PbK93DS6-vQqZjJVZ2XAO93LU9X2-Mor8lignDlRGn83UAnNedK7iZ3_sR95mmZ-DATUXWrdq0enGo7uVsOtDF6N9xlU9KZ0D0G41GUQ4CWnuLfzmPjmO2pZPe7fOrg5jwMvMSvwl1OJ_aMdLqYB_jUJu7KO7QgxKZlSUmCXW_DuTe6x1kHzNJWcq69wcmu2h82Ujp9H9-haA1pp5FIfbG35U9WVgoydioNx1xHggPIR7pVsqXGIIm8Z8"
+          alt="Logo Plant+Facil" class="w-9 h-9 object-contain rounded-xl shadow-sm">
+        <div class="flex flex-col">
+          <span
+            class="font-headline-md text-headline-md font-bold text-secondary dark:text-secondary-fixed">Plant+Facil</span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Plant+Facil - Clima e
+            Plantio</span>
+        </div>
+      </div>
+      <button aria-label="Histórico de consultas"
+        class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container text-on-surface-variant hover:text-primary active:scale-95 transition-all duration-150">
+        <span class="material-symbols-outlined" data-icon="history">history</span>
+      </button>
+    </div>
+  </header>
+  <!-- Location Strip with Active GPS Indicator -->
+  <div class="bg-surface-container-low border-b border-outline-variant">
+    <div class="max-w-5xl mx-auto px-4 py-2 flex items-center justify-between">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="material-symbols-outlined text-secondary text-base shrink-0" data-icon="location_on"
+          data-weight="fill" style="font-variation-settings: 'FILL' 1;">location_on</span>
+        <span class="font-label-md text-label-md text-on-surface truncate">Rio Verde - GO • Sítio Boa Esperança</span>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0 bg-secondary-container px-2 py-0.5 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+        <span class="font-label-sm text-label-sm text-on-secondary-container">GPS Ativo</span>
+      </div>
+    </div>
+  </div>
+  <main class="max-w-5xl mx-auto px-4 pt-4 space-y-5">
+    <!-- Banner Clima Atual no Campo -->
+    <section
+      class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-sm relative overflow-hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Agora na
+              Propriedade</span>
+            <span
+              class="bg-surface-container-high text-on-surface font-label-sm text-label-sm px-2 py-0.5 rounded">Atualizado
+              às 14:15</span>
+          </div>
+          <div class="flex items-baseline gap-3">
+            <h1 class="font-headline-xl text-headline-xl text-primary font-bold">28°C</h1>
+            <div class="flex flex-col">
+              <span class="font-label-md text-label-md text-on-surface">Sensação Térmica 30°C</span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+                <span class="material-symbols-outlined text-base text-secondary"
+                  data-icon="humidity_mid">humidity_mid</span>
+                Umidade relativa: 68%
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 bg-surface-container-low p-3 rounded-lg border border-outline-variant">
+          <div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-tertiary-container text-3xl"
+              data-icon="partly_cloudy_day">partly_cloudy_day</span>
+          </div>
+          <div class="space-y-0.5">
+            <p class="font-label-md text-label-md text-on-surface font-semibold">Sol entre nuvens</p>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Chuva prevista no final da tarde (15mm
+              previstos)</p>
+          </div>
+        </div>
+      </div>
+      <!-- Indicador Prático do Solo -->
+      <div
+        class="mt-4 pt-3 border-t border-outline-variant flex items-center gap-2 text-secondary bg-surface-container-low px-3 py-2 rounded-lg">
+        <span class="material-symbols-outlined text-lg shrink-0" data-icon="water_drop" data-weight="fill"
+          style="font-variation-settings: 'FILL' 1;">water_drop</span>
+        <span class="font-label-sm text-label-sm text-on-surface">
+          <strong>Diagnóstico de Chão:</strong> Terra com boa umidade para manejo e incorporação de adubo.
+        </span>
+      </div>
+    </section>
+    <!-- O Coração da Tela - Semáforo ZARC de Risco e Janela de Plantio -->
+    <section class="space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="font-headline-md text-headline-md text-primary font-bold">Semáforo de Plantio Oficial</h2>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Calendário Agrícola Oficial • Safra 2024/2025</p>
+        </div>
+        <span class="material-symbols-outlined text-outline" data-icon="verified_user" data-weight="fill"
+          style="font-variation-settings: 'FILL' 1;">verified_user</span>
+      </div>
+      <!-- Seletor de Cultura em Chips Táteis -->
+      <div aria-label="Seletor de Cultura" class="flex gap-2 overflow-x-auto pb-1" role="tablist">
+        <button aria-selected="true"
+          class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-full whitespace-nowrap flex items-center gap-1.5 shadow-sm active:scale-95 transition-all"
+          role="tab">
+          <span class="material-symbols-outlined text-base" data-icon="grain">grain</span>
+          Milho Safrinha
+        </button>
+        <button aria-selected="false"
+          class="bg-surface-container-lowest border border-outline-variant text-on-surface font-label-md text-label-md px-4 py-2 rounded-full whitespace-nowrap flex items-center gap-1.5 hover:bg-surface-container-low active:scale-95 transition-all"
+          role="tab">
+          <span class="material-symbols-outlined text-base text-outline" data-icon="spa">spa</span>
+          Feijão Comum
+        </button>
+        <button aria-selected="false"
+          class="bg-surface-container-lowest border border-outline-variant text-on-surface font-label-md text-label-md px-4 py-2 rounded-full whitespace-nowrap flex items-center gap-1.5 hover:bg-surface-container-low active:scale-95 transition-all"
+          role="tab">
+          <span class="material-symbols-outlined text-base text-outline" data-icon="nutrition">nutrition</span>
+          Hortaliças
+        </button>
+      </div>
+      <!-- Card de Risco ZARC em Destaque -->
+      <div class="bg-surface-container-lowest rounded-xl border-2 border-secondary p-4 space-y-4">
+        <!-- Topo do card: Risco e Pronaf -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-on-secondary-container text-3xl font-bold"
+                data-icon="check_circle" data-weight="fill"
+                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            </div>
+            <div>
+              <span
+                class="inline-block bg-secondary text-on-secondary font-label-sm text-label-sm px-2.5 py-0.5 rounded-full mb-1">
+                Risco Baixo (≤ 20%)
+              </span>
+              <h3 class="font-headline-sm text-headline-sm text-secondary font-bold">Janela Recomendada de Plantio</h3>
+            </div>
+          </div>
+          <div
+            class="inline-flex items-center gap-1.5 bg-secondary-container/40 border border-secondary px-3 py-1.5 rounded-lg text-on-secondary-container">
+            <span class="material-symbols-outlined text-base" data-icon="shield">shield</span>
+            <span class="font-label-sm text-label-sm font-bold">Cobertura Pronaf/Proagro Garantida</span>
+          </div>
+        </div>
+        <!-- Matriz Decendial Simplificada -->
+        <div class="bg-surface-container-low rounded-lg p-3 border border-outline-variant space-y-2">
+          <div class="flex items-center justify-between border-b border-outline-variant pb-2">
+            <span class="font-label-sm text-label-sm text-on-surface-variant">Período Decendial Vigente:</span>
+            <span class="font-label-md text-label-md text-primary font-bold">11 a 20 de Fevereiro (Decêndio 5)</span>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <span class="font-label-sm text-label-sm text-on-surface-variant">Característica da Roça:</span>
+            <span
+              class="font-label-sm text-label-sm text-on-surface font-semibold bg-surface-container-highest px-2 py-0.5 rounded">Solo
+              Tipo 2 (Textura Média / Argiloso)</span>
+          </div>
+        </div>
+        <!-- Orientação Agronômica Prática -->
+        <div class="bg-secondary-container/30 border-l-4 border-secondary p-3 rounded-r-lg">
+          <p class="font-label-md text-label-md text-on-secondary-container font-semibold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-lg" data-icon="tips_and_updates">tips_and_updates</span>
+            Recomendação do Técnico de Campo:
+          </p>
+          <p class="font-body-md text-body-md text-on-surface mt-1">
+            Condição ideal para semeadura nas próximas <strong>48 horas</strong>, aproveitando a umidade acumulada e a
+            chuva prevista no fechamento da tarde.
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- Previsão do Tempo na Roça para os Próximos 7 Dias -->
+    <section class="space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="font-headline-md text-headline-md text-primary font-bold">Tempo na Roça (7 Dias)</h2>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Previsão orientada a pulverização e tratos
+            culturais</p>
+        </div>
+        <span class="font-label-sm text-label-sm text-secondary font-semibold">Rio Verde, GO</span>
+      </div>
+      <!-- Carrossel de Dias -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <!-- Hoje -->
+        <div
+          class="bg-surface-container-lowest rounded-lg border-2 border-secondary p-3 flex flex-col justify-between space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="font-label-md text-label-md text-secondary font-bold">Hoje (Seg)</span>
+            <span
+              class="bg-secondary-container text-on-secondary-container text-[10px] px-1.5 py-0.5 rounded font-bold">Ideal</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="material-symbols-outlined text-2xl text-tertiary-container" data-icon="rainy">rainy</span>
+            <div class="text-right">
+              <span class="font-label-lg text-label-lg font-bold text-on-surface">28°</span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant">/ 20°</span>
+            </div>
+          </div>
+          <div class="space-y-1 border-t border-outline-variant pt-2 text-[12px]">
+            <div class="flex items-center justify-between text-on-surface-variant">
+              <span class="">Chuva</span>
+              <strong class="text-on-surface">15mm (85%)</strong>
+            </div>
+            <div class="text-[11px] text-secondary font-semibold">Pulverizar: 06h às 09h</div>
+          </div>
+        </div>
+        <!-- Terça -->
+        <div
+          class="bg-surface-container-lowest rounded-lg border border-outline-variant p-3 flex flex-col justify-between space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="font-label-md text-label-md text-on-surface font-semibold">Terça-feira</span>
+            <span class="text-on-surface-variant text-[10px]">Atenção</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="material-symbols-outlined text-2xl text-tertiary-container"
+              data-icon="partly_cloudy_day">partly_cloudy_day</span>
+            <div class="text-right">
+              <span class="font-label-lg text-label-lg font-bold text-on-surface">30°</span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant">/ 21°</span>
+            </div>
+          </div>
+          <div class="space-y-1 border-t border-outline-variant pt-2 text-[12px]">
+            <div class="flex items-center justify-between text-on-surface-variant">
+              <span class="">Pancadas</span>
+              <strong class="text-on-surface">8mm (60%)</strong>
+            </div>
+            <div class="text-[11px] text-on-surface font-medium">Vento leve: 8 km/h</div>
+          </div>
+        </div>
+        <!-- Quarta -->
+        <div
+          class="bg-surface-container-lowest rounded-lg border border-outline-variant p-3 flex flex-col justify-between space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="font-label-md text-label-md text-on-surface font-semibold">Quarta-feira</span>
+            <span
+              class="bg-surface-container-high text-on-surface text-[10px] px-1.5 py-0.5 rounded font-bold">Seco</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="material-symbols-outlined text-2xl text-on-tertiary-container" data-icon="sunny">sunny</span>
+            <div class="text-right">
+              <span class="font-label-lg text-label-lg font-bold text-on-surface">29°</span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant">/ 19°</span>
+            </div>
+          </div>
+          <div class="space-y-1 border-t border-outline-variant pt-2 text-[12px]">
+            <div class="flex items-center justify-between text-on-surface-variant">
+              <span class="">Sem chuva</span>
+              <strong class="text-on-surface">0mm (10%)</strong>
+            </div>
+            <div class="text-[11px] text-secondary font-semibold">Ótimo p/ Adubação</div>
+          </div>
+        </div>
+        <!-- Quinta -->
+        <div
+          class="bg-surface-container-lowest rounded-lg border-2 border-error-container p-3 flex flex-col justify-between space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="font-label-md text-label-md text-error font-bold">Quinta-feira</span>
+            <span
+              class="bg-error-container text-on-error-container text-[10px] px-1.5 py-0.5 rounded font-bold">Alerta</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="material-symbols-outlined text-2xl text-error" data-icon="thunderstorm">thunderstorm</span>
+            <div class="text-right">
+              <span class="font-label-lg text-label-lg font-bold text-on-surface">27°</span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant">/ 18°</span>
+            </div>
+          </div>
+          <div class="space-y-1 border-t border-outline-variant pt-2 text-[12px]">
+            <div class="flex items-center justify-between text-on-surface-variant">
+              <span class="">Chuva Forte</span>
+              <strong class="text-error">22mm (90%)</strong>
+            </div>
+            <div class="text-[11px] text-error font-semibold">Evitar aplicações</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Alertas e Cuidados Climáticos Práticos -->
+    <section class="space-y-3">
+      <h2 class="font-headline-sm text-headline-sm text-primary font-bold flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-error" data-icon="warning" data-weight="fill"
+          style="font-variation-settings: 'FILL' 1;">warning</span>
+        Alertas Operacionais de Campo
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- Card de Aviso 1 -->
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-2">
+          <div class="flex items-center gap-2">
+            <span
+              class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-base" data-icon="cloud_alert">cloud_alert</span>
+            </span>
+            <h3 class="font-label-md text-label-md text-on-surface font-bold">Temporal Previsto para Quinta-feira</h3>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">
+            Evitar aplicação de adubo solúvel em talhões de encosta para evitar arraste de nutrientes e perda por
+            lixiviação.
+          </p>
+          <div class="pt-1 flex items-center gap-1 text-[12px] text-outline font-medium">
+            <span class="material-symbols-outlined text-sm" data-icon="info">info</span>
+            Impacto no manejo: Alto
+          </div>
+        </div>
+        <!-- Card de Aviso 2 -->
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-2">
+          <div class="flex items-center gap-2">
+            <span
+              class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-base" data-icon="terrain">terrain</span>
+            </span>
+            <h3 class="font-label-md text-label-md text-on-surface font-bold">Retenção Hídrica do Solo</h3>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">
+            O perfil de solo argiloso atual está com capacidade de campo em <strong>74%</strong>. Condição excelente
+            para germinação rápida das sementes.
+          </p>
+          <div class="pt-1 flex items-center gap-1 text-[12px] text-secondary font-semibold">
+            <span class="material-symbols-outlined text-sm" data-icon="task_alt">task_alt</span>
+            Germinação garantida em 5 a 7 dias
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Ação Rápida de Apoio - Assistente Inteligente -->
+    <section class="pt-2">
+      <div
+        class="bg-gradient-to-r from-surface-container-high to-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+            <span class="material-symbols-outlined text-2xl" data-icon="chat" data-weight="fill"
+              style="font-variation-settings: 'FILL' 1;">chat</span>
+          </div>
+          <div>
+            <h3 class="font-headline-sm text-headline-sm text-primary font-bold">Dúvida sobre a janela de plantio?</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Tire dúvidas como "Compensa plantar hoje ou
+              espero a chuva passar?"</p>
+          </div>
+        </div>
+        <button
+          class="w-full sm:w-auto bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md px-5 py-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm shrink-0">
+          <span class="">Perguntar ao Assistente Plant+Facil</span>
+          <span class="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
+        </button>
+      </div>
+    </section>
+  </main>
+  <!-- BottomNavBar Component (from Shared Components JSON) -->
+  <!-- Semantic Mapping: Current screen is 'ZARC Clima', which matches destination index 1 -->
+  <nav aria-label="Navegação Principal"
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface">
+    <!-- Item 1: Assistente (Inactive) -->
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+      href="#">
+      <span class="material-symbols-outlined text-2xl" data-icon="chat">chat</span>
+      <span class="">Assistente</span>
+    </a>
+    <!-- Item 2: ZARC Clima (ACTIVE - Selected Destination) -->
+    <a aria-current="page"
+      class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm active:scale-95 transition-all duration-150 font-bold"
+      href="#">
+      <span class="material-symbols-outlined text-2xl" data-icon="cloud" data-weight="fill"
+        style="font-variation-settings: 'FILL' 1;">cloud</span>
+      <span class="">Clima e Plantio</span>
+    </a>
+    <!-- Item 3: Minha Conta (Inactive) -->
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+      href="#">
+      <span class="material-symbols-outlined text-2xl" data-icon="person">person</span>
+      <span class="">Minha Conta</span>
+    </a>
+  </nav>
+
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+  <!--Replicar esse botão em todas as telas, para ter voz em tudo-->
+  <!-- Menu de acessibilidade -->
+  <div id="menu-acessibilidade">
+    <button id="botao-acessibilidade" type="button" aria-label="Abrir menu de acessibilidade">
+      <span class="material-symbols-outlined">volume_up</span>
+    </button>
+
+    <div id="painel-acessibilidade" hidden>
+      <h2>Acessibilidade</h2>
+
+      <button id="ler-pagina" type="button">
+        🔊 Ler página
+      </button>
+
+      <button id="pausar-leitura" type="button">
+        ⏸ Pausar
+      </button>
+
+      <button id="continuar-leitura" type="button">
+        ▶ Continuar
+      </button>
+
+      <button id="parar-leitura" type="button">
+        ⏹ Parar
+      </button>
+
+      <div class="controle-acessibilidade">
+        <label for="velocidade-leitura">
+          Velocidade da leitura
+        </label>
+
+        <input id="velocidade-leitura" type="range" min="0.5" max="2" step="0.1" value="1">
+
+        <span id="valor-velocidade">1x</span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    #menu-acessibilidade {
+      position: fixed;
+      left: 24px;
+      bottom: 72px;
+      z-index: 9999;
+      font-family: Arial, sans-serif;
+    }
+
+    @media (max-width: 480px) {
+      #menu-acessibilidade {
+        left: 12px;
+        bottom: 72px;
+      }
+    }
+
+    /* Botão principal */
+    #botao-acessibilidade {
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      border: 3px solid #0057b8;
+      border-radius: 50%;
+      background: transparent;
+      color: #0057b8;
+      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    #botao-acessibilidade .material-symbols-outlined {
+      font-size: 30px;
+      line-height: 1;
+
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 500,
+        'GRAD' 0,
+        'opsz' 32;
+    }
+
+    #botao-acessibilidade:hover {
+      background: rgba(0, 87, 184, 0.12);
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    #botao-acessibilidade:active {
+      transform: scale(0.96);
+    }
+
+    #botao-acessibilidade:focus-visible {
+      outline: 3px solid #0057b8;
+      outline-offset: 3px;
+    }
+
+    /* Painel */
+    #painel-acessibilidade {
+      position: absolute;
+      left: 0;
+      bottom: 76px;
+      width: 300px;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid #d9e2ec;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: abrirMenuAcessibilidade 0.18s ease-out;
+    }
+
+    @keyframes abrirMenuAcessibilidade {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Título */
+    #painel-acessibilidade h2 {
+      margin: 0 0 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #17324d;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    /* Botões */
+    #painel-acessibilidade button {
+      width: 100%;
+      min-height: 44px;
+      margin-bottom: 9px;
+      padding: 10px 12px;
+      border: 1px solid #d6dee8;
+      border-radius: 8px;
+      background: #f5f8fb;
+      color: #17324d;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: left;
+      transition: background 0.15s ease, border-color 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    #painel-acessibilidade button:hover {
+      background: #e8f1fa;
+      border-color: #0057b8;
+      transform: translateY(-1px);
+    }
+
+    #painel-acessibilidade button:active {
+      transform: translateY(0);
+    }
+
+    #painel-acessibilidade button:focus-visible {
+      outline: 3px solid #ffcc00;
+      outline-offset: 2px;
+    }
+
+    /* Controle de velocidade */
+    .controle-acessibilidade {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e5e7eb;
+      color: #17324d;
+    }
+
+    .controle-acessibilidade label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    #velocidade-leitura {
+      width: 100%;
+      height: 5px;
+      accent-color: #0057b8;
+      cursor: pointer;
+    }
+
+    #valor-velocidade {
+      display: block;
+      margin-top: 7px;
+      color: #526579;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* Ajuste para telas menores */
+    @media (max-width: 480px) {
+      #menu-acessibilidade {
+        right: 16px;
+        bottom: 16px;
+      }
+
+      #painel-acessibilidade {
+        right: 0;
+        width: min(300px, calc(100vw - 32px));
+      }
+
+      #botao-acessibilidade {
+        width: 58px;
+        height: 58px;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const botao_acessibilidade = document.getElementById('botao-acessibilidade');
+      const painel_acessibilidade = document.getElementById('painel-acessibilidade');
+
+      const ler_pagina = document.getElementById('ler-pagina');
+      const pausar_leitura = document.getElementById('pausar-leitura');
+      const continuar_leitura = document.getElementById('continuar-leitura');
+      const parar_leitura = document.getElementById('parar-leitura');
+
+      const velocidade_leitura = document.getElementById('velocidade-leitura');
+      const valor_velocidade = document.getElementById('valor-velocidade');
+
+      const sintetizador = window.speechSynthesis;
+
+      let texto_leitura = '';
+
+      botao_acessibilidade.addEventListener('click', () => {
+        painel_acessibilidade.hidden = !painel_acessibilidade.hidden;
+      });
+
+      function obter_texto_pagina() {
+        const elementos_ignorados = document.querySelectorAll(
+          'script, style, noscript, #menu-acessibilidade, [aria-hidden="true"]'
+        );
+
+        elementos_ignorados.forEach((elemento) => {
+          elemento.dataset.leituraIgnorada = 'true';
+        });
+
+        texto_leitura = document.body.innerText
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        elementos_ignorados.forEach((elemento) => {
+          delete elemento.dataset.leituraIgnorada;
+        });
+
+        return texto_leitura;
+      }
+
+      function falar_pagina() {
+        if (!('speechSynthesis' in window)) {
+          alert('Seu navegador não possui suporte à leitura em voz alta.');
+          return;
+        }
+
+        sintetizador.cancel();
+
+        texto_leitura = obter_texto_pagina();
+
+        if (!texto_leitura) {
+          return;
+        }
+
+        const fala = new SpeechSynthesisUtterance(texto_leitura);
+
+        fala.lang = 'pt-BR';
+        fala.rate = Number(velocidade_leitura.value);
+        fala.pitch = 1;
+        fala.volume = 1;
+
+        const vozes = sintetizador.getVoices();
+
+        const voz_portugues = vozes.find((voz) => {
+          return voz.lang.toLowerCase() === 'pt-br';
+        });
+
+        if (voz_portugues) {
+          fala.voice = voz_portugues;
+        }
+
+        sintetizador.speak(fala);
+      }
+
+      ler_pagina.addEventListener('click', () => {
+        falar_pagina();
+      });
+
+      pausar_leitura.addEventListener('click', () => {
+        if (sintetizador.speaking) {
+          sintetizador.pause();
+        }
+      });
+
+      continuar_leitura.addEventListener('click', () => {
+        if (sintetizador.paused) {
+          sintetizador.resume();
+        }
+      });
+
+      parar_leitura.addEventListener('click', () => {
+        sintetizador.cancel();
+      });
+
+      velocidade_leitura.addEventListener('input', () => {
+        valor_velocidade.textContent = `${velocidade_leitura.value}x`;
+      });
+
+      sintetizador.addEventListener('voiceschanged', () => {
+        sintetizador.getVoices();
+      });
+    });
+  </script>
