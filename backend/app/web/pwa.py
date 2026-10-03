@@ -16,7 +16,7 @@ CACHE_VERSION = "plantfacil-v1"
 
 SW_JS = r"""
 const CACHE = '__CACHE__';
-const PAGES = ['/', '/clima', '/planejamento', '/o-que-plantar'];
+const PAGES = ['/', '/consulta', '/clima', '/planejamento', '/o-que-plantar'];
 const CDN = ['cdn.tailwindcss.com', 'fonts.googleapis.com', 'fonts.gstatic.com', 'unpkg.com'];
 
 self.addEventListener('install', (e) => { self.skipWaiting(); });

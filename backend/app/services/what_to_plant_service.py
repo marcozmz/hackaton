@@ -91,3 +91,61 @@ class WhatToPlantService:
             "has_forecast": bool(forecast),
             "sources": ["zarc_tabua_risco"] + (["open_meteo"] if forecast else []),
         }
+
+
+MONTH_STATUS_TEXT = {
+    "recomendado": "Recomendado",
+    "atencao": "Atenção",
+    "nao_recomendado": "Não recomendado",
+    "sem_dado": "Sem zoneamento",
+}
+
+
+def _month_desc(crop: str, ms, month_label: str, place: str) -> str:
+    if ms.status == "recomendado":
+        return (f"Em {month_label}, o calendário oficial indica plantar {crop} em {place}, com risco baixo "
+                f"em pelo menos um período do mês (janela: {ms.window_label}).")
+    if ms.status == "atencao":
+        return (f"Em {month_label}, {crop} está no calendário oficial, mas com risco de 30% a 40%. "
+                f"Se puder, prefira os períodos de risco menor (janela: {ms.window_label}).")
+    if ms.status == "nao_recomendado":
+        return f"Em {month_label}, o calendário oficial não indica plantar {crop} em {place}."
+    return f"O calendário oficial (ZARC) não traz {crop} para {place}."
+
+
+def by_month(m: MunicipalityRef, soil_group: int | None, month: int, year: int | None = None) -> dict:
+    """Culturas para um mês escolhido (landing): só ZARC, sem IA decidindo nada."""
+    from app.domain.decendio import MONTHS_FULL
+
+    today = date.today()
+    if year is None:
+        year = today.year if month >= today.month else today.year + 1
+    codes = catalog_repo.soil_codes_for_group(soil_group) if soil_group else None
+    month_label = MONTHS_FULL[month - 1]
+    place = f"{m.name}"
+    items = []
+    for crop in catalog_repo.list_crops():
+        _, rows = zarc_repo.zones(m.ibge_code, crop.id, codes, current_app.config["ZARC_DEFAULT_MANAGEMENT"])
+        windows = combine([ZoneFacts(**r) for r in rows]).windows if rows else {}
+        ms = planning.month_status(windows, bool(rows), month, year)
+        first_day = None
+        if ms.best_decendio:
+            first_day = dec.bounds(ms.best_decendio, year)[0].isoformat()
+        desc = _month_desc(crop.official_name.lower(), ms, month_label, place)
+        items.append({
+            "slug": crop.slug, "nome": crop.official_name, "status": ms.status,
+            "status_text": MONTH_STATUS_TEXT[ms.status], "periodo": ms.window_label, "riscos": ms.riscos,
+            "melhor_dia_do_mes": first_day, "desc": desc, "audioText": desc,
+        })
+    order = {"recomendado": 0, "atencao": 1, "nao_recomendado": 2, "sem_dado": 3}
+    items.sort(key=lambda i: (order[i["status"]], i["nome"]))
+    rec = [i["nome"].lower() for i in items if i["status"] == "recomendado"]
+    resumo = (f"Em {month_label}, em {m.name}, o calendário oficial indica: {', '.join(rec)}."
+              if rec else f"Em {month_label}, nenhuma cultura tem risco baixo em {m.name}; veja as de atenção.")
+    return {
+        "localizacao": f"{m.name} - {m.uf}",
+        "location": {"ibge_code": m.ibge_code, "name": m.name, "uf": m.uf},
+        "mes": month, "ano": year, "periodo": month_label.capitalize(),
+        "resumo": resumo, "soil_group": soil_group, "culturas": items,
+        "fonte": "ZARC – Tábua de Risco (MAPA), cultivo sem irrigação",
+    }

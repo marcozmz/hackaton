@@ -114,7 +114,7 @@ def test_preferences_persist_and_apply(logged):
     assert api(logged, "/perfil/preferencias", body).status_code == 200
     u = db.session.query(User).one()
     assert (u.theme, u.font_size, u.language_level) == ("dark", "muito-grande", "technical")
-    html = logged.get("/").get_data(as_text=True)
+    html = logged.get("/consulta", query_string={"nova": 1}).get_data(as_text=True)
     assert 'class="dark"' in html and "font-size:21px" in html
 
 

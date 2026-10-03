@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth {{ ui_html_class }}" style="{{ ui_html_style }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant+Fácil | Saiba o que e quando plantar na sua terra</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        plant: {
+                            dark: '#0e6231',
+                            green: '#22c55e',
+                            hover: '#094723',
+                            soft: '#f1f5f9',
+                            bg: '#f8fafc',
+                            card: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Mapbox GL JS CSS & JS -->
+    {% if mapbox_token %}
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.32.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.32.0/mapbox-gl.js"></script>
+    {% endif %}
+    <link rel="manifest" href="{{ url_for('web.manifest') }}">
+    <meta name="theme-color" content="#0e6231">
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        #leaflet-map { z-index: 10; min-height: 360px; }
+        #leaflet-map .mapboxgl-canvas { border-radius: 0.75rem; }
+        #leaflet-map .mapboxgl-ctrl-top-right { top: 10px; right: 10px; }
+        .audio-playing { animation: pulse-border 1.5s infinite; }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+    </style>
+</head>
+<body class="bg-plant-bg text-slate-800 antialiased selection:bg-plant-green selection:text-white pb-20">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            
+            <!-- Brand Logo -->
+            <a href="{{ url_for('web.landing') }}" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-plant-dark flex items-center justify-center text-white shadow-md shadow-plant-dark/20 group-hover:scale-105 transition-transform duration-200">
+                    <div class="relative flex items-center justify-center">
+                        <i class="fa-solid fa-seedling text-xl text-plant-green"></i>
+                        <span class="absolute -top-1 -right-1.5 text-[10px] text-amber-300 font-extrabold"><i class="fa-solid fa-plus"></i></span>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">Plant<span class="text-plant-green">+</span><span class="text-plant-dark">Fácil</span></span>
+                    <span class="hidden sm:block text-[10px] font-bold uppercase tracking-widest text-slate-400">Calendário de Plantio Familiar</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                <a href="#consulta" class="hover:text-plant-dark transition-colors">Consultar Época</a>
+                <a href="#como-funciona" class="hover:text-plant-dark transition-colors">Como Funciona</a>
+                <a href="#sobre" class="hover:text-plant-dark transition-colors">Para o Produtor</a>
+                <a href="{{ url_for('web.assistente') }}" class="hover:text-plant-dark transition-colors">Assistente</a>
+            </nav>
+
+            <!-- Action CTA -->
+            <div class="flex items-center gap-3">
+                {% if current_user %}
+                <a href="{{ url_for('web.perfil') }}" class="hidden sm:inline-flex items-center gap-2 text-sm font-bold text-plant-dark"><i class="fa-solid fa-user"></i>{{ current_user.display_name.split()[0] }}</a>
+                {% else %}
+                <a href="{{ url_for('web.login') }}" class="hidden sm:inline-flex text-sm font-bold text-plant-dark hover:underline">Entrar</a>
+                {% endif %}
+                <a href="{{ url_for('web.clima') if last else url_for('web.inicio', nova=1) }}" class="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-plant-dark hover:bg-plant-hover text-white font-bold text-sm whitespace-nowrap shadow-md shadow-plant-dark/15 hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-arrow-right-to-bracket text-plant-green"></i>
+                    <span class="sm:hidden">Abrir</span><span class="hidden sm:inline">Abrir o Plant+Fácil</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-slate-100 via-plant-bg to-white py-16 lg:py-24 border-b border-slate-200/60">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+            
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-plant-dark text-xs font-bold shadow-sm">
+                <i class="fa-solid fa-leaf text-plant-green"></i>
+                <span>Simples • Direto • Feito para o Campo</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto">
+                Saiba o que e quando plantar na sua terra, <span class="text-plant-dark underline decoration-plant-green decoration-4 underline-offset-6">sem complicação</span>.
+            </h1>
+
+            <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-medium max-w-2xl mx-auto">
+                Escolha a sua cidade e o mês desejado. Descubra as culturas indicadas pelo <strong>calendário oficial de plantio (ZARC/MAPA)</strong> para a sua região, com explicação simples e áudio.
+            </p>
+
+            <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                {% if last %}
+                <a href="{{ url_for('web.clima') }}" class="w-full sm:w-auto inline-flex justify-center items-center gap-3 px-8 py-4 rounded-2xl bg-white border-2 border-plant-dark text-plant-dark font-bold text-base shadow-sm hover:bg-emerald-50 transition-all">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Continuar: {{ last.crop_name or last.crop }} em {{ last.place }}</span>
+                </a>
+                {% endif %}
+                <a href="{{ url_for('web.inicio', nova=1) }}" class="w-full sm:w-auto inline-flex justify-center items-center gap-3 px-8 py-4 rounded-2xl bg-plant-dark text-white font-bold text-base shadow-lg shadow-plant-dark/20 hover:bg-plant-hover hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-seedling text-plant-green"></i>
+                    <span>Começar minha orientação</span>
+                </a>
+                <a href="#consulta" class="w-full sm:w-auto inline-flex justify-center items-center gap-3 px-6 py-4 rounded-2xl bg-white border border-slate-300 text-slate-800 font-bold text-base hover:bg-slate-50 transition-all">
+                    <i class="fa-solid fa-calendar-days text-plant-dark"></i>
+                    <span>Ver por mês aqui</span>
+                </a>
+            </div>
+
+            <!-- Simple Trust Indicators -->
+            <div class="pt-10 grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-2xl mx-auto border-t border-slate-200/80">
+                <div class="space-y-1">
+                    <div class="text-2xl font-extrabold text-slate-900">100% Livre</div>
+                    <div class="text-xs text-slate-500 font-medium">Sem cadastro ou taxas</div>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-2xl font-extrabold text-plant-dark">Áudio Integrado</div>
+                    <div class="text-xs text-slate-500 font-medium">Ouça as recomendações</div>
+                </div>
+                <div class="space-y-1 col-span-2 sm:col-span-1">
+                    <div class="text-2xl font-extrabold text-slate-900">GPS Direto</div>
+                    <div class="text-xs text-slate-500 font-medium">Localização automática</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Consulta e Mapa Section -->
+    <section id="consulta" class="py-16 lg:py-20 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="px-3.5 py-1.5 rounded-full bg-slate-100 text-plant-dark font-bold text-xs uppercase tracking-wider">
+                    Calendário de Plantio
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-2 tracking-tight">
+                    Selecione sua Região e Mês
+                </h2>
+                <p class="text-slate-600 text-sm sm:text-base mt-2 font-medium">
+                    Digite sua cidade{% if mapbox_token %} ou clique no mapa{% endif %} e informe quando pretende semear.
+                </p>
+            </div>
+
+            <!-- Map + Form Container -->
+            <div class="grid lg:grid-cols-12 gap-8 items-stretch bg-slate-50 p-4 sm:p-6 rounded-3xl border border-slate-200/90 shadow-md">
+
+                <!-- Left Side: Interactive Mapbox Map -->
+                <div class="lg:col-span-6 bg-slate-900 rounded-2xl p-4 text-white flex flex-col justify-between shadow-inner">
+                    <div>
+                        <div class="flex items-center justify-between mb-3 px-1">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-map-location-dot text-plant-green"></i>
+                                <span class="font-bold text-xs sm:text-sm text-slate-200">Mapa da Propriedade</span>
+                            </div>
+                            <span class="text-[11px] bg-slate-800 text-emerald-400 font-medium px-2.5 py-1 rounded-lg border border-slate-700">
+                                Clique no mapa para marcar
+                            </span>
+                        </div>
+
+                        <!-- Map Canvas -->
+                        {% if mapbox_token %}
+                        <div id="leaflet-map" class="rounded-xl overflow-hidden border border-slate-700 shadow-md"></div>
+                        {% else %}
+                        <div class="rounded-xl border border-slate-700 p-6 text-sm text-slate-300 min-h-[200px] flex items-center justify-center text-center">
+                            Mapa indisponível neste computador. Digite a sua cidade ao lado ou use o GPS.
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-4 p-3 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] text-slate-400 font-medium">Localização do Marcador</div>
+                            <div id="map-coords-display" class="text-xs font-mono text-emerald-400 font-bold mt-0.5">
+                                Nenhum local escolhido
+                            </div>
+                        </div>
+                        <button type="button" onclick="useCurrentGPS()" class="px-3.5 py-2 bg-plant-dark hover:bg-plant-hover text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm">
+                            <i class="fa-solid fa-crosshairs text-plant-green"></i> Usar meu GPS
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Side: STRICTLY 2 FIELDS FORM -->
+                <div class="lg:col-span-6 flex flex-col justify-center p-2 sm:p-4">
+                    <form id="plant-form" onsubmit="event.preventDefault(); updateSimulation();" class="space-y-6">
+
+                        <!-- FIELD 1: Localização -->
+                        <div class="space-y-2">
+                            <label for="select-municipio" class="block text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-plant-dark text-white text-xs font-black flex items-center justify-center">1</span>
+                                <span>Localização da Propriedade</span>
+                            </label>
+                            <div class="relative">
+                                <i class="fa-solid fa-location-dot absolute left-4 top-3.5 text-slate-400"></i>
+                                <input id="select-municipio" type="text" list="municipios-landing" autocomplete="off" maxlength="80"
+                                    placeholder="Digite sua cidade (ex.: Araraquara SP){% if mapbox_token %} ou clique no mapa{% endif %}"
+                                    class="w-full pl-11 pr-4 py-3 bg-white rounded-xl border border-slate-300 text-slate-800 font-semibold text-sm shadow-sm focus:ring-2 focus:ring-plant-dark focus:border-plant-dark">
+                                <datalist id="municipios-landing"></datalist>
+                            </div>
+                        </div>
+
+                        <!-- FIELD 2: Período Pretendido -->
+                        <div class="space-y-2">
+                            <label for="select-mes" class="block text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-plant-dark text-white text-xs font-black flex items-center justify-center">2</span>
+                                <span>Período Pretendido para Plantio</span>
+                            </label>
+                            <div class="relative">
+                                <i class="fa-solid fa-calendar-days absolute left-4 top-3.5 text-slate-400"></i>
+                                <select id="select-mes" onchange="updateSimulation()" class="w-full pl-11 pr-4 py-3 bg-white rounded-xl border border-slate-300 text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-plant-dark focus:border-plant-dark shadow-sm">
+                                    {% for n, nome in [(1,'Janeiro'),(2,'Fevereiro'),(3,'Março'),(4,'Abril'),(5,'Maio'),(6,'Junho'),(7,'Julho'),(8,'Agosto'),(9,'Setembro'),(10,'Outubro'),(11,'Novembro'),(12,'Dezembro')] %}
+                                    <option value="{{ n }}" {% if n == month %}selected{% endif %}>{{ nome }}{% if n == month %} (este mês){% endif %}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- MAIN BUTTON -->
+                        <div class="pt-2">
+                            <button type="submit" class="w-full py-4 px-6 rounded-xl bg-plant-dark hover:bg-plant-hover text-white font-extrabold text-base shadow-lg shadow-plant-dark/20 hover:shadow-xl transition-all flex items-center justify-center gap-3">
+                                <i class="fa-solid fa-magnifying-glass text-plant-green"></i>
+                                <span>Consultar Culturas Viáveis</span>
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- RESULTS SECTION -->
+            <div id="resultados" class="mt-14 space-y-6">
+                
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <h3 id="results-title" class="text-2xl font-extrabold text-slate-900">
+                            Culturas indicadas para a sua região
+                        </h3>
+                        <p id="results-subtitle" class="text-slate-600 text-sm font-medium mt-0.5">
+                            Escolha a cidade e o mês para ver o calendário oficial de plantio
+                        </p>
+                    </div>
+
+                    <!-- Simple Status Filter -->
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="filterCrops('todos')" class="crop-filter-btn px-3.5 py-1.5 rounded-lg bg-slate-900 text-white font-bold text-xs transition-all" data-filter="todos">Todas</button>
+                        <button onclick="filterCrops('recomendado')" class="crop-filter-btn px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 transition-all" data-filter="recomendado">Recomendados</button>
+                        <button onclick="filterCrops('atencao')" class="crop-filter-btn px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 transition-all" data-filter="atencao">Atenção</button>
+                    </div>
+                </div>
+
+                <!-- CARDS GRID -->
+                <div id="crops-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards are dynamically rendered via JS -->
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="como-funciona" class="py-16 bg-slate-100 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                    Como o Plant+Fácil ajuda você no campo
+                </h2>
+                <p class="text-slate-600 text-sm sm:text-base mt-2 font-medium">
+                    Planejamento rápido para garantir uma colheita saudável e sem prejuízos.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-plant-dark flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-map-pin"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900">1. Escolha sua região</h3>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
+                        Digite seu município, use o GPS{% if mapbox_token %} ou clique no mapa{% endif %}. A gente encontra a sua cidade nos dados do IBGE.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-cloud-sun-rain"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900">2. Confira o calendário e o clima</h3>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
+                        O calendário oficial do governo (ZARC) mostra o risco de perder a lavoura em cada período; a previsão do tempo indica o melhor dia para semear.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900">3. Ouça a recomendação</h3>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
+                        Clique no botão de áudio de cada cultura para ouvir as explicações direto pelo celular.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Ferramentas do sistema -->
+    <section id="ferramentas" class="py-14 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 text-center mb-8">O que você pode fazer no Plant+Fácil</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {% for href, icon, title, text in [
+                    (url_for('web.inicio', nova=1), 'fa-seedling', 'Orientação de plantio', 'Sua cidade, a cultura e o tipo de terra: período oficial, risco, melhor dia para semear e sementes indicadas.'),
+                    (url_for('web.o_que_plantar'), 'fa-wheat-awn', 'O que plantar agora', 'Não sabe o que plantar? Veja todas as culturas que estão no período certo na sua cidade.'),
+                    (url_for('web.planejamento'), 'fa-calendar-days', 'Calendário da roça', 'Dias bons para plantar, chuva prevista e suas atividades anotadas, mês a mês.'),
+                    (url_for('web.assistente'), 'fa-comments', 'Assistente', 'Pergunte do seu jeito, por escrito ou por voz: "posso plantar feijão agora?".')] %}
+                <a href="{{ href }}" class="group bg-slate-50 hover:bg-emerald-50 p-6 rounded-2xl border border-slate-200 hover:border-plant-green shadow-sm transition-all space-y-3">
+                    <div class="w-12 h-12 rounded-xl bg-plant-dark text-white flex items-center justify-center text-xl"><i class="fa-solid {{ icon }}"></i></div>
+                    <h3 class="text-lg font-bold text-slate-900">{{ title }}</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">{{ text }}</p>
+                    <span class="text-sm font-bold text-plant-dark group-hover:underline">Abrir <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="sobre" class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2 text-white font-extrabold text-xl">
+                        <i class="fa-solid fa-seedling text-plant-green"></i>
+                        <span>Plant<span class="text-plant-green">+</span>Fácil</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed max-w-sm">
+                        Plataforma simples para consulta de época de plantio e recomendação de culturas para a agricultura familiar.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white text-sm font-bold mb-3">Links Rápidos</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="{{ url_for('web.landing') }}" class="hover:text-white transition-colors">Início</a></li>
+                        <li><a href="{{ url_for('web.inicio', nova=1) }}" class="hover:text-white transition-colors">Consulta completa (com tipo de terra)</a></li>
+                        <li><a href="{{ url_for('web.assistente') }}" class="hover:text-white transition-colors">Assistente</a></li>
+                        <li><a href="{{ url_for('web.cadastro') }}" class="hover:text-white transition-colors">Criar conta (opcional)</a></li>
+                        <li><a href="#consulta" class="hover:text-white transition-colors">Consultar Época de Plantio</a></li>
+                        <li><a href="#como-funciona" class="hover:text-white transition-colors">Como Funciona</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white text-sm font-bold mb-3">Acessibilidade</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-3">
+                        Todos os cards possuem botão de leitura por voz para facilitar a consulta no campo.
+                    </p>
+                    <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-semibold">
+                        <i class="fa-solid fa-check-circle"></i> Leitor de Voz Nativo
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
+                <p class="mb-2">Dados: ZARC – Tábua de Risco e Cultivares (MAPA, CC-BY) · Municípios e limites (IBGE) · Previsão (Open-Meteo, CC BY 4.0) · Seguro rural (SISSER/PSR, agregado). Orientação de apoio: não substitui a assistência técnica.</p>
+                <p>&copy; 2026 Plant+Fácil. Focado na agricultura familiar. Não pedimos CPF, telefone nem endereço.</p>
+            </div>
+        </div>
+    </footer>
+    <nav aria-label="Navegação Principal" class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2 px-2 shadow-lg flex items-center justify-around">
+        {% for href, icon, label, on in [
+            (url_for('web.landing'), 'fa-house', 'Início', True),
+            (url_for('web.assistente'), 'fa-comments', 'Assistente', False),
+            (url_for('web.clima'), 'fa-cloud-sun', 'Clima', False),
+            (url_for('web.planejamento'), 'fa-calendar-days', 'Planejamento', False),
+            (url_for('web.perfil'), 'fa-user', 'Conta', False)] %}
+        <a href="{{ href }}" class="flex-1 flex flex-col items-center gap-1 py-1 rounded-xl {{ 'bg-emerald-50 text-plant-dark font-bold' if on else 'text-slate-500 hover:text-plant-dark' }}">
+            <i class="fa-solid {{ icon }} text-lg"></i><span class="text-[11px] leading-none">{{ label }}</span></a>
+        {% endfor %}
+    </nav>
+
+    <script>
+        /*
+         * PLANT+FÁCIL — LANDING integrada ao backend (sem Supabase/Gemini no navegador).
+         * 1) lugar: digitado (autocomplete IBGE), GPS ou clique no mapa → /api/v1/location/resolve
+         *    (a coordenada vai só para o NOSSO servidor, arredondada; não é gravada);
+         * 2) mês → /api/v1/recommendations/by-month → status de cada cultura pelo ZARC (sem IA decidindo);
+         * 3) cada cultura leva para a orientação completa, o calendário e o áudio.
+         */
+        const MAPBOX_TOKEN = {{ mapbox_token|tojson }};
+        const MESES = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        let map = null, marker = null, selected = null, busy = false;
+        const synth = window.speechSynthesis;
+        const $ = (id) => document.getElementById(id);
+
+        const escapeHtml = (v) => String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            const input = $('select-municipio');
+            let t;
+            input.addEventListener('input', () => {
+                selected = null;
+                clearTimeout(t);
+                const q = input.value.trim().replace(/\s+[A-Za-z]{2}$/, '');
+                if (q.length < 3) return;
+                t = setTimeout(async () => {
+                    const r = await fetch(`/api/v1/location/municipalities?q=${encodeURIComponent(q)}&limit=8`);
+                    if (!r.ok) return;
+                    const { items } = await r.json();
+                    $('municipios-landing').innerHTML = items.map((m) => `<option value="${escapeHtml(m.name)} ${m.uf}">`).join('');
+                }, 250);
+            });
+            message('Digite a sua cidade (ou use o GPS) e clique em "Consultar Culturas Viáveis".');
+        });
+
+        function initMap() {
+            if (!MAPBOX_TOKEN || !window.mapboxgl || !$('leaflet-map')) return;
+            mapboxgl.accessToken = MAPBOX_TOKEN;
+            map = new mapboxgl.Map({ container: 'leaflet-map', style: 'mapbox://styles/mapbox/standard',
+                center: [-50.5, -15.5], zoom: 3.4, attributionControl: true });
+            map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+            map.on('click', (e) => fromCoords(e.lngLat.lat, e.lngLat.lng));
+            map.on('load', () => map.resize());
+        }
+
+        function setSelected(m, how) {
+            selected = m;
+            $('select-municipio').value = `${m.name} ${m.uf}`;
+            $('map-coords-display').innerText = `${m.name} - ${m.uf}${how ? ' · ' + how : ''}`;
+            if (map) {
+                if (!marker) {
+                    const el = document.createElement('div');
+                    el.innerHTML = '<div class="w-8 h-8 rounded-full bg-plant-dark border-2 border-plant-green flex items-center justify-center text-white"><i class="fa-solid fa-seedling text-xs"></i></div>';
+                    marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' });
+                }
+                marker.setLngLat([m.lon, m.lat]).addTo(map);
+                map.flyTo({ center: [m.lon, m.lat], zoom: Math.max(map.getZoom(), 8) });
+            }
+        }
+
+        async function fromCoords(lat, lng) {
+            $('map-coords-display').innerText = 'Procurando o município…';
+            const r = await fetch(`/api/v1/location/resolve?lat=${lat.toFixed(2)}&lon=${lng.toFixed(2)}`);
+            if (!r.ok) { $('map-coords-display').innerText = 'Não achei um município do Brasil neste ponto.'; return; }
+            setSelected(await r.json(), 'confira se é a sua cidade');
+            updateSimulation();
+        }
+
+        function useCurrentGPS() {
+            if (!navigator.geolocation) { message('Seu aparelho não permite localização aqui. Digite a cidade.'); return; }
+            $('map-coords-display').innerText = 'Pegando a localização…';
+            navigator.geolocation.getCurrentPosition(
+                (p) => fromCoords(p.coords.latitude, p.coords.longitude),
+                () => message('Não consegui pegar a localização. Digite a sua cidade.'),
+                { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 });
+        }
+
+        async function ensureLocation() {
+            if (selected) return selected;
+            const q = $('select-municipio').value.trim();
+            if (!q) { message('Digite a sua cidade ou use o GPS.'); return null; }
+            const r = await fetch(`/api/v1/location/resolve?q=${encodeURIComponent(q)}`);
+            const b = await r.json();
+            if (r.ok) { setSelected(b); return b; }
+            const c = (b.error?.details?.candidates || []).map((x) => `${x.name} ${x.uf}`);
+            message((b.error?.message || 'Não encontrei essa cidade.') + (c.length ? ' Opções: ' + c.join(', ') : ''));
+            return null;
+        }
+
+        async function updateSimulation() {
+            if (busy) return;
+            const m = await ensureLocation();
+            if (!m) return;
+            const month = Number($('select-mes').value);
+            busy = true; loading(true);
+            $('results-title').innerText = `Culturas em ${m.name} - ${m.uf}`;
+            $('results-subtitle').innerText = `Calendário oficial (ZARC) para ${MESES[month]} · vale para qualquer tipo de terra (período mais seguro)`;
+            $('crops-grid').innerHTML = card('fa-spinner fa-spin', `Consultando ${MESES[month]}…`, 'Lendo o calendário oficial de plantio do MAPA.');
+            try {
+                const r = await fetch(`/api/v1/recommendations/by-month?municipality=${m.ibge_code}&month=${month}`);
+                const b = await r.json();
+                if (!r.ok) throw new Error(b.error?.message || 'Erro na consulta');
+                $('results-subtitle').innerText = b.resumo + ' · Fonte: ' + b.fonte + '.';
+                renderCropCards(b.culturas, m);
+                filterCrops('todos');
+            } catch (e) {
+                $('crops-grid').innerHTML = card('fa-triangle-exclamation', 'Não foi possível consultar agora', escapeHtml(e.message));
+            } finally { busy = false; loading(false); }
+        }
+
+        function card(icon, title, text) {
+            return `<div class="sm:col-span-2 lg:col-span-3 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center">
+                <div class="w-14 h-14 rounded-full bg-emerald-50 text-plant-dark mx-auto flex items-center justify-center text-xl"><i class="fa-solid ${icon}"></i></div>
+                <h4 class="font-extrabold text-slate-900 mt-4">${title}</h4><p class="text-slate-600 text-sm mt-2 max-w-xl mx-auto">${text}</p></div>`;
+        }
+        function message(text) { $('crops-grid').innerHTML = card('fa-map-location-dot', 'Aguardando consulta', escapeHtml(text)); }
+
+        function loading(on) {
+            const b = document.querySelector('#plant-form button[type="submit"]');
+            b.disabled = on; b.classList.toggle('opacity-70', on);
+            b.querySelector('i').className = on ? 'fa-solid fa-spinner fa-spin text-plant-green' : 'fa-solid fa-magnifying-glass text-plant-green';
+            b.querySelector('span').innerText = on ? 'Consultando o calendário oficial…' : 'Consultar Culturas Viáveis';
+        }
+
+        function iconForCrop(n) {
+            n = String(n || '').toLowerCase();
+            if (n.includes('milho')) return '🌽';
+            if (n.includes('feij')) return '🫘';
+            if (n.includes('mandioca')) return '🍠';
+            if (n.includes('soja')) return '🌱';
+            if (n.includes('arroz')) return '🌾';
+            if (n.includes('amendoim')) return '🥜';
+            if (n.includes('algod')) return '🌿';
+            return '🌱';
+        }
+
+        const BADGE = { recomendado: ['bg-emerald-600', 'Recomendado'], atencao: ['bg-amber-500', 'Atenção'],
+                        nao_recomendado: ['bg-rose-600', 'Não recomendado'], sem_dado: ['bg-slate-400', 'Sem zoneamento'] };
+
+        function renderCropCards(crops, m) {
+            const grid = $('crops-grid');
+            grid.innerHTML = '';
+            crops.forEach((c) => {
+                const [bg, label] = BADGE[c.status] || BADGE.sem_dado;
+                const cat = c.status === 'recomendado' ? 'recomendado' : c.status === 'atencao' ? 'atencao' : 'outros';
+                const riscos = (c.riscos || []).map((r) => `${escapeHtml(r.label)}: ${r.risco_percentual ? r.risco_percentual + '%' : 'não indicado'}`).join(' · ');
+                const clima = `/clima?municipality=${m.ibge_code}&crop=${c.slug}`;
+                const cal = `/planejamento?municipality=${m.ibge_code}&crop=${c.slug}` + (c.melhor_dia_do_mes ? `&dia=${c.melhor_dia_do_mes}` : '');
+                const el = document.createElement('div');
+                el.className = 'crop-card bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all space-y-4';
+                el.dataset.category = cat;
+                el.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-2xl">${iconForCrop(c.nome)}</span>
+                            <div><h4 class="font-extrabold text-slate-900 text-base">${escapeHtml(c.nome)}</h4>
+                            <span class="text-xs text-slate-500 font-semibold">${c.periodo ? 'Janela: ' + escapeHtml(c.periodo) : 'Sem janela oficial'}</span></div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full ${bg} text-white font-bold text-[11px] uppercase tracking-wide">${label}</span>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">${escapeHtml(c.desc)}</p>
+                    <div class="rounded-xl bg-slate-50 border border-slate-100 p-3 space-y-1">
+                        <div class="text-[11px] font-extrabold text-slate-700 uppercase tracking-wide">Risco nos decêndios (ZARC)</div>
+                        <div class="text-xs text-slate-600 leading-relaxed">${riscos}</div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                        <button type="button" class="btn-audio-crop text-xs font-bold text-plant-dark flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100">
+                            <i class="fa-solid fa-volume-high text-plant-green"></i><span>Ouvir Recomendação</span></button>
+                        ${c.status === 'sem_dado' ? '' : `<a href="${clima}" class="text-xs font-bold text-plant-dark underline">Orientação completa</a>
+                        <a href="${cal}" class="text-xs font-bold text-plant-dark underline">Calendário</a>`}
+                    </div>`;
+                const b = el.querySelector('.btn-audio-crop');
+                b.addEventListener('click', () => speakCropText(c.audioText || c.desc, b));
+                grid.appendChild(el);
+            });
+        }
+
+        function filterCrops(category) {
+            document.querySelectorAll('.crop-filter-btn').forEach((btn) => {
+                btn.className = btn.dataset.filter === category
+                    ? 'crop-filter-btn px-3.5 py-1.5 rounded-lg bg-slate-900 text-white font-bold text-xs transition-all'
+                    : 'crop-filter-btn px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 transition-all';
+            });
+            document.querySelectorAll('.crop-card').forEach((card) => {
+                card.style.display = category === 'todos' || card.dataset.category === category ? 'block' : 'none';
+            });
+        }
+
+        function speakCropText(text, btn) {
+            if (!('speechSynthesis' in window)) return;
+            const reset = () => document.querySelectorAll('.btn-audio-crop').forEach((b) => {
+                b.classList.remove('audio-playing'); b.querySelector('span').innerText = 'Ouvir Recomendação'; });
+            if (synth.speaking) { synth.cancel(); reset(); return; }
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'pt-BR'; u.rate = 0.95;
+            btn.classList.add('audio-playing'); btn.querySelector('span').innerText = 'Parar Áudio';
+            u.onend = reset;
+            synth.speak(u);
+        }
+    </script>
+    <script src="{{ url_for('web.offline_js') }}" defer></script>
+</body>
+</html>

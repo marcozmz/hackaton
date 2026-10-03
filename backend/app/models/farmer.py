@@ -37,6 +37,8 @@ class User(db.Model):
     consent_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Opt-in (LGPD): quando aceitou receber o aviso diário por e-mail. None = não recebe.
+    email_alerts_since: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     farms: Mapped[list["Farm"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     tasks: Mapped[list["FarmTask"]] = relationship(cascade="all, delete-orphan")

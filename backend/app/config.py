@@ -58,6 +58,12 @@ class Config:
     LLM_TIMEOUT = float(os.getenv("LLM_TIMEOUT", "12"))
     LLM_MAX_TOKENS = 400
     LLM_CACHE_TTL = 24 * 3600
+    # Mapa da landing (Mapbox). Token público "pk." — fica no .env, nunca no HTML/git. Vazio = sem mapa.
+    MAPBOX_TOKEN = os.getenv("MAPBOX_TOKEN", "").strip()
+    # Avisos por e-mail (cenário Make.com do Marcos). URL do webhook só no .env; vazia = avisos desligados.
+    MAKE_WEBHOOK_URL = os.getenv("MAKE_WEBHOOK_URL", "").strip()
+    ALERTS_HOUR = int(os.getenv("ALERTS_HOUR", "6"))  # horário de Brasília
+    ALERTS_SCHEDULER = os.getenv("ALERTS_SCHEDULER", "1") == "1"  # disparo diário dentro do próprio servidor
     GEO_DIR = os.getenv("GEO_DIR", str(INSTANCE_DIR / "geo"))  # malhas IBGE por UF (fora do git)
     HTTP_TIMEOUT = (3, 8)
 
@@ -81,6 +87,9 @@ class TestingConfig(Config):
     GEOCODING_CEP_PROVIDER = "none"
     WEATHER_PROVIDER = "fixture"
     LLM_PROVIDER = "none"
+    MAPBOX_TOKEN = ""  # testes não dependem do .env local
+    MAKE_WEBHOOK_URL = ""
+    ALERTS_SCHEDULER = False
 
 
 class ProductionConfig(Config):

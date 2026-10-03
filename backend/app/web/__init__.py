@@ -48,6 +48,19 @@ def _defaults() -> dict:
 
 
 @bp.get("/")
+def landing():
+    """Landing page (Raul/equipe): apresentação + consulta por mês com dados do ZARC."""
+    from datetime import date as _date
+
+    from flask import current_app
+
+    d = _defaults()
+    return render_template("landing.html", mapbox_token=current_app.config.get("MAPBOX_TOKEN", ""),
+                           last=d if d.get("municipality") and d.get("crop") else None,
+                           month=_date.today().month)
+
+
+@bp.get("/consulta")
 def inicio():
     args = request.args
     if not args.get("nova") and args.get("crop") and (args.get("place") or args.get("lat")):
@@ -132,7 +145,17 @@ def _inject_ui():
         "csrf_token": csrf_token,
         "ui_html_class": "dark" if user and user.theme == "dark" else "",
         "ui_html_style": f"font-size:{font}",
+        "crop_emoji": crop_emoji,
     }
+
+
+CROP_EMOJI = {"milho": "🌽", "feijao": "🫘", "feijao-caupi": "🫛", "mandioca": "🍠", "arroz": "🌾",
+              "amendoim": "🥜", "soja": "🌱", "algodao": "☁️"}
+
+
+def crop_emoji(slug: str) -> str:
+    """Ícone simples e reconhecível por cultura (no lugar do ícone genérico 'grain')."""
+    return CROP_EMOJI.get(slug, "🌱")
 
 
 from app.web import account  # noqa: E402,F401  (registra as rotas de conta no mesmo blueprint)

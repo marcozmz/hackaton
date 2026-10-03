@@ -1,0 +1,57 @@
+{# Tema claro/escuro. Incluir logo depois do <script id="tailwind-config">.
+   Troca as cores fixas da paleta por variáveis CSS: no claro ficam os valores da própria página;
+   com <html class="dark"> valem os da tabela DARK (paleta escura do Material 3, mesmos tons). #}
+<script>
+  (function () {
+    var DARK = {
+      'background': '#11141b', 'on-background': '#e2e6f1',
+      'surface': '#11141b', 'surface-dim': '#11141b', 'surface-bright': '#363b45',
+      'surface-container-lowest': '#0b0e14', 'surface-container-low': '#191c24', 'surface-container': '#1d2129',
+      'surface-container-high': '#272b34', 'surface-container-highest': '#32363f', 'surface-variant': '#3a3f49',
+      'on-surface': '#e2e6f1', 'on-surface-variant': '#d0c4bd', 'outline': '#9d8e87', 'outline-variant': '#52453f',
+      'inverse-surface': '#e2e6f1', 'inverse-on-surface': '#263143', 'inverse-primary': '#914b26', 'surface-tint': '#ffb693',
+      'primary': '#ffb693', 'on-primary': '#552000', 'primary-container': '#6b2e0c', 'on-primary-container': '#ffdbcc',
+      'secondary': '#79db8d', 'on-secondary': '#00391a', 'secondary-container': '#005323', 'on-secondary-container': '#98f4a7',
+      'tertiary': '#ffb95f', 'on-tertiary': '#472a00', 'tertiary-container': '#653e00', 'on-tertiary-container': '#ffddb7',
+      'error': '#ffb4ab', 'on-error': '#690005', 'error-container': '#93000a', 'on-error-container': '#ffdad6'
+    };
+    var colors = (((window.tailwind || {}).config || {}).theme || {}).extend;
+    colors = colors && colors.colors;
+    if (!colors) return;
+    function rgb(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(function (x) { return x + x; }).join('');
+      return [0, 2, 4].map(function (i) { return parseInt(hex.substr(i, 2), 16); }).join(' ');
+    }
+    var light = '', dark = '';
+    Object.keys(colors).forEach(function (k) {
+      var v = colors[k];
+      if (typeof v !== 'string' || !/^#[0-9a-f]{3,6}$/i.test(v)) return;
+      light += '--c-' + k + ':' + rgb(v) + ';';
+      dark += '--c-' + k + ':' + rgb(DARK[k] || v) + ';';
+      colors[k] = 'rgb(var(--c-' + k + ') / <alpha-value>)';
+    });
+    var css = ':root{' + light + '}html.dark{' + dark + 'color-scheme:dark}'
+      // cores fixas que sobraram nos templates (Tailwind padrão)
+      + 'html.dark body{background-color:rgb(var(--c-background));color:rgb(var(--c-on-surface))}'
+      + 'html.dark .bg-white{background-color:rgb(var(--c-surface-container-lowest))}'
+      + 'html.dark [class*="bg-emerald-50"],html.dark [class*="bg-green-50"],html.dark [class*="bg-emerald-100"]{background-color:rgb(0 83 35 / .35)}'
+      + 'html.dark [class*="bg-amber-50"],html.dark [class*="bg-amber-100"],html.dark [class*="bg-yellow-50"]{background-color:rgb(101 62 0 / .4)}'
+      + 'html.dark [class*="bg-red-50"],html.dark [class*="bg-red-100"]{background-color:rgb(147 0 10 / .35)}'
+      + 'html.dark [class*="bg-blue-50"],html.dark [class*="bg-sky-50"],html.dark [class*="bg-blue-100"]{background-color:rgb(30 64 120 / .35)}'
+      + 'html.dark [class*="bg-slate-50"],html.dark [class*="bg-slate-100"],html.dark [class*="bg-gray-50"],html.dark [class*="bg-gray-100"]{background-color:rgb(var(--c-surface-container))}'
+      + 'html.dark .text-slate-900,html.dark .text-slate-800,html.dark .text-slate-700,html.dark .text-gray-900,html.dark .text-gray-800,html.dark .text-gray-700{color:rgb(var(--c-on-surface))}'
+      + 'html.dark .text-slate-600,html.dark .text-slate-500,html.dark .text-gray-600,html.dark .text-gray-500{color:rgb(var(--c-on-surface-variant))}'
+      + 'html.dark [class*="text-emerald-7"],html.dark [class*="text-emerald-8"],html.dark [class*="text-green-7"],html.dark [class*="text-green-8"]{color:#79db8d}'
+      + 'html.dark [class*="text-amber-7"],html.dark [class*="text-amber-8"]{color:#ffb95f}'
+      + 'html.dark [class*="text-red-7"],html.dark [class*="text-red-8"]{color:#ffb4ab}'
+      + 'html.dark [class*="text-blue-7"],html.dark [class*="text-blue-8"]{color:#a8c8ff}'
+      + 'html.dark [class*="border-slate-"],html.dark [class*="border-gray-"]{border-color:rgb(var(--c-outline-variant))}'
+      + 'html.dark input,html.dark select,html.dark textarea{background-color:rgb(var(--c-surface-container-low));color:rgb(var(--c-on-surface))}'
+      + 'html.dark ::placeholder{color:rgb(var(--c-outline))}';
+    var s = document.createElement('style');
+    s.id = 'tema';
+    s.textContent = css;
+    document.head.appendChild(s);
+  })();
+</script>

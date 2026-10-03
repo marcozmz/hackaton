@@ -9,10 +9,10 @@
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
   <link
-    href="https://fonts.googleapis.com/css2?family=Domine:wght@500;600;700&amp;family=Nunito:wght@400;600;700;800&amp;family=Quicksand:wght@500;600;700&amp;family=Work+Sans:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Domine:wght@500;600;700&amp;family=Nunito:wght@400;600;700;800&amp;family=Quicksand:wght@500;600;700&amp;family=Work+Sans:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
     rel="stylesheet">
   <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
     rel="stylesheet">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
@@ -114,6 +114,7 @@
       },
     }
   </script>
+  {% include '_theme.html' %}
   <style>
     .material-symbols-outlined {
       font-family: 'Material Symbols Outlined';
@@ -362,6 +363,33 @@
         </div>
       </section>
 
+      <!-- Aviso diário por e-mail (opt-in; enviado pelo Make.com) -->
+      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined">mark_email_unread</span>
+          </div>
+          <div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Aviso por e-mail</h3>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Todo dia às 6h da manhã: o tempo e a orientação de plantio da sua cultura.</p>
+          </div>
+        </div>
+        {% if alerts_on %}
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" id="alerts-toggle" class="mt-1 w-5 h-5 accent-secondary" {{ 'checked' if user.email_alerts_since }}>
+          <span class="text-sm text-on-surface">Quero receber o aviso diário em <strong>{{ user.email }}</strong>.
+            <span class="block text-xs text-on-surface-variant mt-1">Para montar o e-mail, enviamos ao serviço Make.com só o seu nome, e-mail, o centro do seu município e a cultura. Desmarque quando quiser.</span></span>
+        </label>
+        <div class="flex flex-wrap items-center gap-3">
+          <button type="button" id="alerts-test" class="px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface hover:bg-surface-container {{ '' if user.email_alerts_since else 'hidden' }}">Mandar um aviso agora</button>
+          <span id="alerts-status" class="text-sm font-semibold text-secondary" aria-live="polite"></span>
+        </div>
+        {% if not farm or not farm.crops %}<p class="text-xs text-on-surface-variant">Cadastre sua roça e uma cultura para o aviso ter o que mostrar.</p>{% endif %}
+        {% else %}
+        <p class="text-sm text-on-surface-variant">Os avisos por e-mail ainda não estão ligados neste servidor.</p>
+        {% endif %}
+      </section>
+
       <!-- Privacidade (LGPD) -->
       <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
         <div class="flex items-center gap-2.5">
@@ -400,26 +428,26 @@
   <!-- BottomNavBar (Compliant with Shared Components JSON & Semantic Shell Hierarchy) -->
   <!-- Context Lock: Active item is "Minha Conta" because this is the user profile screen -->
   <nav
-    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest dark:bg-inverse-surface shadow-md">
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest shadow-md">
     <!-- Item 1: Assistente (Inactive) -->
-    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high rounded-lg transition-all tactile-press"
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container rounded-lg transition-all tactile-press"
       href="{{ url_for('web.assistente') }}">
       <span class="material-symbols-outlined" data-icon="chat">chat</span>
       <span class="mt-0.5">Assistente</span>
     </a>
     <!-- Item 2: ZARC Clima (Inactive) -->
-    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high rounded-lg transition-all tactile-press"
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container rounded-lg transition-all tactile-press"
       href="{{ url_for('web.clima') }}"><span class="material-symbols-outlined" data-icon="cloud">cloud</span>
       <span class="mt-0.5">Clima e Plantio</span></a>
     <!-- Planejamento (calendário) -->
-    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high rounded-lg transition-all tactile-press"
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container rounded-lg transition-all tactile-press"
       href="{{ url_for('web.planejamento') }}">
       <span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
       <span class="mt-0.5">Planejamento</span>
     </a>
     <!-- Item 3: Minha Conta (ACTIVE - Profile Context) -->
     <a aria-current="page"
-      class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm transition-all tactile-press"
+      class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm transition-all tactile-press"
       href="{{ url_for('web.perfil') }}">
       <span class="material-symbols-outlined" data-icon="person"
         style="font-variation-settings: 'FILL' 1;">person</span>
@@ -527,6 +555,23 @@
     const postJSON = (url, body) => fetch(url, {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF }, body: JSON.stringify(body),
     }).then(async (r) => ({ ok: r.ok, data: await r.json().catch(() => ({})) }));
+
+    const alertsToggle = document.getElementById('alerts-toggle');
+    if (alertsToggle) {
+      const st = document.getElementById('alerts-status'), test = document.getElementById('alerts-test');
+      alertsToggle.addEventListener('change', async () => {
+        const { ok, data } = await postJSON('/perfil/avisos', { on: alertsToggle.checked });
+        if (!ok) { alertsToggle.checked = !alertsToggle.checked; st.textContent = 'Não deu para salvar.'; return; }
+        test.classList.toggle('hidden', !data.on);
+        st.textContent = data.on ? 'Pronto! Você recebe o aviso todo dia às 6h.' : 'Avisos por e-mail desligados.';
+      });
+      test.addEventListener('click', async () => {
+        test.disabled = true; st.textContent = 'Enviando...';
+        const { ok, data } = await postJSON('/perfil/avisos/teste', {});
+        st.textContent = ok ? 'Enviado! Confira seu e-mail (pode cair no spam).' : ((data.error && data.error.message) || 'Não deu para enviar.');
+        test.disabled = false;
+      });
+    }
 
     function openEditModal() {
       document.getElementById('edit-profile-modal').classList.remove('hidden');

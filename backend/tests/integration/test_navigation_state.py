@@ -12,15 +12,17 @@ def test_anonymous_clima_remembers_last_query(client):
     assert r.status_code == 200 and "Araraquara - SP" in html and "milho" in html.lower()
 
 
-def test_home_goes_straight_to_result_after_a_query(client):
+def test_home_offers_continue_after_a_query(client):
     client.get("/clima", query_string=Q)
-    r = client.get("/")
+    html = client.get("/").get_data(as_text=True)  # landing
+    assert "Continuar:" in html and "Araraquara" in html
+    r = client.get("/consulta")  # formulário: volta direto ao resultado
     assert r.status_code == 302 and r.headers["Location"].endswith("/clima")
 
 
 def test_new_query_form_is_prefilled_and_not_redirected(client):
     client.get("/clima", query_string=Q)
-    r = client.get("/", query_string={"nova": 1, "place": "Araraquara SP", "crop": "Milho"})
+    r = client.get("/consulta", query_string={"nova": 1, "place": "Araraquara SP", "crop": "Milho"})
     html = r.get_data(as_text=True)
     assert r.status_code == 200 and 'value="Araraquara SP"' in html and 'value="Milho"' in html
 
@@ -34,13 +36,13 @@ def test_crop_switch_keeps_place(client):
 def test_first_visit_without_state_shows_form(client):
     r = client.get("/clima")
     assert r.status_code == 302 and "nova=1" in r.headers["Location"]
-    assert client.get("/").status_code == 200
+    assert client.get("/").status_code == 200 and client.get("/consulta").status_code == 200
 
 
 def test_logged_user_with_farm_goes_to_result(client):
     signup(client)
     api(client, "/perfil/propriedade", {"place": "Araraquara SP", "soil_group": "2", "crops": ["milho"]})
-    r = client.get("/")
+    r = client.get("/consulta")
     assert r.status_code == 302 and r.headers["Location"].endswith("/clima")
     html = client.get("/clima").get_data(as_text=True)
     assert "Araraquara - SP" in html

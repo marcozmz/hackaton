@@ -23,6 +23,7 @@ def test_calendar_shows_real_zarc_month(client):
 
 def test_next_windows_and_month_navigation(client):
     _, html = page(client, mes="2026-10")
+    html = " ".join(html.split())  # o formatador quebra textos longos em várias linhas
     assert "Próximas Janelas de Plantio" in html and "Aberta agora" in html
     assert "mes=2026-09" in html and "mes=2026-11" in html
 
