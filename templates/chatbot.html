@@ -121,6 +121,7 @@
       }
     }
   </script>
+  {% include '_theme.html' %}
   <style>
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -144,7 +145,7 @@
 <body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen">
   <!-- TopAppBar Fixed Header -->
   <header
-    class="fixed top-0 left-0 right-0 z-40 bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline">
+    class="fixed top-0 left-0 right-0 z-40 bg-surface border-b border-outline-variant">
     <div class="flex justify-between items-center w-full px-4 h-16 max-w-5xl mx-auto">
       <!-- Leading Icon / Brand identity -->
       <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-3">
@@ -154,7 +155,7 @@
         <div>
           <div class="flex items-center gap-2">
             <span
-              class="font-headline-md text-headline-md font-bold text-secondary dark:text-secondary-fixed">Plant+Facil</span>
+              class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
           </div>
           <!-- Online status pill -->
           <div class="flex items-center gap-1.5 mt-0.5">
@@ -247,27 +248,27 @@
   </div>
   <!-- BottomNavBar (Strict adherence to Shared Components JSON) -->
   <nav
-    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface">
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest">
     <!-- Tab 1: Assistente (Active) -->
-    <a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm active:scale-95 transition-all duration-150"
+    <a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm active:scale-95 transition-all duration-150"
       href="{{ url_for('web.assistente') }}">
       <span class="material-symbols-outlined" data-icon="chat" style="font-variation-settings: 'FILL' 1;">chat</span>
       <span class="font-bold mt-0.5">Assistente</span>
     </a>
     <!-- Tab 2: ZARC Clima (Inactive) -->
-    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container active:scale-95 transition-all duration-150"
       href="{{ url_for('web.clima') }}">
       <span class="material-symbols-outlined" data-icon="cloud">cloud</span>
       <span class="mt-0.5">Clima e Plantio</span>
     </a>
     <!-- Planejamento (calendário) -->
-    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container active:scale-95 transition-all duration-150"
       href="{{ url_for('web.planejamento') }}">
       <span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
       <span class="mt-0.5">Planejamento</span>
     </a>
     <!-- Tab 3: Minha Conta (Inactive) -->
-    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container active:scale-95 transition-all duration-150"
       href="{{ url_for('web.perfil') }}">
       <span class="material-symbols-outlined" data-icon="person">person</span>
       <span class="mt-0.5">Minha Conta</span>

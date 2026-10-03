@@ -114,6 +114,7 @@
       }
     };
   </script>
+  {% include '_theme.html' %}
   <link rel="manifest" href="{{ url_for('web.manifest') }}">
   <meta name="theme-color" content="#016d30">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
@@ -122,7 +123,7 @@
 <body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
   <!-- TopAppBar Component (from Shared Components JSON) -->
   <header
-    class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-40">
+    class="bg-surface border-b border-outline-variant sticky top-0 z-40">
     <div class="flex justify-between items-center w-full px-4 h-16 max-w-5xl mx-auto">
       <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-2">
         <img
@@ -130,13 +131,13 @@
           alt="Logo Plant+Facil" class="w-9 h-9 object-contain rounded-xl shadow-sm">
         <div class="flex flex-col">
           <span
-            class="font-headline-md text-headline-md font-bold text-secondary dark:text-secondary-fixed">Plant+Facil</span>
+            class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
           <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Plant+Facil - Clima e
             Plantio</span>
         </div>
       </a>
       <button aria-label="Histórico de consultas"
-        class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container text-on-surface-variant hover:text-primary active:scale-95 transition-all duration-150">
+        class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-primary active:scale-95 transition-all duration-150">
         <span class="material-symbols-outlined" data-icon="history">history</span>
       </button>
     </div>
@@ -631,29 +632,29 @@
   <!-- BottomNavBar Component (from Shared Components JSON) -->
   <!-- Semantic Mapping: Current screen is 'ZARC Clima', which matches destination index 1 -->
   <nav aria-label="Navegação Principal"
-    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface">
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest">
     <!-- Item 1: Assistente (Inactive) -->
-    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container active:scale-95 transition-all duration-150"
       href="{{ url_for('web.assistente') }}">
       <span class="material-symbols-outlined text-2xl" data-icon="chat">chat</span>
       <span class="">Assistente</span>
     </a>
     <!-- Item 2: ZARC Clima (ACTIVE - Selected Destination) -->
     <a aria-current="page"
-      class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm active:scale-95 transition-all duration-150 font-bold"
+      class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm active:scale-95 transition-all duration-150 font-bold"
       href="{{ url_for('web.clima') }}">
       <span class="material-symbols-outlined text-2xl" data-icon="cloud" data-weight="fill"
         style="font-variation-settings: 'FILL' 1;">cloud</span>
       <span class="">Clima e Plantio</span>
     </a>
     <!-- Planejamento (calendário) -->
-    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container active:scale-95 transition-all duration-150"
       href="{{ url_for('web.planejamento') }}">
       <span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
       <span class="">Planejamento</span>
     </a>
     <!-- Item 3: Minha Conta (Inactive) -->
-    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container active:scale-95 transition-all duration-150"
       href="{{ url_for('web.perfil') }}">
       <span class="material-symbols-outlined text-2xl" data-icon="person">person</span>
       <span class="">Minha Conta</span>
