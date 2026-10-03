@@ -152,10 +152,13 @@
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-6">
       <div class="flex items-center gap-8">
         <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
+          <div
+            class="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
             <svg class="w-7 h-7 text-secondary-container" fill="currentColor" viewBox="0 0 100 100">
-              <path d="M50 15 C30 35 25 55 25 70 C25 82 36 90 50 90 C64 90 75 82 75 70 C75 55 70 35 50 15 Z" fill="#92f5a4"></path>
-              <path d="M50 30 L50 78 M50 48 Q62 46 64 42 M50 60 Q38 58 36 54" fill="none" stroke="#016d30" stroke-linecap="round" stroke-width="6"></path>
+              <path d="M50 15 C30 35 25 55 25 70 C25 82 36 90 50 90 C64 90 75 82 75 70 C75 55 70 35 50 15 Z"
+                fill="#92f5a4"></path>
+              <path d="M50 30 L50 78 M50 48 Q62 46 64 42 M50 60 Q38 58 36 54" fill="none" stroke="#016d30"
+                stroke-linecap="round" stroke-width="6"></path>
               <circle cx="50" cy="85" fill="#f8da5a" r="4.5"></circle>
             </svg>
           </div>
@@ -166,13 +169,18 @@
         </a>
         <div class="hidden md:flex items-center gap-2">
           {% if season %}
-          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
-            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">calendar_today</span><span>{{ season }}</span>
+          <div
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
+            <span class="material-symbols-outlined text-[16px]"
+              style="font-variation-settings: 'FILL' 1;">calendar_today</span><span>{{ season }}</span>
           </div>
           {% endif %}
-          <div class="inline-flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm bg-surface-container-lowest border border-outline-variant px-3 py-1.5 rounded-full">
-            <span class="material-symbols-outlined text-secondary text-[16px]">location_on</span><span class="font-medium text-on-surface">{{ place.name }} - {{ place.uf }}</span>
-            <a class="ml-1 text-secondary underline print:hidden" href="{{ url_for('web.inicio', nova=1, place=place.name ~ ' ' ~ place.uf, crop=crop.name, soil=soil_param) }}">trocar</a>
+          <div
+            class="inline-flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm bg-surface-container-lowest border border-outline-variant px-3 py-1.5 rounded-full">
+            <span class="material-symbols-outlined text-secondary text-[16px]">location_on</span><span
+              class="font-medium text-on-surface">{{ place.name }} - {{ place.uf }}</span>
+            <a class="ml-1 text-secondary underline print:hidden"
+              href="{{ url_for('web.inicio', nova=1, place=place.name ~ ' ' ~ place.uf, crop=crop.name, soil=soil_param) }}">trocar</a>
           </div>
         </div>
       </div>
@@ -181,10 +189,14 @@
           class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-primary"
           title="Ver a orientação completa"><span class="material-symbols-outlined text-[22px]">cloud</span></a>
         <details class="relative">
-          <summary class="list-none w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-primary cursor-pointer"
-            title="Ajuda sobre o calendário"><span class="material-symbols-outlined text-[22px]">help_outline</span></summary>
-          <div class="absolute right-0 mt-2 w-72 bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-lg text-body-sm text-on-surface z-50">
-            As cores vêm do <strong>calendário oficial de plantio (ZARC/MAPA)</strong> para {{ crop.name|lower }} em {{ place.name }}{% if soil %}, {{ soil.name|lower }}{% endif %}.
+          <summary
+            class="list-none w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-primary cursor-pointer"
+            title="Ajuda sobre o calendário"><span class="material-symbols-outlined text-[22px]">help_outline</span>
+          </summary>
+          <div
+            class="absolute right-0 mt-2 w-72 bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-lg text-body-sm text-on-surface z-50">
+            As cores vêm do <strong>calendário oficial de plantio (ZARC/MAPA)</strong> para {{ crop.name|lower }} em {{
+            place.name }}{% if soil %}, {{ soil.name|lower }}{% endif %}.
             O ponto azul é chuva prevista (Open-Meteo), só nos próximos dias. Toque num dia para ver o que fazer.
           </div>
         </details>
@@ -198,8 +210,11 @@
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-3">
           <h2 class="font-headline-sm text-headline-sm text-primary flex items-center gap-2" id="culturas-heading"><span
-              class="material-symbols-outlined text-secondary text-[24px]">psychiatry</span><span>Cultura Selecionada</span></h2>
-          <span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-low px-3 py-1 rounded-lg border border-outline-variant/50">{{ soil.name if soil else 'Tipo de terra: não sei' }}</span>
+              class="material-symbols-outlined text-secondary text-[24px]">psychiatry</span><span>Cultura
+              Selecionada</span></h2>
+          <span
+            class="font-label-md text-label-md text-on-surface-variant bg-surface-container-low px-3 py-1 rounded-lg border border-outline-variant/50">{{
+            soil.name if soil else 'Tipo de terra: não sei' }}</span>
         </div>
         <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar">
           {% for c in crops %}
@@ -213,24 +228,32 @@
     </section>
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
       <!-- Calendário -->
-      <section class="lg:col-span-7 bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm space-y-4">
+      <section
+        class="lg:col-span-7 bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-outline-variant/50">
           <div>
             <h3 class="font-headline-md text-headline-md text-primary">{{ cal.title }}</h3>
             <p class="font-label-md text-label-md text-secondary font-medium">{{ cal.subtitle }}</p>
           </div>
-          <div class="flex items-center gap-1 bg-surface-container-low rounded-lg p-0.5 border border-outline-variant/60 print:hidden">
-            <a aria-label="Mês Anterior" href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=crop.slug, soil=soil_param, mes=cal.prev) }}"
-              class="w-9 h-9 rounded flex items-center justify-center text-on-surface-variant hover:text-primary active:scale-90 transition-all"><span class="material-symbols-outlined text-[22px]">chevron_left</span></a>
+          <div
+            class="flex items-center gap-1 bg-surface-container-low rounded-lg p-0.5 border border-outline-variant/60 print:hidden">
+            <a aria-label="Mês Anterior"
+              href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=crop.slug, soil=soil_param, mes=cal.prev) }}"
+              class="w-9 h-9 rounded flex items-center justify-center text-on-surface-variant hover:text-primary active:scale-90 transition-all"><span
+                class="material-symbols-outlined text-[22px]">chevron_left</span></a>
             <span class="h-5 w-px bg-outline-variant"></span>
-            <a aria-label="Próximo Mês" href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=crop.slug, soil=soil_param, mes=cal.next) }}"
-              class="w-9 h-9 rounded flex items-center justify-center text-on-surface-variant hover:text-primary active:scale-90 transition-all"><span class="material-symbols-outlined text-[22px]">chevron_right</span></a>
+            <a aria-label="Próximo Mês"
+              href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=crop.slug, soil=soil_param, mes=cal.next) }}"
+              class="w-9 h-9 rounded flex items-center justify-center text-on-surface-variant hover:text-primary active:scale-90 transition-all"><span
+                class="material-symbols-outlined text-[22px]">chevron_right</span></a>
           </div>
         </div>
-        <div class="grid grid-cols-7 gap-2 text-center font-label-md text-label-md text-on-surface-variant pt-1 font-semibold">
+        <div
+          class="grid grid-cols-7 gap-2 text-center font-label-md text-label-md text-on-surface-variant pt-1 font-semibold">
           <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
         </div>
-        {% set DOT = {'ideal': 'bg-secondary', 'attention': 'bg-amber-500', 'prep': 'bg-primary-container', 'out': 'bg-error', 'no_data': 'bg-outline-variant'} %}
+        {% set DOT = {'ideal': 'bg-secondary', 'attention': 'bg-amber-500', 'prep': 'bg-primary-container', 'out':
+        'bg-error', 'no_data': 'bg-outline-variant'} %}
         <div class="grid grid-cols-7 gap-2 text-center font-label-md text-label-md">
           {% for week in cal.weeks %}{% for c in week %}
           {% if not c.in_month %}
@@ -239,57 +262,85 @@
           <a href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=crop.slug, soil=soil_param, dia=c.date.isoformat()) }}"
             title="{{ cal.levels[c.level] }}{% if c.risk_pct %} ({{ c.risk_pct }}%){% endif %}{% if c.rain_mm is not none %} · chuva {{ c.rain_mm|round|int }} mm{% endif %}"
             class="p-2 rounded-lg flex flex-col items-center justify-center {{ 'bg-secondary text-on-secondary font-bold shadow-md scale-105 ring-2 ring-secondary-container' if c.is_selected else 'hover:bg-surface-container-low' }} {{ 'outline outline-2 outline-primary' if c.is_today and not c.is_selected else '' }}">
-            <span class="{{ '' if c.is_selected else 'text-on-surface font-medium' }}">{% if c.best %}<span class="material-symbols-outlined text-[14px] text-amber-500 align-top" style="font-variation-settings: 'FILL' 1;" title="Melhor dia para semear">star</span>{% endif %}{{ c.date.day }}</span>
+            <span class="{{ '' if c.is_selected else 'text-on-surface font-medium' }}">{% if c.best %}<span
+                class="material-symbols-outlined text-[14px] text-amber-500 align-top"
+                style="font-variation-settings: 'FILL' 1;" title="Melhor dia para semear">star</span>{% endif %}{{
+              c.date.day }}</span>
             <span class="flex items-center gap-0.5 mt-1">
-              <span class="w-2 h-2 rounded-full {{ DOT[c.level] }} {{ 'ring-1 ring-white' if c.is_selected else '' }}"></span>
-              {% if c.rain_mm is not none and c.rain_mm >= 10 %}<span class="w-2 h-2 rounded-full {{ 'bg-error' if c.heavy_rain else 'bg-blue-500' }}"></span>{% endif %}
-              {% if c.tasks %}<span class="text-[9px] leading-none {{ '' if c.is_selected else 'text-on-surface-variant' }}">{{ c.done }}/{{ c.tasks }}</span>{% endif %}
+              <span
+                class="w-2 h-2 rounded-full {{ DOT[c.level] }} {{ 'ring-1 ring-white' if c.is_selected else '' }}"></span>
+              {% if c.rain_mm is not none and c.rain_mm >= 10 %}<span
+                class="w-2 h-2 rounded-full {{ 'bg-error' if c.heavy_rain else 'bg-blue-500' }}"></span>{% endif %}
+              {% if c.tasks %}<span
+                class="text-[9px] leading-none {{ '' if c.is_selected else 'text-on-surface-variant' }}">{{ c.done }}/{{
+                c.tasks }}</span>{% endif %}
             </span>
           </a>
           {% endif %}
           {% endfor %}{% endfor %}
         </div>
-        <div class="mt-4 pt-3.5 border-t border-outline-variant/60 flex flex-wrap items-center gap-x-4 gap-y-2 text-label-sm font-label-sm">
+        <div
+          class="mt-4 pt-3.5 border-t border-outline-variant/60 flex flex-wrap items-center gap-x-4 gap-y-2 text-label-sm font-label-sm">
           {% for lv in ['ideal', 'attention', 'prep', 'out'] %}
-          <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full {{ DOT[lv] }} inline-block"></span><span class="text-on-surface-variant font-medium">{{ cal.levels[lv] }}</span></div>
+          <div class="flex items-center gap-2"><span
+              class="w-3 h-3 rounded-full {{ DOT[lv] }} inline-block"></span><span
+              class="text-on-surface-variant font-medium">{{ cal.levels[lv] }}</span></div>
           {% endfor %}
-          {% if cal.has_forecast %}<div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span><span class="text-on-surface-variant font-medium">{{ cal.rain_legend }}</span></div>{% endif %}
+          {% if cal.has_forecast %}<div class="flex items-center gap-2"><span
+              class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span><span
+              class="text-on-surface-variant font-medium">{{ cal.rain_legend }}</span></div>{% endif %}
         </div>
         {% if cal.best_day %}
         <a href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=crop.slug, soil=soil_param, dia=cal.best_day.date.isoformat()) }}"
           class="flex items-start gap-2 rounded-lg border-2 border-secondary bg-secondary-container/40 p-3">
           <span class="material-symbols-outlined text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span>
-          <span class="text-body-sm"><strong>Melhor dia para semear:</strong> {{ cal.best_day.label }} — {{ cal.best_day.reasons|join(', ') }}.</span>
+          <span class="text-body-sm"><strong>Melhor dia para semear:</strong> {{ cal.best_day.label }} — {{
+            cal.best_day.reasons|join(', ') }}.</span>
         </a>
         {% endif %}
-        <p class="text-[11px] text-outline">Cores: ZARC – Tábua de Risco (MAPA){% if cal.has_forecast %} · Chuva: Open-Meteo (próximos dias){% endif %}.</p>
+        <p class="text-[11px] text-outline">Cores: ZARC – Tábua de Risco (MAPA){% if cal.has_forecast %} · Chuva:
+          Open-Meteo (próximos dias){% endif %}.</p>
       </section>
       <!-- Dia selecionado -->
-      <section class="lg:col-span-5 bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm space-y-4">
+      <section
+        class="lg:col-span-5 bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm space-y-4">
         {% set sel = cal.selected %}
         <div class="flex items-start justify-between gap-3">
           <div class="space-y-1">
             {% if sel.level %}
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-sm text-label-sm font-semibold {{ {'ideal': 'bg-secondary-container text-on-secondary-container', 'attention': 'bg-amber-100 text-amber-900', 'prep': 'bg-primary-fixed text-on-primary-fixed', 'out': 'bg-error-container text-on-error-container', 'no_data': 'bg-surface-container-high text-on-surface'}[sel.level] }}">
-              <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">{{ {'ideal': 'star', 'attention': 'warning', 'prep': 'agriculture', 'out': 'block', 'no_data': 'help'}[sel.level] }}</span>
+            <div
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-sm text-label-sm font-semibold {{ {'ideal': 'bg-secondary-container text-on-secondary-container', 'attention': 'bg-amber-100 text-amber-900', 'prep': 'bg-primary-fixed text-on-primary-fixed', 'out': 'bg-error-container text-on-error-container', 'no_data': 'bg-surface-container-high text-on-surface'}[sel.level] }}">
+              <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">{{
+                {'ideal': 'star', 'attention': 'warning', 'prep': 'agriculture', 'out': 'block', 'no_data':
+                'help'}[sel.level] }}</span>
               <span>{{ sel.level_text }}{% if sel.risk %} · {{ sel.risk }}%{% endif %}</span>
             </div>
             {% endif %}
             <h3 class="font-headline-md text-headline-md text-primary">{{ sel.label }}</h3>
-            <p class="font-body-md text-body-md text-on-surface-variant">{{ crop.name }} em {{ place.name }}{% if cal.window %} · janela {{ 'atual' if cal.window.is_current else 'seguinte' }}: {{ cal.window.label }}{% endif %}</p>
+            <p class="font-body-md text-body-md text-on-surface-variant">{{ crop.name }} em {{ place.name }}{% if
+              cal.window %} · janela {{ 'atual' if cal.window.is_current else 'seguinte' }}: {{ cal.window.label }}{%
+              endif %}</p>
           </div>
           {% if sel.forecast %}
-          <div class="text-right flex flex-col items-end bg-surface-container-low px-3 py-2 rounded-xl border border-outline-variant/40">
-            <span class="material-symbols-outlined {{ 'text-error' if (sel.forecast.precip_mm or 0) >= 50 else 'text-secondary' }} text-[28px]">{{ 'thunderstorm' if (sel.forecast.precip_mm or 0) >= 50 else ('rainy' if (sel.forecast.precip_mm or 0) >= 1 else 'wb_sunny') }}</span>
-            <span class="font-label-md text-label-md text-on-surface font-semibold">{{ sel.forecast.t_min|round|int }}°C / {{ sel.forecast.t_max|round|int }}°C</span>
-            <span class="text-[11px] text-on-surface-variant">{{ (sel.forecast.precip_mm or 0)|round|int }} mm de chuva</span>
+          <div
+            class="text-right flex flex-col items-end bg-surface-container-low px-3 py-2 rounded-xl border border-outline-variant/40">
+            <span
+              class="material-symbols-outlined {{ 'text-error' if (sel.forecast.precip_mm or 0) >= 50 else 'text-secondary' }} text-[28px]">{{
+              'thunderstorm' if (sel.forecast.precip_mm or 0) >= 50 else ('rainy' if (sel.forecast.precip_mm or 0) >= 1
+              else 'wb_sunny') }}</span>
+            <span class="font-label-md text-label-md text-on-surface font-semibold">{{ sel.forecast.t_min|round|int }}°C
+              / {{ sel.forecast.t_max|round|int }}°C</span>
+            <span class="text-[11px] text-on-surface-variant">{{ (sel.forecast.precip_mm or 0)|round|int }} mm de
+              chuva</span>
           </div>
           {% endif %}
         </div>
         <div class="space-y-3 pt-1">
-          <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">O que o Plant+Facil sugere</p>
+          <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">O que o Plant+Facil
+            sugere</p>
           {% for s in sel.suggestions %}
-          <div class="flex items-start gap-3 p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/60">
+          <div
+            class="flex items-start gap-3 p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/60">
             <span class="material-symbols-outlined text-secondary text-[22px] flex-shrink-0">tips_and_updates</span>
             <div class="flex-1">
               <p class="font-label-md text-label-md text-on-surface font-semibold">{{ s.title }}</p>
@@ -297,119 +348,147 @@
             </div>
           </div>
           {% endfor %}
-          <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider pt-2">Minhas atividades neste dia</p>
+          <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider pt-2">Minhas atividades
+            neste dia</p>
           <div id="lista-atividades" class="space-y-2">
             {% for t in sel.tasks %}
-            <label class="atividade flex items-start gap-3 p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/60 cursor-pointer hover:bg-surface-container transition-all" data-id="{{ t.id }}">
-              <input class="mt-0.5 w-5 h-5 rounded border-outline text-secondary focus:ring-secondary" type="checkbox" {% if t.done %}checked{% endif %}>
-              <p class="flex-1 font-label-md text-label-md text-on-surface font-semibold {{ 'line-through opacity-60' if t.done else '' }}">{{ t.title }}</p>
-              <button type="button" class="excluir text-outline hover:text-error print:hidden" aria-label="Excluir atividade"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+            <label
+              class="atividade flex items-start gap-3 p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/60 cursor-pointer hover:bg-surface-container transition-all"
+              data-id="{{ t.id }}">
+              <input class="mt-0.5 w-5 h-5 rounded border-outline text-secondary focus:ring-secondary" type="checkbox"
+                {% if t.done %}checked{% endif %}>
+              <p
+                class="flex-1 font-label-md text-label-md text-on-surface font-semibold {{ 'line-through opacity-60' if t.done else '' }}">
+                {{ t.title }}</p>
+              <button type="button" class="excluir text-outline hover:text-error print:hidden"
+                aria-label="Excluir atividade"><span
+                  class="material-symbols-outlined text-[20px]">delete</span></button>
             </label>
             {% else %}
             <p class="text-body-sm text-on-surface-variant" id="sem-atividades">Nenhuma atividade anotada.</p>
             {% endfor %}
           </div>
           {% if current_user %}
-          <form id="form-atividade" class="flex gap-2 print:hidden" data-date="{{ sel.date.isoformat() }}" data-crop="{{ crop.slug }}">
+          <form id="form-atividade" class="flex gap-2 print:hidden" data-date="{{ sel.date.isoformat() }}"
+            data-crop="{{ crop.slug }}">
             <input id="titulo-atividade" maxlength="120" required placeholder="Ex.: comprar semente, preparar a terra…"
               class="flex-1 px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant text-body-sm">
-            <button class="py-2.5 px-3 rounded-xl border-2 border-dashed border-outline-variant text-primary font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-low" type="submit">
+            <button
+              class="py-2.5 px-3 rounded-xl border-2 border-dashed border-outline-variant text-primary font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-low"
+              type="submit">
               <span class="material-symbols-outlined text-[20px]">add_task</span> Anotar</button>
           </form>
           <p id="erro-atividade" class="hidden text-sm text-error font-semibold"></p>
           {% else %}
-          <a href="{{ url_for('web.login', next=request.full_path) }}" class="block text-center py-2.5 px-3 rounded-xl border-2 border-dashed border-outline-variant text-primary font-label-md text-label-md print:hidden">
+          <a href="{{ url_for('web.login', next=request.full_path) }}"
+            class="block text-center py-2.5 px-3 rounded-xl border-2 border-dashed border-outline-variant text-primary font-label-md text-label-md print:hidden">
             Entre na sua conta para anotar atividades</a>
           {% endif %}
         </div>
         <div class="flex flex-col sm:flex-row gap-2.5 pt-1 print:hidden">
           <a href="{{ cal.google_calendar_url }}" target="_blank" rel="noopener noreferrer"
             class="flex-1 py-2.5 px-3 rounded-xl bg-surface-container-low border border-outline-variant/60 text-secondary hover:bg-secondary-container/20 font-label-md text-label-md flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all"><span
-              class="material-symbols-outlined text-[20px] text-secondary" style="font-variation-settings: 'FILL' 1;">calendar_add_on</span><span>Exportar para Google Agenda</span></a>
+              class="material-symbols-outlined text-[20px] text-secondary"
+              style="font-variation-settings: 'FILL' 1;">calendar_add_on</span><span>Exportar para Google
+              Agenda</span></a>
           <a href="{{ whatsapp }}" target="_blank" rel="noopener noreferrer"
             class="flex-1 py-2.5 px-3 rounded-xl bg-[#25D366] text-white font-label-md text-label-md flex items-center justify-center gap-2 shadow-sm"><span
               class="material-symbols-outlined text-[20px]">share</span><span>Mandar no WhatsApp</span></a>
         </div>
-        <p class="text-[11px] text-outline print:hidden">A exportação abre o Google Agenda com o título e as atividades deste dia; nada é enviado sem você confirmar lá.</p>
+        <p class="text-[11px] text-outline print:hidden">A exportação abre o Google Agenda com o título e as atividades
+          deste dia; nada é enviado sem você confirmar lá.</p>
       </section>
     </div>
     <!-- Próximas janelas (dados reais do ZARC) -->
     <section class="space-y-4 pt-2">
       <div class="flex items-center justify-between">
         <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2"><span
-            class="material-symbols-outlined text-secondary text-[26px]">lightbulb</span><span>Próximas Janelas de Plantio</span></h3>
-        <span class="font-label-md text-label-md text-secondary font-semibold bg-secondary-container/40 px-3 py-1 rounded-full">{{ place.name }} · {{ windows_scope }}</span>
+            class="material-symbols-outlined text-secondary text-[26px]">lightbulb</span><span>Próximas Janelas de
+            Plantio</span></h3>
+        <span
+          class="font-label-md text-label-md text-secondary font-semibold bg-secondary-container/40 px-3 py-1 rounded-full">{{
+          place.name }} · {{ windows_scope }}</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {% for w in windows %}
         <a href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=w.crop.slug, soil=soil_param, dia=w.start.isoformat() if w.start else None) }}"
           class="block bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm space-y-3 hover:bg-surface-container-low">
           <div class="flex items-center justify-between">
-            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-sm text-label-sm font-semibold {{ 'bg-secondary-container text-on-secondary-container' if w.is_current else 'bg-primary-fixed text-on-primary-fixed' if w.has_zarc else 'bg-surface-container-high text-on-surface' }}">
-              <span class="material-symbols-outlined text-[14px]">{{ 'event_available' if w.is_current else 'event_repeat' }}</span>
-              <span>{{ 'Aberta agora' if w.is_current else ('Abre em ' ~ w.start_text if w.has_zarc and w.start_text else 'Sem zoneamento') }}</span></span>
-            {% if w.risk_min %}<span class="font-label-md text-label-md text-primary font-bold">risco a partir de {{ w.risk_min }}%</span>{% endif %}
+            <span
+              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-sm text-label-sm font-semibold {{ 'bg-secondary-container text-on-secondary-container' if w.is_current else 'bg-primary-fixed text-on-primary-fixed' if w.has_zarc else 'bg-surface-container-high text-on-surface' }}">
+              <span class="material-symbols-outlined text-[14px]">{{ 'event_available' if w.is_current else
+                'event_repeat' }}</span>
+              <span>{{ 'Aberta agora' if w.is_current else ('Abre em ' ~ w.start_text if w.has_zarc and w.start_text
+                else 'Sem zoneamento') }}</span></span>
+            {% if w.risk_min %}<span class="font-label-md text-label-md text-primary font-bold">risco a partir de {{
+              w.risk_min }}%</span>{% endif %}
           </div>
           <h4 class="font-headline-sm text-headline-sm text-on-surface">{{ w.crop.name }}</h4>
-          <p class="font-body-md text-body-md text-on-surface-variant">{% if w.has_zarc %}Período indicado: {{ w.label }}.{% else %}O calendário oficial não traz esta cultura para {{ place.name }}.{% endif %}</p>
+          <p class="font-body-md text-body-md text-on-surface-variant">{% if w.has_zarc %}Período indicado: {{ w.label
+            }}.{% else %}O calendário oficial não traz esta cultura para {{ place.name }}.{% endif %}</p>
         </a>
         {% endfor %}
       </div>
       <div class="pt-2 flex justify-end print:hidden"><button onclick="window.print()"
           class="w-full sm:w-auto min-w-[320px] py-3.5 px-6 rounded-xl bg-primary text-on-primary font-label-lg text-label-lg font-bold shadow-md hover:bg-primary-container active:scale-98 transition-all flex items-center justify-center gap-2.5"
-          type="button"><span class="material-symbols-outlined text-[24px]">menu_book</span><span>Imprimir / salvar em PDF (caderno de campo)</span></button></div>
+          type="button"><span class="material-symbols-outlined text-[24px]">menu_book</span><span>Imprimir / salvar em
+            PDF (caderno de campo)</span></button></div>
     </section>
   </main>
   <nav aria-label="Navegação Principal"
     class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2.5 px-4 shadow-lg flex items-center justify-around w-full print:hidden">
     <a href="{{ url_for('web.assistente') }}"
       class="flex-1 flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-emerald-800 transition-colors py-1"><span
-        class="material-symbols-outlined text-[22px]">chat</span><span class="text-[11px] font-medium leading-none">Assistente</span></a>
+        class="material-symbols-outlined text-[22px]">chat</span><span
+        class="text-[11px] font-medium leading-none">Assistente</span></a>
     <a href="{{ url_for('web.clima') }}"
       class="flex-1 flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-emerald-800 transition-colors py-1"><span
-        class="material-symbols-outlined text-[22px]">cloud</span><span class="text-[11px] font-medium leading-none">Clima</span></a>
+        class="material-symbols-outlined text-[22px]">cloud</span><span
+        class="text-[11px] font-medium leading-none">Clima e Plantio</span></a>
     <div class="flex-1 flex justify-center"><a aria-current="page" href="{{ url_for('web.planejamento') }}"
         class="inline-flex flex-col items-center justify-center gap-1 bg-secondary-container text-on-secondary-container font-bold px-5 py-1.5 rounded-2xl shadow-sm transition-all"><span
-          class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">calendar_month</span><span
+          class="material-symbols-outlined text-[22px]"
+          style="font-variation-settings: 'FILL' 1;">calendar_month</span><span
           class="text-[11px] font-bold leading-none">Planejamento</span></a></div>
     <a href="{{ url_for('web.perfil') }}"
       class="flex-1 flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-emerald-800 transition-colors py-1"><span
-        class="material-symbols-outlined text-[22px]">person</span><span class="text-[11px] font-medium leading-none">Minha Conta</span></a>
+        class="material-symbols-outlined text-[22px]">person</span><span
+        class="text-[11px] font-medium leading-none">Minha Conta</span></a>
   </nav>
   {% if current_user %}
   <script>
-    (() => {
-      const CSRF = '{{ csrf_token() }}';
-      const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF }, body: JSON.stringify(body || {}) })
-        .then(async (r) => ({ ok: r.ok, data: await r.json().catch(() => ({})) }));
-      const lista = document.getElementById('lista-atividades');
-      lista.addEventListener('change', async (e) => {
-        const item = e.target.closest('.atividade');
-        if (!item || e.target.type !== 'checkbox') return;
-        const { ok } = await post(`/planejamento/atividades/${item.dataset.id}/feito`, { done: e.target.checked });
-        if (ok) item.querySelector('p').classList.toggle('line-through', e.target.checked);
-        else e.target.checked = !e.target.checked;
-      });
-      lista.addEventListener('click', async (e) => {
-        const b = e.target.closest('.excluir');
-        if (!b) return;
-        e.preventDefault();
-        const item = b.closest('.atividade');
-        const { ok } = await post(`/planejamento/atividades/${item.dataset.id}/excluir`);
-        if (ok) window.location.reload();
-      });
-      const form = document.getElementById('form-atividade');
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const titulo = document.getElementById('titulo-atividade').value.trim();
-        if (!titulo) return;
-        const { ok, data } = await post('/planejamento/atividades', { date: form.dataset.date, title: titulo, crop: form.dataset.crop });
-        if (ok) { window.location.reload(); return; }
-        const err = document.getElementById('erro-atividade');
-        err.textContent = (data.error && data.error.message) || 'Não foi possível anotar.';
-        err.classList.remove('hidden');
-      });
-    })();
+      (() => {
+        const CSRF = '{{ csrf_token() }}';
+        const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF }, body: JSON.stringify(body || {}) })
+          .then(async (r) => ({ ok: r.ok, data: await r.json().catch(() => ({})) }));
+        const lista = document.getElementById('lista-atividades');
+        lista.addEventListener('change', async (e) => {
+          const item = e.target.closest('.atividade');
+          if (!item || e.target.type !== 'checkbox') return;
+          const { ok } = await post(`/planejamento/atividades/${item.dataset.id}/feito`, { done: e.target.checked });
+          if (ok) item.querySelector('p').classList.toggle('line-through', e.target.checked);
+          else e.target.checked = !e.target.checked;
+        });
+        lista.addEventListener('click', async (e) => {
+          const b = e.target.closest('.excluir');
+          if (!b) return;
+          e.preventDefault();
+          const item = b.closest('.atividade');
+          const { ok } = await post(`/planejamento/atividades/${item.dataset.id}/excluir`);
+          if (ok) window.location.reload();
+        });
+        const form = document.getElementById('form-atividade');
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const titulo = document.getElementById('titulo-atividade').value.trim();
+          if (!titulo) return;
+          const { ok, data } = await post('/planejamento/atividades', { date: form.dataset.date, title: titulo, crop: form.dataset.crop });
+          if (ok) { window.location.reload(); return; }
+          const err = document.getElementById('erro-atividade');
+          err.textContent = (data.error && data.error.message) || 'Não foi possível anotar.';
+          err.classList.remove('hidden');
+        });
+      })();
   </script>
   {% endif %}
   <!-- 5. Barra de Navegação Inferior (BottomNavBar) - 4 Abas com Planejamento Ativo -->

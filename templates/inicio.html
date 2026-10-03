@@ -11,17 +11,27 @@
 <body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
   <header class="bg-surface border-b border-outline-variant sticky top-0 z-40">
     <div class="flex items-center w-full px-4 h-16 max-w-5xl mx-auto gap-2">
-      <span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">potted_plant</span>
-      <div class="flex flex-col">
-        <span class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
-        <span class="font-label-sm text-label-sm text-on-surface-variant">Quando plantar, com base em dados oficiais</span>
-      </div>
+      <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-2">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeLnNvmArmr0PbK93DS6-vQqZjJVZ2XAO93LU9X2-Mor8lignDlRGn83UAnNedK7iZ3_sR95mmZ-DATUXWrdq0enGo7uVsOtDF6N9xlU9KZ0D0G41GUQ4CWnuLfzmPjmO2pZPe7fOrg5jwMvMSvwl1OJ_aMdLqYB_jUJu7KO7QgxKZlSUmCXW_DuTe6x1kHzNJWcq69wcmu2h82Ujp9H9-haA1pp5FIfbG35U9WVgoydioNx1xHggPIR7pVsqXGIIm8Z8"
+          alt="Logo Plant+Facil" class="w-9 h-9 object-contain rounded-xl shadow-sm">
+        <div class="flex flex-col">
+          <span class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">Quando plantar, com base em dados
+            oficiais</span>
+        </div>
+      </a>
       <div class="ml-auto flex items-center gap-2">
-        <a href="{{ url_for('web.assistente') }}" class="font-label-md text-label-md text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-base">chat</span><span class="hidden sm:inline">Assistente</span></a>
+        <a href="{{ url_for('web.assistente') }}"
+          class="font-label-md text-label-md text-secondary flex items-center gap-1"><span
+            class="material-symbols-outlined text-base">chat</span><span class="hidden sm:inline">Assistente</span></a>
         {% if current_user %}
-        <a href="{{ url_for('web.perfil') }}" class="font-label-md text-label-md bg-secondary-container text-on-secondary-container rounded-full px-3 py-1 flex items-center gap-1"><span class="material-symbols-outlined text-base">person</span>{{ current_user.display_name.split()[0] }}</a>
+        <a href="{{ url_for('web.perfil') }}"
+          class="font-label-md text-label-md bg-secondary-container text-on-secondary-container rounded-full px-3 py-1 flex items-center gap-1"><span
+            class="material-symbols-outlined text-base">person</span>{{ current_user.display_name.split()[0] }}</a>
         {% else %}
-        <a href="{{ url_for('web.login') }}" class="font-label-md text-label-md border border-secondary text-secondary rounded-full px-3 py-1">Entrar</a>
+        <a href="{{ url_for('web.login') }}"
+          class="font-label-md text-label-md border border-secondary text-secondary rounded-full px-3 py-1">Entrar</a>
         {% endif %}
       </div>
     </div>
@@ -30,14 +40,17 @@
   <main class="max-w-xl mx-auto px-4 pt-6 space-y-5">
     <section class="space-y-1">
       <h1 class="font-headline-lg text-headline-lg text-primary">Vamos ver se é hora de plantar?</h1>
-      <p class="text-on-surface-variant">Responda 3 perguntas. A gente consulta o calendário oficial do governo (ZARC), a previsão do tempo e te explica.</p>
+      <p class="text-on-surface-variant">Responda 3 perguntas. A gente consulta o calendário oficial do governo (ZARC),
+        a previsão do tempo e te explica.</p>
     </section>
 
     {% if excluida %}
-    <div class="bg-secondary-container/40 text-on-surface rounded-xl p-4" role="status">Sua conta e os dados da sua roça foram apagados.</div>
+    <div class="bg-secondary-container/40 text-on-surface rounded-xl p-4" role="status">Sua conta e os dados da sua roça
+      foram apagados.</div>
     {% endif %}
     {% if current_user and not form.get('place') %}
-    <a href="{{ url_for('web.perfil') }}" class="block bg-surface-container-low border border-outline-variant rounded-xl p-3 text-body-sm">
+    <a href="{{ url_for('web.perfil') }}"
+      class="block bg-surface-container-low border border-outline-variant rounded-xl p-3 text-body-sm">
       Cadastre sua propriedade em <strong>Minha conta</strong> para este formulário já vir preenchido.</a>
     {% endif %}
     {% if error %}
@@ -48,13 +61,15 @@
       {% if candidates %}
       <div class="flex flex-wrap gap-2">
         {% for c in candidates %}
-          {% if c.ibge_code %}
-          <a class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 font-label-md text-label-md text-on-surface"
-             href="{{ url_for('web.clima', municipality=c.ibge_code, crop=form.get('crop'), soil=form.get('soil')) }}">{{ c.name }} - {{ c.uf }}</a>
-          {% else %}
-          <a class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 font-label-md text-label-md text-on-surface"
-             href="{{ url_for('web.clima', place=form.get('place'), municipality=form.get('municipality'), crop=c.slug, soil=form.get('soil')) }}">{{ c.name }}</a>
-          {% endif %}
+        {% if c.ibge_code %}
+        <a class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 font-label-md text-label-md text-on-surface"
+          href="{{ url_for('web.clima', municipality=c.ibge_code, crop=form.get('crop'), soil=form.get('soil')) }}">{{
+          c.name }} - {{ c.uf }}</a>
+        {% else %}
+        <a class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 font-label-md text-label-md text-on-surface"
+          href="{{ url_for('web.clima', place=form.get('place'), municipality=form.get('municipality'), crop=c.slug, soil=form.get('soil')) }}">{{
+          c.name }}</a>
+        {% endif %}
         {% endfor %}
       </div>
       {% endif %}
@@ -65,7 +80,8 @@
       <!-- 1. Onde -->
       <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-3">
         <label for="place" class="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
-          <span class="bg-secondary text-on-secondary rounded-full w-7 h-7 inline-flex items-center justify-center text-sm">1</span>
+          <span
+            class="bg-secondary text-on-secondary rounded-full w-7 h-7 inline-flex items-center justify-center text-sm">1</span>
           Onde fica a sua roça?
         </label>
         <input id="place" name="place" list="municipios" autocomplete="off" value="{{ form.get('place', '') }}"
@@ -82,7 +98,8 @@
       <!-- 2. O quê -->
       <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-3">
         <label for="crop" class="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
-          <span class="bg-secondary text-on-secondary rounded-full w-7 h-7 inline-flex items-center justify-center text-sm">2</span>
+          <span
+            class="bg-secondary text-on-secondary rounded-full w-7 h-7 inline-flex items-center justify-center text-sm">2</span>
           O que você quer plantar?
         </label>
         <input id="crop" name="crop" required list="culturas" value="{{ form.get('crop', '') }}" maxlength="80"
@@ -94,29 +111,37 @@
         <div class="flex flex-wrap gap-2">
           {% for c in crops %}
           <button type="button" data-crop="{{ c.official_name }}"
-            class="chip-cultura bg-surface-container-low border border-outline-variant rounded-full px-3 py-1.5 font-label-md text-label-md">{{ c.official_name }}</button>
+            class="chip-cultura bg-surface-container-low border border-outline-variant rounded-full px-3 py-1.5 font-label-md text-label-md">{{
+            c.official_name }}</button>
           {% endfor %}
         </div>
-        <p class="text-body-sm text-on-surface-variant">Pode escrever do seu jeito: "macaxeira", "aipim", "feijão de corda"…</p>
+        <p class="text-body-sm text-on-surface-variant">Pode escrever do seu jeito: "macaxeira", "aipim", "feijão de
+          corda"…</p>
       </div>
 
       <!-- 3. Solo -->
       <fieldset class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-3">
         <legend class="font-headline-sm text-headline-sm text-primary flex items-center gap-2 mb-2">
-          <span class="bg-secondary text-on-secondary rounded-full w-7 h-7 inline-flex items-center justify-center text-sm">3</span>
+          <span
+            class="bg-secondary text-on-secondary rounded-full w-7 h-7 inline-flex items-center justify-center text-sm">3</span>
           Como é a sua terra?
         </legend>
         {% for s in soils %}
-        <label class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/30">
-          <input type="radio" name="soil" value="{{ s.id }}" class="mt-1 text-secondary" {% if form.get('soil') == s.id|string %}checked{% endif %}>
+        <label
+          class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/30">
+          <input type="radio" name="soil" value="{{ s.id }}" class="mt-1 text-secondary" {% if
+            form.get('soil')==s.id|string %}checked{% endif %}>
           <span><strong class="font-label-lg text-label-lg">{{ s.name }}</strong><br>
             <span class="text-body-sm text-on-surface-variant">{{ s.description }}</span></span>
         </label>
         {% endfor %}
-        <label class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/30">
-          <input type="radio" name="soil" value="" class="mt-1 text-secondary" {% if not form.get('soil') %}checked{% endif %}>
+        <label
+          class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/30">
+          <input type="radio" name="soil" value="" class="mt-1 text-secondary" {% if not form.get('soil') %}checked{%
+            endif %}>
           <span><strong class="font-label-lg text-label-lg">Não sei</strong><br>
-            <span class="text-body-sm text-on-surface-variant">A gente mostra o período mais seguro para qualquer terra.</span></span>
+            <span class="text-body-sm text-on-surface-variant">A gente mostra o período mais seguro para qualquer
+              terra.</span></span>
         </label>
       </fieldset>
 
@@ -169,10 +194,340 @@
         place.value = `${m.name} ${m.uf}`;
         status.textContent = `Você está em ${m.name} - ${m.uf}? Se não for, corrija acima.`;
       }, () => { status.textContent = 'Não consegui pegar a localização. Escreva o nome do município.'; },
-      { enableHighAccuracy: false, timeout: 10000 });
+        { enableHighAccuracy: false, timeout: 10000 });
     });
   </script>
   <script src="{{ url_for('web.offline_js') }}" defer></script>
+
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+  <!--Replicar esse botão em todas as telas, para ter voz em tudo-->
+  <!-- Menu de acessibilidade -->
+  <div id="menu-acessibilidade">
+    <button id="botao-acessibilidade" type="button" aria-label="Abrir menu de acessibilidade">
+      <span class="material-symbols-outlined">volume_up</span>
+    </button>
+
+    <div id="painel-acessibilidade" hidden>
+      <h2>Acessibilidade</h2>
+
+      <button id="ler-pagina" type="button">
+        🔊 Ler página
+      </button>
+
+      <button id="pausar-leitura" type="button">
+        ⏸ Pausar
+      </button>
+
+      <button id="continuar-leitura" type="button">
+        ▶ Continuar
+      </button>
+
+      <button id="parar-leitura" type="button">
+        ⏹ Parar
+      </button>
+
+      <div class="controle-acessibilidade">
+        <label for="velocidade-leitura">
+          Velocidade da leitura
+        </label>
+
+        <input id="velocidade-leitura" type="range" min="0.5" max="2" step="0.1" value="1">
+
+        <span id="valor-velocidade">1x</span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    #menu-acessibilidade {
+      position: fixed;
+      left: 24px;
+      bottom: 72px;
+      z-index: 9999;
+      font-family: Arial, sans-serif;
+    }
+
+    @media (max-width: 480px) {
+      #menu-acessibilidade {
+        left: 12px;
+        bottom: 72px;
+      }
+    }
+
+    /* Botão principal */
+    #botao-acessibilidade {
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      border: 3px solid #0057b8;
+      border-radius: 50%;
+      background: transparent;
+      color: #0057b8;
+      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    #botao-acessibilidade .material-symbols-outlined {
+      font-size: 30px;
+      line-height: 1;
+
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 500,
+        'GRAD' 0,
+        'opsz' 32;
+    }
+
+    #botao-acessibilidade:hover {
+      background: rgba(0, 87, 184, 0.12);
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    #botao-acessibilidade:active {
+      transform: scale(0.96);
+    }
+
+    #botao-acessibilidade:focus-visible {
+      outline: 3px solid #0057b8;
+      outline-offset: 3px;
+    }
+
+    /* Painel */
+    #painel-acessibilidade {
+      position: absolute;
+      left: 0;
+      bottom: 76px;
+      width: 300px;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid #d9e2ec;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: abrirMenuAcessibilidade 0.18s ease-out;
+    }
+
+    @keyframes abrirMenuAcessibilidade {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Título */
+    #painel-acessibilidade h2 {
+      margin: 0 0 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #17324d;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    /* Botões */
+    #painel-acessibilidade button {
+      width: 100%;
+      min-height: 44px;
+      margin-bottom: 9px;
+      padding: 10px 12px;
+      border: 1px solid #d6dee8;
+      border-radius: 8px;
+      background: #f5f8fb;
+      color: #17324d;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: left;
+      transition: background 0.15s ease, border-color 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    #painel-acessibilidade button:hover {
+      background: #e8f1fa;
+      border-color: #0057b8;
+      transform: translateY(-1px);
+    }
+
+    #painel-acessibilidade button:active {
+      transform: translateY(0);
+    }
+
+    #painel-acessibilidade button:focus-visible {
+      outline: 3px solid #ffcc00;
+      outline-offset: 2px;
+    }
+
+    /* Controle de velocidade */
+    .controle-acessibilidade {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e5e7eb;
+      color: #17324d;
+    }
+
+    .controle-acessibilidade label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    #velocidade-leitura {
+      width: 100%;
+      height: 5px;
+      accent-color: #0057b8;
+      cursor: pointer;
+    }
+
+    #valor-velocidade {
+      display: block;
+      margin-top: 7px;
+      color: #526579;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* Ajuste para telas menores */
+    @media (max-width: 480px) {
+      #menu-acessibilidade {
+        right: 16px;
+        bottom: 16px;
+      }
+
+      #painel-acessibilidade {
+        right: 0;
+        width: min(300px, calc(100vw - 32px));
+      }
+
+      #botao-acessibilidade {
+        width: 58px;
+        height: 58px;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const botao_acessibilidade = document.getElementById('botao-acessibilidade');
+      const painel_acessibilidade = document.getElementById('painel-acessibilidade');
+
+      const ler_pagina = document.getElementById('ler-pagina');
+      const pausar_leitura = document.getElementById('pausar-leitura');
+      const continuar_leitura = document.getElementById('continuar-leitura');
+      const parar_leitura = document.getElementById('parar-leitura');
+
+      const velocidade_leitura = document.getElementById('velocidade-leitura');
+      const valor_velocidade = document.getElementById('valor-velocidade');
+
+      const sintetizador = window.speechSynthesis;
+
+      let texto_leitura = '';
+
+      botao_acessibilidade.addEventListener('click', () => {
+        painel_acessibilidade.hidden = !painel_acessibilidade.hidden;
+      });
+
+      function obter_texto_pagina() {
+        const elementos_ignorados = document.querySelectorAll(
+          'script, style, noscript, #menu-acessibilidade, [aria-hidden="true"]'
+        );
+
+        elementos_ignorados.forEach((elemento) => {
+          elemento.dataset.leituraIgnorada = 'true';
+        });
+
+        texto_leitura = document.body.innerText
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        elementos_ignorados.forEach((elemento) => {
+          delete elemento.dataset.leituraIgnorada;
+        });
+
+        return texto_leitura;
+      }
+
+      function falar_pagina() {
+        if (!('speechSynthesis' in window)) {
+          alert('Seu navegador não possui suporte à leitura em voz alta.');
+          return;
+        }
+
+        sintetizador.cancel();
+
+        texto_leitura = obter_texto_pagina();
+
+        if (!texto_leitura) {
+          return;
+        }
+
+        const fala = new SpeechSynthesisUtterance(texto_leitura);
+
+        fala.lang = 'pt-BR';
+        fala.rate = Number(velocidade_leitura.value);
+        fala.pitch = 1;
+        fala.volume = 1;
+
+        const vozes = sintetizador.getVoices();
+
+        const voz_portugues = vozes.find((voz) => {
+          return voz.lang.toLowerCase() === 'pt-br';
+        });
+
+        if (voz_portugues) {
+          fala.voice = voz_portugues;
+        }
+
+        sintetizador.speak(fala);
+      }
+
+      ler_pagina.addEventListener('click', () => {
+        falar_pagina();
+      });
+
+      pausar_leitura.addEventListener('click', () => {
+        if (sintetizador.speaking) {
+          sintetizador.pause();
+        }
+      });
+
+      continuar_leitura.addEventListener('click', () => {
+        if (sintetizador.paused) {
+          sintetizador.resume();
+        }
+      });
+
+      parar_leitura.addEventListener('click', () => {
+        sintetizador.cancel();
+      });
+
+      velocidade_leitura.addEventListener('input', () => {
+        valor_velocidade.textContent = `${velocidade_leitura.value}x`;
+      });
+
+      sintetizador.addEventListener('voiceschanged', () => {
+        sintetizador.getVoices();
+      });
+    });
+  </script>
 </body>
 
 </html>
