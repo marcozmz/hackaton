@@ -1,11 +1,11 @@
 """Previsão: regras, cache por run, degradação graciosa e endpoint."""
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy import func, select
 
 from app.extensions import db
 from app.models import ForecastRun
-from tests.conftest import ARARAQUARA
+from tests.conftest import ARARAQUARA, DAY0
 
 TODAY = "2026-10-02"
 
@@ -83,7 +83,8 @@ def test_stale_run_used_when_provider_down(client, weather):
 
 
 def test_outlook_endpoint(client, weather):
-    weather.rain = [0, 12, 55, 0, 0, 0, 0, 0, 0, 0]
+    off = max(0, (date.today() - DAY0).days)  # a rota mostra a partir de hoje; a previsão falsa começa em DAY0
+    weather.rain = ([0] * off + [0, 12, 55] + [0] * 10)[:10]
     resp = client.get("/api/v1/weather/outlook", query_string={"place": "Araraquara SP"})
     body = resp.get_json()
     assert resp.status_code == 200
