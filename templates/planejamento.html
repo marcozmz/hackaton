@@ -222,7 +222,8 @@
           {% set on = c.slug == crop.slug %}
           <a href="{{ url_for('web.planejamento', municipality=place.ibge_code, crop=c.slug, soil=soil_param, mes=cal.selected.date.strftime('%Y-%m')) }}"
             class="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl font-label-md text-label-md active:scale-95 transition-all {{ 'bg-secondary text-on-secondary shadow-sm' if on else 'bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low' }}">
-            <span class="text-base leading-none" aria-hidden="true">{{ crop_emoji(c.slug) }}</span><span>{{ c.official_name }}</span></a>
+            <span class="text-base leading-none" aria-hidden="true">{{ crop_emoji(c.slug) }}</span><span>{{
+              c.official_name }}</span></a>
           {% endfor %}
         </div>
       </div>
@@ -438,6 +439,11 @@
   </main>
   <nav aria-label="Navegação Principal"
     class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2.5 px-4 shadow-lg flex items-center justify-around w-full print:hidden">
+
+    <a href="{{ url_for('web.landing') }}"
+      class="flex-1 flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-emerald-800 transition-colors py-1"><span
+        class="material-symbols-outlined text-[22px]">home</span><span
+        class="text-[11px] font-medium leading-none">Início</span></a>
     <a href="{{ url_for('web.assistente') }}"
       class="flex-1 flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-emerald-800 transition-colors py-1"><span
         class="material-symbols-outlined text-[22px]">chat</span><span

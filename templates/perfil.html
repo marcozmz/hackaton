@@ -200,7 +200,8 @@
 
     <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
       <!-- Cartão do produtor -->
-      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+      <section
+        class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
         <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
           <div class="relative">
             <div
@@ -215,33 +216,42 @@
           </div>
           <div class="flex-1 text-center sm:text-left space-y-2">
             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h3 class="font-headline-md text-headline-md text-on-surface font-bold" id="display-name">{{ user.display_name }}</h3>
+              <h3 class="font-headline-md text-headline-md text-on-surface font-bold" id="display-name">{{
+                user.display_name }}</h3>
               {% if season %}
               <span
-                class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2.5 py-1 rounded-full text-xs font-bold border border-secondary/20">{{ season }}</span>
+                class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2.5 py-1 rounded-full text-xs font-bold border border-secondary/20">{{
+                season }}</span>
               {% endif %}
             </div>
-            <div class="flex flex-col sm:flex-row sm:items-center gap-2 text-on-surface-variant font-label-md text-label-md">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center gap-2 text-on-surface-variant font-label-md text-label-md">
               <span class="inline-flex items-center gap-1">
-                <span class="material-symbols-outlined text-secondary text-base" data-icon="location_on">location_on</span>
-                <span id="display-location">{% if farm %}{{ farm.municipality.name }} - {{ farm.municipality.uf }}{% if farm.name %} • {{ farm.name }}{% endif %}{% else %}Propriedade ainda não cadastrada{% endif %}</span>
+                <span class="material-symbols-outlined text-secondary text-base"
+                  data-icon="location_on">location_on</span>
+                <span id="display-location">{% if farm %}{{ farm.municipality.name }} - {{ farm.municipality.uf }}{% if
+                  farm.name %} • {{ farm.name }}{% endif %}{% else %}Propriedade ainda não cadastrada{% endif %}</span>
               </span>
               <span class="hidden sm:inline text-outline-variant">•</span>
               <span class="inline-flex items-center gap-1">
-                <span class="material-symbols-outlined text-primary-container text-base" data-icon="potted_plant">potted_plant</span>
-                <span id="display-culturas">{% if farm and farm.crops %}{{ farm.crops|map(attribute='name')|join(', ') }}{% else %}Nenhuma cultura escolhida{% endif %}</span>
+                <span class="material-symbols-outlined text-primary-container text-base"
+                  data-icon="potted_plant">potted_plant</span>
+                <span id="display-culturas">{% if farm and farm.crops %}{{ farm.crops|map(attribute='name')|join(', ')
+                  }}{% else %}Nenhuma cultura escolhida{% endif %}</span>
               </span>
             </div>
             <div class="pt-2 grid grid-cols-2 sm:grid-cols-3 gap-2 max-w-lg">
               <div class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant">
                 <p class="text-xs text-on-surface-variant font-medium">Área Cultivada</p>
-                <p class="text-sm font-bold text-on-surface" id="display-area">{% if farm and farm.area_ha %}{{ ('%.1f' % farm.area_ha).replace('.', ',') }} Hectares{% else %}—{% endif %}</p>
+                <p class="text-sm font-bold text-on-surface" id="display-area">{% if farm and farm.area_ha %}{{ ('%.1f'
+                  % farm.area_ha).replace('.', ',') }} Hectares{% else %}—{% endif %}</p>
               </div>
               <div class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant">
                 <p class="text-xs text-on-surface-variant font-medium">Tipo de Terra</p>
                 <p class="text-sm font-bold text-on-surface" id="display-solo">{{ farm.soil_name if farm else '—' }}</p>
               </div>
-              <div class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant col-span-2 sm:col-span-1">
+              <div
+                class="bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant col-span-2 sm:col-span-1">
                 <p class="text-xs text-on-surface-variant font-medium">E-mail de acesso</p>
                 <p class="text-sm font-bold text-secondary truncate" id="display-user-email">{{ user.email }}</p>
               </div>
@@ -257,54 +267,70 @@
       </section>
 
       <!-- Minhas lavouras hoje (recomendação real de cada cultura) -->
-      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
+      <section
+        class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
             <span class="material-symbols-outlined">grass</span>
           </div>
           <div>
             <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Minhas lavouras hoje</h3>
-            <p class="font-label-sm text-label-sm text-on-surface-variant">Situação de plantio pelo calendário oficial (ZARC), para a sua propriedade</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Situação de plantio pelo calendário oficial
+              (ZARC), para a sua propriedade</p>
           </div>
         </div>
         {% if lavouras %}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {% for l in lavouras %}
-          {% set tone = {'favorable': 'border-secondary', 'attention': 'border-tertiary-fixed-dim', 'unfavorable': 'border-error', 'no_data': 'border-outline-variant'}[l.status] %}
-          {% set icon = {'favorable': 'check_circle', 'attention': 'warning', 'unfavorable': 'block', 'no_data': 'help'}[l.status] %}
-          <a href="{{ l.link }}" class="block rounded-xl border-2 {{ tone }} p-4 hover:bg-surface-container-low transition-all">
+          {% set tone = {'favorable': 'border-secondary', 'attention': 'border-tertiary-fixed-dim', 'unfavorable':
+          'border-error', 'no_data': 'border-outline-variant'}[l.status] %}
+          {% set icon = {'favorable': 'check_circle', 'attention': 'warning', 'unfavorable': 'block', 'no_data':
+          'help'}[l.status] %}
+          <a href="{{ l.link }}"
+            class="block rounded-xl border-2 {{ tone }} p-4 hover:bg-surface-container-low transition-all">
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">{{ icon }}</span>
+              <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">{{ icon
+                }}</span>
               <span class="font-label-lg text-label-lg font-bold text-on-surface">{{ l.crop.name }}</span>
             </div>
             <p class="font-body-sm text-body-sm text-on-surface mt-1">{{ l.title }}</p>
             {% if l.window %}<p class="text-xs text-on-surface-variant mt-1">Janela: {{ l.window }}</p>{% endif %}
-            <p class="text-xs text-secondary font-semibold mt-2 flex items-center gap-1">Ver detalhes <span class="material-symbols-outlined text-sm">arrow_forward</span></p>
+            <p class="text-xs text-secondary font-semibold mt-2 flex items-center gap-1">Ver detalhes <span
+                class="material-symbols-outlined text-sm">arrow_forward</span></p>
           </a>
           {% endfor %}
         </div>
         {% else %}
-        <p class="font-body-sm text-body-sm text-on-surface-variant">Cadastre o município e as culturas em <strong>Editar Dados</strong> para ver aqui, toda vez que entrar, se é hora de plantar.</p>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">Cadastre o município e as culturas em
+          <strong>Editar Dados</strong> para ver aqui, toda vez que entrar, se é hora de plantar.</p>
         {% endif %}
       </section>
 
       <!-- Aparência -->
-      <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4 md:col-span-12">
+      <section
+        class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4 md:col-span-12">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
             <span class="material-symbols-outlined" data-icon="brightness_6">brightness_6</span>
           </div>
           <div>
             <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Aparência e Luz da Tela</h3>
-            <p class="font-label-sm text-label-sm text-on-surface-variant">Ajuste o visual para enxergar com nitidez sob o sol quente da roça</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Ajuste o visual para enxergar com nitidez sob
+              o sol quente da roça</p>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-          {% for value, title, sub, desc, ic in [('light', 'Modo Claro', 'Dia de Sol na Roça', 'Fundo claro de alto contraste. Recomendado para enxergar debaixo de sol forte no plantio.', 'light_mode'), ('dark', 'Modo Escuro', 'Descanso Noturno', 'Fundo escuro suave para conferir a previsão ou zoneamento à noite em casa sem cansar a vista.', 'dark_mode')] %}
-          <label class="theme-card relative flex flex-col justify-between p-4 rounded-xl cursor-pointer tactile-press transition-all {{ 'border-2 border-secondary bg-surface-container-low shadow-sm' if user.theme == value else 'border border-outline-variant bg-surface-container-lowest' }}">
-            <input class="sr-only" name="theme_mode" type="radio" value="{{ value }}" {% if user.theme == value %}checked{% endif %}>
+          {% for value, title, sub, desc, ic in [('light', 'Modo Claro', 'Dia de Sol na Roça', 'Fundo claro de alto
+          contraste. Recomendado para enxergar debaixo de sol forte no plantio.', 'light_mode'), ('dark', 'Modo Escuro',
+          'Descanso Noturno', 'Fundo escuro suave para conferir a previsão ou zoneamento à noite em casa sem cansar a
+          vista.', 'dark_mode')] %}
+          <label
+            class="theme-card relative flex flex-col justify-between p-4 rounded-xl cursor-pointer tactile-press transition-all {{ 'border-2 border-secondary bg-surface-container-low shadow-sm' if user.theme == value else 'border border-outline-variant bg-surface-container-lowest' }}">
+            <input class="sr-only" name="theme_mode" type="radio" value="{{ value }}" {% if user.theme==value
+              %}checked{% endif %}>
             <div class="flex justify-between items-start mb-3">
-              <div class="w-12 h-12 rounded-full {{ 'bg-secondary-container text-on-secondary-container' if value == 'light' else 'bg-inverse-surface text-secondary-fixed' }} flex items-center justify-center shadow-inner">
+              <div
+                class="w-12 h-12 rounded-full {{ 'bg-secondary-container text-on-secondary-container' if value == 'light' else 'bg-inverse-surface text-secondary-fixed' }} flex items-center justify-center shadow-inner">
                 <span class="material-symbols-outlined text-2xl">{{ ic }}</span>
               </div>
             </div>
@@ -319,18 +345,22 @@
       </section>
 
       <!-- Tamanho das letras -->
-      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4">
+      <section
+        class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
             <span class="material-symbols-outlined" data-icon="format_size">format_size</span>
           </div>
           <div>
-            <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Tamanho das Letras (Fácil Leitura)</h3>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Tamanho das Letras (Fácil Leitura)
+            </h3>
             <p class="font-label-sm text-label-sm text-on-surface-variant">Vale para todas as telas do Plant+Facil</p>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {% for value, label, sub, aa in [('normal', 'Normal (Padrão)', 'Letras compactas', 'text-sm'), ('grande', 'Grande (Recomendado)', 'Mais confortável na lida', 'text-xl'), ('muito-grande', 'Muito Grande', 'Maior nitidez e leitura rápida', 'text-2xl')] %}
+          {% for value, label, sub, aa in [('normal', 'Normal (Padrão)', 'Letras compactas', 'text-sm'), ('grande',
+          'Grande (Recomendado)', 'Mais confortável na lida', 'text-xl'), ('muito-grande', 'Muito Grande', 'Maior
+          nitidez e leitura rápida', 'text-2xl')] %}
           <button type="button" data-font="{{ value }}"
             class="font-size-btn relative flex flex-col items-center justify-center p-4 rounded-xl text-center tactile-press transition-all {{ 'border-2 border-secondary bg-secondary-container/20 ring-2 ring-secondary/20' if user.font_size == value else 'border border-outline-variant bg-surface-container-low hover:bg-surface-container' }}">
             <span class="{{ aa }} font-bold text-on-surface">Aa</span>
@@ -342,7 +372,8 @@
       </section>
 
       <!-- Nível de linguagem (usado nas orientações e no assistente) -->
-      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4">
+      <section
+        class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-4">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
             <span class="material-symbols-outlined">record_voice_over</span>
@@ -353,7 +384,8 @@
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {% for value, label, sub in [('simple', 'Bem simples', 'Frases curtas, sem termos técnicos'), ('standard', 'Com números', 'Simples, mostrando % e datas'), ('technical', 'Técnico', 'Termos do ZARC e detalhes')] %}
+          {% for value, label, sub in [('simple', 'Bem simples', 'Frases curtas, sem termos técnicos'), ('standard',
+          'Com números', 'Simples, mostrando % e datas'), ('technical', 'Técnico', 'Termos do ZARC e detalhes')] %}
           <button type="button" data-level="{{ value }}"
             class="level-btn flex flex-col items-center justify-center p-4 rounded-xl text-center tactile-press transition-all {{ 'border-2 border-secondary bg-secondary-container/20' if user.language_level == value else 'border border-outline-variant bg-surface-container-low hover:bg-surface-container' }}">
             <span class="font-label-lg text-label-lg text-on-surface font-bold">{{ label }}</span>
@@ -364,52 +396,65 @@
       </section>
 
       <!-- Aviso diário por e-mail (opt-in; enviado pelo Make.com) -->
-      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
+      <section
+        class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
             <span class="material-symbols-outlined">mark_email_unread</span>
           </div>
           <div>
             <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Aviso por e-mail</h3>
-            <p class="font-label-sm text-label-sm text-on-surface-variant">Todo dia às 6h da manhã: o tempo e a orientação de plantio da sua cultura.</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Todo dia às 6h da manhã: o tempo e a
+              orientação de plantio da sua cultura.</p>
           </div>
         </div>
         {% if alerts_on %}
         <label class="flex items-start gap-3 cursor-pointer">
-          <input type="checkbox" id="alerts-toggle" class="mt-1 w-5 h-5 accent-secondary" {{ 'checked' if user.email_alerts_since }}>
+          <input type="checkbox" id="alerts-toggle" class="mt-1 w-5 h-5 accent-secondary" {{ 'checked' if
+            user.email_alerts_since }}>
           <span class="text-sm text-on-surface">Quero receber o aviso diário em <strong>{{ user.email }}</strong>.
-            <span class="block text-xs text-on-surface-variant mt-1">Para montar o e-mail, enviamos ao serviço Make.com só o seu nome, e-mail, o centro do seu município e a cultura. Desmarque quando quiser.</span></span>
+            <span class="block text-xs text-on-surface-variant mt-1">Para montar o e-mail, enviamos ao serviço Make.com
+              só o seu nome, e-mail, o centro do seu município e a cultura. Desmarque quando quiser.</span></span>
         </label>
         <div class="flex flex-wrap items-center gap-3">
-          <button type="button" id="alerts-test" class="px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface hover:bg-surface-container {{ '' if user.email_alerts_since else 'hidden' }}">Mandar um aviso agora</button>
+          <button type="button" id="alerts-test"
+            class="px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface hover:bg-surface-container {{ '' if user.email_alerts_since else 'hidden' }}">Mandar
+            um aviso agora</button>
           <span id="alerts-status" class="text-sm font-semibold text-secondary" aria-live="polite"></span>
         </div>
-        {% if not farm or not farm.crops %}<p class="text-xs text-on-surface-variant">Cadastre sua roça e uma cultura para o aviso ter o que mostrar.</p>{% endif %}
+        {% if not farm or not farm.crops %}<p class="text-xs text-on-surface-variant">Cadastre sua roça e uma cultura
+          para o aviso ter o que mostrar.</p>{% endif %}
         {% else %}
         <p class="text-sm text-on-surface-variant">Os avisos por e-mail ainda não estão ligados neste servidor.</p>
         {% endif %}
       </section>
 
       <!-- Privacidade (LGPD) -->
-      <section class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
+      <section
+        class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm space-y-3">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
             <span class="material-symbols-outlined">shield_person</span>
           </div>
           <div>
             <h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Seus dados</h3>
-            <p class="font-label-sm text-label-sm text-on-surface-variant">Guardamos só: como te chamar, e-mail, município, área, tipo de terra e culturas. Nada de CPF, telefone ou endereço.</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Guardamos só: como te chamar, e-mail,
+              município, área, tipo de terra e culturas. Nada de CPF, telefone ou endereço.</p>
           </div>
         </div>
         <div class="flex flex-wrap gap-2">
           <button type="button" onclick="promptChangeEmail()"
-            class="px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface hover:bg-surface-container">Alterar e-mail</button>
+            class="px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface hover:bg-surface-container">Alterar
+            e-mail</button>
           <a href="{{ url_for('web.meus_dados') }}"
-            class="px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface hover:bg-surface-container">Baixar meus dados</a>
+            class="px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface hover:bg-surface-container">Baixar
+            meus dados</a>
           <form method="post" action="{{ url_for('web.excluir_conta') }}"
             onsubmit="return confirm('Apagar sua conta e todos os dados da sua roça? Isso não pode ser desfeito.');">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="px-3 py-2 bg-error-container border border-error rounded-lg text-sm font-bold text-on-error-container">Excluir minha conta</button>
+            <button type="submit"
+              class="px-3 py-2 bg-error-container border border-error rounded-lg text-sm font-bold text-on-error-container">Excluir
+              minha conta</button>
           </form>
         </div>
       </section>
@@ -429,6 +474,11 @@
   <!-- Context Lock: Active item is "Minha Conta" because this is the user profile screen -->
   <nav
     class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest shadow-md">
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+      href="{{ url_for('web.landing') }}">
+      <span class="material-symbols-outlined text-2xl" data-icon="home">home</span>
+      <span class="">Início</span>
+    </a>
     <!-- Item 1: Assistente (Inactive) -->
     <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container rounded-lg transition-all tactile-press"
       href="{{ url_for('web.assistente') }}">
@@ -469,12 +519,15 @@
       class="bg-surface-container-lowest text-on-surface rounded-t-3xl sm:rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-outline-variant p-5 sm:p-6 flex flex-col gap-5">
       <div class="flex items-start justify-between border-b border-outline-variant pb-3">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center flex-shrink-0">
+          <div
+            class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center flex-shrink-0">
             <span class="material-symbols-outlined text-2xl">agriculture</span>
           </div>
           <div>
-            <h3 class="font-headline-sm text-headline-sm text-primary font-bold" id="modal-title">Dados da Propriedade &amp; Lavoura</h3>
-            <p class="font-body-sm text-body-sm text-on-surface-variant">Com isso o Plant+Facil já abre com a orientação da sua roça.</p>
+            <h3 class="font-headline-sm text-headline-sm text-primary font-bold" id="modal-title">Dados da Propriedade
+              &amp; Lavoura</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Com isso o Plant+Facil já abre com a orientação
+              da sua roça.</p>
           </div>
         </div>
         <button aria-label="Fechar" type="button"
@@ -483,32 +536,43 @@
       </div>
       <form class="flex flex-col gap-4" id="farm-form" onsubmit="event.preventDefault(); saveModalData();">
         <div class="space-y-1.5">
-          <label class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5" for="input-nome">
+          <label class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5"
+            for="input-nome">
             <span class="material-symbols-outlined text-secondary text-base">badge</span> Como podemos te chamar</label>
-          <input class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-medium"
+          <input
+            class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-medium"
             id="input-nome" maxlength="60" value="{{ user.display_name }}">
         </div>
         <div class="space-y-1.5">
-          <label class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5" for="input-propriedade">
-            <span class="material-symbols-outlined text-secondary text-base">location_on</span> Município da propriedade (Cidade UF)</label>
+          <label class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5"
+            for="input-propriedade">
+            <span class="material-symbols-outlined text-secondary text-base">location_on</span> Município da propriedade
+            (Cidade UF)</label>
           <button
             class="w-full flex items-center justify-center gap-2 p-2.5 bg-secondary-container/20 hover:bg-secondary-container/30 border border-secondary/40 text-secondary font-bold text-xs rounded-lg transition-all cursor-pointer"
             id="btn-detect-gps" onclick="detectGPSLocation()" type="button"><span
-              class="material-symbols-outlined text-base" id="gps-btn-icon">my_location</span> <span id="gps-btn-text">Pegar Minha Localização Atual (GPS)</span></button>
-          <div class="text-xs font-semibold px-2.5 py-1.5 rounded flex items-center gap-1.5 hidden" id="gps-feedback"></div>
-          <input class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-medium text-on-surface focus:outline-none focus:border-secondary"
-            id="input-propriedade" placeholder="Ex: Araraquara SP" type="text" list="municipios-modal" autocomplete="off"
-            value="{{ farm.place if farm else '' }}">
+              class="material-symbols-outlined text-base" id="gps-btn-icon">my_location</span> <span
+              id="gps-btn-text">Pegar Minha Localização Atual (GPS)</span></button>
+          <div class="text-xs font-semibold px-2.5 py-1.5 rounded flex items-center gap-1.5 hidden" id="gps-feedback">
+          </div>
+          <input
+            class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-medium text-on-surface focus:outline-none focus:border-secondary"
+            id="input-propriedade" placeholder="Ex: Araraquara SP" type="text" list="municipios-modal"
+            autocomplete="off" value="{{ farm.place if farm else '' }}">
           <datalist id="municipios-modal"></datalist>
           <input class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm"
-            id="input-sitio" placeholder="Nome do sítio (opcional)" maxlength="80" value="{{ farm.name or '' if farm else '' }}">
+            id="input-sitio" placeholder="Nome do sítio (opcional)" maxlength="80"
+            value="{{ farm.name or '' if farm else '' }}">
         </div>
         <div class="space-y-1.5">
-          <label class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5" for="input-area">
-            <span class="material-symbols-outlined text-primary-container text-base">square_foot</span> Área Cultivada (Hectares, opcional)</label>
+          <label class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5"
+            for="input-area">
+            <span class="material-symbols-outlined text-primary-container text-base">square_foot</span> Área Cultivada
+            (Hectares, opcional)</label>
           <div class="relative"><input
               class="w-full px-3 py-2 pr-12 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-bold text-on-surface focus:outline-none focus:border-secondary"
-              id="input-area" step="0.1" min="0" type="number" value="{{ farm.area_ha if farm and farm.area_ha else '' }}"><span
+              id="input-area" step="0.1" min="0" type="number"
+              value="{{ farm.area_ha if farm and farm.area_ha else '' }}"><span
               class="absolute right-3 top-2 text-xs font-bold text-on-surface-variant">ha</span></div>
         </div>
         <div class="space-y-1.5">
@@ -516,20 +580,27 @@
             <span class="material-symbols-outlined text-primary text-base">layers</span> Tipo de Terra</span>
           <div class="grid grid-cols-1 gap-2">
             {% for s in soils %}
-            <label class="flex items-center gap-2.5 p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/20">
-              <input class="text-secondary" name="modal_solo" type="radio" value="{{ s.id }}" {% if farm and farm.soil_group == s.id %}checked{% endif %}>
-              <div class="text-xs"><span class="font-bold text-on-surface">{{ s.name }}</span><span class="text-on-surface-variant block">{{ s.description }}</span></div>
+            <label
+              class="flex items-center gap-2.5 p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/20">
+              <input class="text-secondary" name="modal_solo" type="radio" value="{{ s.id }}" {% if farm and
+                farm.soil_group==s.id %}checked{% endif %}>
+              <div class="text-xs"><span class="font-bold text-on-surface">{{ s.name }}</span><span
+                  class="text-on-surface-variant block">{{ s.description }}</span></div>
             </label>
             {% endfor %}
-            <label class="flex items-center gap-2.5 p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/20">
-              <input class="text-secondary" name="modal_solo" type="radio" value="" {% if not farm or not farm.soil_group %}checked{% endif %}>
-              <div class="text-xs"><span class="font-bold text-on-surface">Não sei</span><span class="text-on-surface-variant block">Usamos o período mais seguro para qualquer terra</span></div>
+            <label
+              class="flex items-center gap-2.5 p-2 rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer has-[:checked]:border-secondary has-[:checked]:bg-secondary-container/20">
+              <input class="text-secondary" name="modal_solo" type="radio" value="" {% if not farm or not
+                farm.soil_group %}checked{% endif %}>
+              <div class="text-xs"><span class="font-bold text-on-surface">Não sei</span><span
+                  class="text-on-surface-variant block">Usamos o período mais seguro para qualquer terra</span></div>
             </label>
           </div>
         </div>
         <div class="space-y-1.5">
           <span class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-secondary text-base">potted_plant</span> Culturas que você planta</span>
+            <span class="material-symbols-outlined text-secondary text-base">potted_plant</span> Culturas que você
+            planta</span>
           {% set mine = farm.crops|map(attribute='slug')|list if farm else [] %}
           <div class="flex flex-wrap gap-2" id="culturas-container">
             {% for c in crops %}
@@ -542,10 +613,13 @@
         </div>
         <p id="farm-error" class="hidden text-sm font-semibold text-error" role="alert"></p>
         <div class="pt-3 border-t border-outline-variant flex flex-col sm:flex-row gap-2.5 justify-end">
-          <button class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container text-on-surface text-sm font-semibold transition-all cursor-pointer"
+          <button
+            class="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container text-on-surface text-sm font-semibold transition-all cursor-pointer"
             onclick="closeEditModal()" type="button">Cancelar</button>
-          <button class="w-full sm:w-auto px-6 py-3 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-sm font-bold shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
-            type="submit" id="farm-save"><span class="material-symbols-outlined text-lg">check_circle</span> SALVAR DADOS DA ROÇA</button>
+          <button
+            class="w-full sm:w-auto px-6 py-3 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-sm font-bold shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
+            type="submit" id="farm-save"><span class="material-symbols-outlined text-lg">check_circle</span> SALVAR
+            DADOS DA ROÇA</button>
         </div>
       </form>
     </div>
@@ -581,7 +655,7 @@
       document.getElementById('edit-profile-modal').classList.add('hidden');
       document.body.style.overflow = '';
     }
-    {% if novo or not farm %}document.addEventListener('DOMContentLoaded', openEditModal);{% endif %}
+    {% if novo or not farm %} document.addEventListener('DOMContentLoaded', openEditModal); {% endif %}
 
     document.querySelectorAll('.cultura-chip').forEach((b) => b.addEventListener('click', () => {
       const on = b.getAttribute('aria-pressed') !== 'true';

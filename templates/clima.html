@@ -122,16 +122,14 @@
 
 <body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
   <!-- TopAppBar Component (from Shared Components JSON) -->
-  <header
-    class="bg-surface border-b border-outline-variant sticky top-0 z-40">
+  <header class="bg-surface border-b border-outline-variant sticky top-0 z-40">
     <div class="flex justify-between items-center w-full px-4 h-16 max-w-5xl mx-auto">
       <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-2">
         <img
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeLnNvmArmr0PbK93DS6-vQqZjJVZ2XAO93LU9X2-Mor8lignDlRGn83UAnNedK7iZ3_sR95mmZ-DATUXWrdq0enGo7uVsOtDF6N9xlU9KZ0D0G41GUQ4CWnuLfzmPjmO2pZPe7fOrg5jwMvMSvwl1OJ_aMdLqYB_jUJu7KO7QgxKZlSUmCXW_DuTe6x1kHzNJWcq69wcmu2h82Ujp9H9-haA1pp5FIfbG35U9WVgoydioNx1xHggPIR7pVsqXGIIm8Z8"
           alt="Logo Plant+Facil" class="w-9 h-9 object-contain rounded-xl shadow-sm">
         <div class="flex flex-col">
-          <span
-            class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
+          <span class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
           <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Plant+Facil - Clima e
             Plantio</span>
         </div>
@@ -633,6 +631,11 @@
   <!-- Semantic Mapping: Current screen is 'ZARC Clima', which matches destination index 1 -->
   <nav aria-label="Navegação Principal"
     class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest">
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+      href="{{ url_for('web.landing') }}">
+      <span class="material-symbols-outlined text-2xl" data-icon="home">home</span>
+      <span class="">Início</span>
+    </a>
     <!-- Item 1: Assistente (Inactive) -->
     <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container active:scale-95 transition-all duration-150"
       href="{{ url_for('web.assistente') }}">
