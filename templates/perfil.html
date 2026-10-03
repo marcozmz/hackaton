@@ -139,6 +139,7 @@
       transform: scale(0.98);
     }
   </style>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
 </head>
 
 <body
@@ -152,14 +153,14 @@
           href="{{ url_for('web.inicio') }}">
           <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
         </a>
-        <div class="flex items-center gap-2">
+        <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-2">
           <img alt="Logo Plant+Facil" class="w-8 h-8 object-contain rounded-lg shadow-sm"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsSck5PYO7VPe1tfXsl2QByoMlbvKAGmNT_mNFg5V-TqSF0FZG5ReIHb_rWQnKm9SEQtub97lCdHoN04Hv9yKtg9OeKTKz7SeR2vpUZl-TRdfSki7EzC0P_bAmw0DpE-JmXs0gU4_SYTNhqxMHDZn9I7lz18rgteD0ficEip9zNdhStWgKPH3vBaUHSZJSkobzjV82XUP5F-S1-mhSFOR3jMcy_IaRN0VhuaMVkavj-utbAxXm6UioU23J5g-q-X4yoyw">
           <div>
             <h1 class="font-headline-sm text-headline-sm text-secondary font-bold leading-tight">Plant+Facil</h1>
             <p class="font-label-sm text-label-sm text-on-surface-variant">Meu Perfil e Ajustes da Roça</p>
           </div>
-        </div>
+        </a>
       </div>
       <div class="flex items-center gap-1">
         <button aria-label="Histórico de consultas"
