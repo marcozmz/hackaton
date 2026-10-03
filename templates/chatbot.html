@@ -144,8 +144,7 @@
 
 <body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen">
   <!-- TopAppBar Fixed Header -->
-  <header
-    class="fixed top-0 left-0 right-0 z-40 bg-surface border-b border-outline-variant">
+  <header class="fixed top-0 left-0 right-0 z-40 bg-surface border-b border-outline-variant">
     <div class="flex justify-between items-center w-full px-4 h-16 max-w-5xl mx-auto">
       <!-- Leading Icon / Brand identity -->
       <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex items-center gap-3">
@@ -154,8 +153,7 @@
           alt="Logo Plant+Facil" class="w-9 h-9 object-contain rounded-xl shadow-sm">
         <div>
           <div class="flex items-center gap-2">
-            <span
-              class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
+            <span class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
           </div>
           <!-- Online status pill -->
           <div class="flex items-center gap-1.5 mt-0.5">
@@ -249,6 +247,11 @@
   <!-- BottomNavBar (Strict adherence to Shared Components JSON) -->
   <nav
     class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest">
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
+      href="{{ url_for('web.landing') }}">
+      <span class="material-symbols-outlined text-2xl" data-icon="home">home</span>
+      <span class="">Início</span>
+    </a>
     <!-- Tab 1: Assistente (Active) -->
     <a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1.5 font-label-sm text-label-sm active:scale-95 transition-all duration-150"
       href="{{ url_for('web.assistente') }}">
