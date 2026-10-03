@@ -63,11 +63,9 @@ def create_app(env: str | None = None) -> Flask:
 
 
 def _init_alerts_scheduler(app: Flask) -> None:
-    """Aviso diário por e-mail: liga na 1ª requisição (só quando o servidor está servindo, não em `flask db ...`).
-    No modo debug só o processo filho do reloader agenda, para não mandar em dobro."""
+    """Aviso diário por e-mail: liga na 1ª requisição, então só o processo que serve agenda
+    (nem `flask db ...` nem o vigia do reloader do modo debug, que não atende requisições)."""
     if not (app.config.get("MAKE_WEBHOOK_URL") and app.config.get("ALERTS_SCHEDULER")) or app.testing:
-        return
-    if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
         return
     started = False
 
