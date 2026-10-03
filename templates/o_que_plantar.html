@@ -97,11 +97,9 @@
 
   <nav aria-label="Navegação Principal"
     class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest">
-    <a aria-current="page" href="{{ url_for('web.landing') }}"
-      class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1.5 text-[12px] font-bold active:scale-95 transition-all duration-150">
-      <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">home</span>
-      <span>Início</span>
-    </a>
+    <a href="{{ url_for('web.landing') }}"
+      class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container rounded-lg">
+      <span class="material-symbols-outlined">home</span><span class="mt-0.5">Início</span></a>
     {% for href, icon, label in [(url_for('web.assistente'), 'chat', 'Assistente'), (url_for('web.clima'), 'cloud',
     'Clima e Plantio'), (url_for('web.planejamento'), 'calendar_month', 'Planejamento'), (url_for('web.perfil'),
     'person', 'Minha
