@@ -10,7 +10,8 @@
 <body class="bg-background text-on-surface antialiased font-body-md text-body-md min-h-screen pb-28">
   <header class="bg-surface border-b border-outline-variant sticky top-0 z-40">
     <div class="flex items-center w-full px-4 h-16 max-w-5xl mx-auto gap-2">
-      <a href="{{ url_for('inicio.html', nova=1) }}" class="p-2 -ml-2 text-on-surface-variant rounded-full" aria-label="Voltar">
+      <a href="{{ url_for('web.inicio', nova=1) }}" class="p-2 -ml-2 text-on-surface-variant rounded-full"
+        aria-label="Voltar">
         <span class="material-symbols-outlined">arrow_back</span></a>
       <a href="{{ url_for('web.inicio') }}" aria-label="Ir para o início" class="flex flex-col">
         <span class="font-headline-md text-headline-md font-bold text-secondary">Plant+Facil</span>
@@ -20,51 +21,68 @@
   </header>
   <div class="bg-surface-container-low border-b border-outline-variant">
     <div class="max-w-5xl mx-auto px-4 py-2 flex items-center gap-2">
-      <span class="material-symbols-outlined text-secondary text-base" style="font-variation-settings: 'FILL' 1;">location_on</span>
-      <span class="font-label-md text-label-md">{{ r.location.name }} - {{ r.location.uf }} · {{ soil.name if soil else 'tipo de terra: não sei' }}</span>
-      <a class="font-label-sm text-label-sm text-secondary underline" href="{{ url_for('web.inicio', nova=1, place=r.location.name ~ ' ' ~ r.location.uf, soil=soil_param) }}">trocar</a>
+      <span class="material-symbols-outlined text-secondary text-base"
+        style="font-variation-settings: 'FILL' 1;">location_on</span>
+      <span class="font-label-md text-label-md">{{ r.location.name }} - {{ r.location.uf }} · {{ soil.name if soil else
+        'tipo de terra: não sei' }}</span>
+      <a class="font-label-sm text-label-sm text-secondary underline"
+        href="{{ url_for('web.inicio', nova=1, place=r.location.name ~ ' ' ~ r.location.uf, soil=soil_param) }}">trocar</a>
     </div>
   </div>
 
   <main class="max-w-5xl mx-auto px-4 pt-5 space-y-5">
-    <section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-3" id="texto-para-ouvir" data-fala="{{ r.summary }}">
+    <section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 space-y-3"
+      id="texto-para-ouvir" data-fala="{{ r.summary }}">
       <h1 class="font-headline-lg text-headline-lg text-primary">O que dá para plantar agora</h1>
       <p class="font-body-lg text-body-lg text-on-surface">{{ r.summary }}</p>
       <div class="flex flex-wrap gap-2">
-        <button type="button" id="ouvir" class="inline-flex items-center gap-1.5 border border-secondary text-secondary rounded-lg px-3 py-2 font-label-md text-label-md">
+        <button type="button" id="ouvir"
+          class="inline-flex items-center gap-1.5 border border-secondary text-secondary rounded-lg px-3 py-2 font-label-md text-label-md">
           <span class="material-symbols-outlined text-base">volume_up</span> Ouvir</button>
         <a href="{{ whatsapp }}" target="_blank" rel="noopener noreferrer"
           class="inline-flex items-center gap-1.5 bg-[#25D366] text-white rounded-lg px-3 py-2 font-label-md text-label-md">
           <span class="material-symbols-outlined text-base">share</span> Mandar no WhatsApp</a>
       </div>
-      <p class="text-[12px] text-outline">Calendário oficial de plantio (ZARC/MAPA), cultivo sem irrigação{% if r.has_forecast %}; melhor dia usa a previsão Open-Meteo{% endif %}. Situação de hoje ({{ r.as_of[8:10] }}/{{ r.as_of[5:7] }}).</p>
+      <p class="text-[12px] text-outline">Calendário oficial de plantio (ZARC/MAPA), cultivo sem irrigação{% if
+        r.has_forecast %}; melhor dia usa a previsão Open-Meteo{% endif %}. Situação de hoje ({{ r.as_of[8:10] }}/{{
+        r.as_of[5:7] }}).</p>
     </section>
 
     {% set STYLE = {'now': ('border-secondary', 'bg-secondary-container text-on-secondary-container', 'check_circle'),
-                    'soon': ('border-tertiary-fixed-dim', 'bg-tertiary-fixed text-on-tertiary-fixed', 'schedule'),
-                    'later': ('border-outline-variant', 'bg-surface-container-high text-on-surface', 'event_repeat'),
-                    'no_data': ('border-outline-variant', 'bg-surface-container-high text-on-surface-variant', 'help')} %}
+    'soon': ('border-tertiary-fixed-dim', 'bg-tertiary-fixed text-on-tertiary-fixed', 'schedule'),
+    'later': ('border-outline-variant', 'bg-surface-container-high text-on-surface', 'event_repeat'),
+    'no_data': ('border-outline-variant', 'bg-surface-container-high text-on-surface-variant', 'help')} %}
     <section class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {% for i in r['items'] %}
       {% set st = STYLE[i.status] %}
       <article class="bg-surface-container-lowest rounded-xl border-2 {{ st[0] }} p-4 space-y-2">
         <div class="flex items-center justify-between gap-2">
           <h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">{{ i.crop.name }}</h2>
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-sm text-label-sm font-semibold {{ st[1] }}">
+          <span
+            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-sm text-label-sm font-semibold {{ st[1] }}">
             <span class="material-symbols-outlined text-[14px]">{{ st[2] }}</span>{{ i.status_text }}</span>
         </div>
         {% if i.status == 'now' %}
-        <p class="text-body-sm text-on-surface">Período oficial aberto · risco {{ i.risk_pct }}% · janela {{ i.window }}</p>
-        {% if i.best_day %}<p class="text-body-sm text-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-amber-500 text-base" style="font-variation-settings: 'FILL' 1;">star</span>Melhor dia: <strong>{{ i.best_day.label }}</strong></p>{% endif %}
+        <p class="text-body-sm text-on-surface">Período oficial aberto · risco {{ i.risk_pct }}% · janela {{ i.window }}
+        </p>
+        {% if i.best_day %}<p class="text-body-sm text-on-surface flex items-center gap-1"><span
+            class="material-symbols-outlined text-amber-500 text-base"
+            style="font-variation-settings: 'FILL' 1;">star</span>Melhor dia: <strong>{{ i.best_day.label }}</strong>
+        </p>{% endif %}
         {% elif i.status in ('soon', 'later') %}
-        <p class="text-body-sm text-on-surface">O período abre em <strong>{{ i.start_text }}</strong> ({{ i.days_until }} dias) · janela {{ i.window }}</p>
+        <p class="text-body-sm text-on-surface">O período abre em <strong>{{ i.start_text }}</strong> ({{ i.days_until
+          }} dias) · janela {{ i.window }}</p>
         {% else %}
-        <p class="text-body-sm text-on-surface-variant">O calendário oficial não traz esta cultura para {{ r.location.name }}.</p>
+        <p class="text-body-sm text-on-surface-variant">O calendário oficial não traz esta cultura para {{
+          r.location.name }}.</p>
         {% endif %}
         {% if i.status != 'no_data' %}
         <div class="flex gap-3 pt-1">
-          <a class="text-sm font-bold text-secondary underline" href="{{ url_for('web.clima', municipality=r.location.ibge_code, crop=i.crop.slug, soil=soil_param) }}">Ver orientação</a>
-          <a class="text-sm font-bold text-secondary underline" href="{{ url_for('web.planejamento', municipality=r.location.ibge_code, crop=i.crop.slug, soil=soil_param) }}">Calendário</a>
+          <a class="text-sm font-bold text-secondary underline"
+            href="{{ url_for('web.clima', municipality=r.location.ibge_code, crop=i.crop.slug, soil=soil_param) }}">Ver
+            orientação</a>
+          <a class="text-sm font-bold text-secondary underline"
+            href="{{ url_for('web.planejamento', municipality=r.location.ibge_code, crop=i.crop.slug, soil=soil_param) }}">Calendário</a>
         </div>
         {% endif %}
       </article>
@@ -72,9 +90,13 @@
     </section>
   </main>
 
-  <nav aria-label="Navegação Principal" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest">
-    {% for href, icon, label in [(url_for('web.assistente'), 'chat', 'Assistente'), (url_for('web.clima'), 'cloud', 'Clima'), (url_for('web.planejamento'), 'calendar_month', 'Planejamento'), (url_for('web.perfil'), 'person', 'Minha Conta')] %}
-    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container rounded-lg" href="{{ href }}">
+  <nav aria-label="Navegação Principal"
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant bg-surface-container-lowest">
+    {% for href, icon, label in [(url_for('web.assistente'), 'chat', 'Assistente'), (url_for('web.clima'), 'cloud',
+    'Clima'), (url_for('web.planejamento'), 'calendar_month', 'Planejamento'), (url_for('web.perfil'), 'person', 'Minha
+    Conta')] %}
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container rounded-lg"
+      href="{{ href }}">
       <span class="material-symbols-outlined">{{ icon }}</span><span class="mt-0.5">{{ label }}</span></a>
     {% endfor %}
   </nav>

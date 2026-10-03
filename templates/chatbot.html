@@ -162,7 +162,8 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
             </span>
-            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Responde com dados oficiais</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Responde com dados
+              oficiais</span>
           </div>
         </div>
       </a>
@@ -182,23 +183,32 @@
     <div class="flex flex-col gap-6 py-4" id="mensagens" aria-live="polite">
       <div class="flex justify-center my-1">
         <span
-          class="bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface-variant">{% if season %}{{ season }} • {% endif %}Calendário oficial ZARC (MAPA/Embrapa)</span>
+          class="bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface-variant">{%
+          if season %}{{ season }} • {% endif %}Calendário oficial ZARC (MAPA/Embrapa)</span>
       </div>
       <!-- Boas-vindas -->
       <div class="flex items-start gap-3 max-w-3xl">
-        <div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0 shadow-sm border border-outline-variant mt-0.5">
+        <div
+          class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0 shadow-sm border border-outline-variant mt-0.5">
           <span class="material-symbols-outlined">potted_plant</span>
         </div>
         <div class="flex flex-col gap-2 w-full">
-          <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-5 shadow-sm text-on-surface">
-            <p class="font-body-md text-body-md font-medium text-primary">Olá{% if current_user %}, {{ current_user.display_name.split()[0] }}{% endif %}! Sou o Assistente Plant+Facil.</p>
-            <p class="font-body-md text-body-md mt-1.5 text-on-surface-variant">Pergunte do seu jeito sobre quando plantar,
+          <div
+            class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 sm:p-5 shadow-sm text-on-surface">
+            <p class="font-body-md text-body-md font-medium text-primary">Olá{% if current_user %}, {{
+              current_user.display_name.split()[0] }}{% endif %}! Sou o Assistente Plant+Facil.</p>
+            <p class="font-body-md text-body-md mt-1.5 text-on-surface-variant">Pergunte do seu jeito sobre quando
+              plantar,
               chuva nos próximos dias, sementes indicadas e seguro rural. Eu respondo com os dados oficiais.
-              {% if farm %}Estou considerando a sua roça em <strong>{{ farm.municipality.name }} - {{ farm.municipality.uf }}</strong>.{% else %}Diga a cidade na pergunta (ex.: "em Chapecó SC"){% if not current_user %} ou <a class="underline text-secondary" href="{{ url_for('web.login') }}">entre na sua conta</a>{% endif %}.{% endif %}</p>
+              {% if farm %}Estou considerando a sua roça em <strong>{{ farm.municipality.name }} - {{
+                farm.municipality.uf }}</strong>.{% else %}Diga a cidade na pergunta (ex.: "em Chapecó SC"){% if not
+              current_user %} ou <a class="underline text-secondary" href="{{ url_for('web.login') }}">entre na sua
+                conta</a>{% endif %}.{% endif %}</p>
           </div>
           <div class="flex flex-wrap gap-2 pt-1" data-sugestoes>
             {% set c = farm.crops[0].name|lower if farm and farm.crops else 'milho' %}
-            {% for s in ['Quando plantar ' ~ c ~ ' na minha região?', 'Vai chover nos próximos dias?', 'Quais sementes de ' ~ c ~ ' são indicadas?', 'O que é o ZARC?'] %}
+            {% for s in ['Quando plantar ' ~ c ~ ' na minha região?', 'Vai chover nos próximos dias?', 'Quais sementes
+            de ' ~ c ~ ' são indicadas?', 'O que é o ZARC?'] %}
             <button type="button" data-pergunta="{{ s }}"
               class="sugestao flex items-center gap-2 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3.5 py-2 text-left shadow-sm active:scale-95 transition-all">
               <span class="font-label-sm text-label-sm font-semibold text-primary">{{ s }}</span>
@@ -230,7 +240,8 @@
         </button>
       </div>
       <div class="flex items-center justify-center gap-1.5 mt-1 text-[11px] text-on-surface-variant">
-        <span>Respostas com dados oficiais: ZARC e Cultivares (MAPA), previsão Open-Meteo e seguro rural (SISSER). Não substitui a assistência técnica.</span>
+        <span>Respostas com dados oficiais: ZARC e Cultivares (MAPA), previsão Open-Meteo e seguro rural (SISSER). Não
+          substitui a assistência técnica.</span>
       </div>
     </form>
   </div>
@@ -247,7 +258,7 @@
     <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
       href="{{ url_for('web.clima') }}">
       <span class="material-symbols-outlined" data-icon="cloud">cloud</span>
-      <span class="mt-0.5">Clima</span>
+      <span class="mt-0.5">Clima e Plantio</span>
     </a>
     <!-- Planejamento (calendário) -->
     <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 font-label-sm text-label-sm hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-all duration-150"
@@ -264,38 +275,38 @@
   </nav>
 
   <script>
-    (() => {
-      const CSRF = '{{ csrf_token() }}';
-      const KEY = 'plantfacil-chat'; // histórico só neste navegador (o servidor não guarda conversas)
-      const lista = document.getElementById('mensagens');
-      const form = document.getElementById('form-chat');
-      const entrada = document.getElementById('entrada');
-      const STATUS = {
-        favorable: ['check_circle', 'bg-secondary-container text-on-secondary-container', 'Bom momento'],
-        attention: ['warning', 'bg-tertiary-fixed text-on-tertiary-fixed', 'Com atenção'],
-        unfavorable: ['block', 'bg-error-container text-on-error-container', 'Ainda não'],
-        no_data: ['help', 'bg-surface-container-high text-on-surface', 'Sem dado oficial'],
-      };
-      let estado = { context: {}, historico: [] };
-      try { estado = JSON.parse(sessionStorage.getItem(KEY)) || estado; } catch (e) { /* sem storage */ }
-      const salvar = () => { try { sessionStorage.setItem(KEY, JSON.stringify(estado)); } catch (e) { /* ok */ } };
+      (() => {
+        const CSRF = '{{ csrf_token() }}';
+        const KEY = 'plantfacil-chat'; // histórico só neste navegador (o servidor não guarda conversas)
+        const lista = document.getElementById('mensagens');
+        const form = document.getElementById('form-chat');
+        const entrada = document.getElementById('entrada');
+        const STATUS = {
+          favorable: ['check_circle', 'bg-secondary-container text-on-secondary-container', 'Bom momento'],
+          attention: ['warning', 'bg-tertiary-fixed text-on-tertiary-fixed', 'Com atenção'],
+          unfavorable: ['block', 'bg-error-container text-on-error-container', 'Ainda não'],
+          no_data: ['help', 'bg-surface-container-high text-on-surface', 'Sem dado oficial'],
+        };
+        let estado = { context: {}, historico: [] };
+        try { estado = JSON.parse(sessionStorage.getItem(KEY)) || estado; } catch (e) { /* sem storage */ }
+        const salvar = () => { try { sessionStorage.setItem(KEY, JSON.stringify(estado)); } catch (e) { /* ok */ } };
 
-      const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-      const hora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      const rolar = () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const hora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        const rolar = () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 
-      const falar = (texto) => {
-        if (!('speechSynthesis' in window)) return;
-        speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(texto);
-        u.lang = 'pt-BR'; u.rate = 0.95;
-        const voz = speechSynthesis.getVoices().find((v) => v.lang.toLowerCase() === 'pt-br');
-        if (voz) u.voice = voz;
-        speechSynthesis.speak(u);
-      };
+        const falar = (texto) => {
+          if (!('speechSynthesis' in window)) return;
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(texto);
+          u.lang = 'pt-BR'; u.rate = 0.95;
+          const voz = speechSynthesis.getVoices().find((v) => v.lang.toLowerCase() === 'pt-br');
+          if (voz) u.voice = voz;
+          speechSynthesis.speak(u);
+        };
 
-      function bolhaUsuario(texto, h) {
-        lista.insertAdjacentHTML('beforeend', `
+        function bolhaUsuario(texto, h) {
+          lista.insertAdjacentHTML('beforeend', `
           <div class="flex justify-end items-end gap-2 max-w-2xl ml-auto">
             <div class="flex flex-col items-end">
               <div class="bg-primary-container text-white px-5 py-3.5 rounded-xl rounded-br-xs shadow-sm">
@@ -304,13 +315,13 @@
               <span class="font-label-sm text-label-sm text-on-surface-variant mt-1 mr-1">${h}</span>
             </div>
           </div>`);
-      }
+        }
 
-      function cartao(card) {
-        if (!card) return '';
-        if (card.type === 'planting') {
-          const [ic, cls, rot] = STATUS[card.status] || STATUS.no_data;
-          return `
+        function cartao(card) {
+          if (!card) return '';
+          if (card.type === 'planting') {
+            const [ic, cls, rot] = STATUS[card.status] || STATUS.no_data;
+            return `
             <div class="mt-4 p-4 rounded-lg bg-surface-container-low border border-outline-variant flex flex-col gap-3">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2.5">
                 <span class="font-headline-sm text-headline-sm text-primary">${esc(card.crop)} • ${esc(card.place)}</span>
@@ -334,32 +345,32 @@
               <div class="text-xs text-on-surface-variant flex items-center gap-1.5">
                 <span class="material-symbols-outlined text-secondary" style="font-size:16px">info</span>Fonte: ${esc(card.source)}</div>
             </div>`;
-        }
-        if (card.type === 'weather') {
-          const dias = (card.days || []).map((d) => `
+          }
+          if (card.type === 'weather') {
+            const dias = (card.days || []).map((d) => `
             <div class="bg-surface-container-lowest p-2 rounded border ${d.condition === 'heavy_rain' ? 'border-error' : 'border-outline-variant'} text-center">
               <span class="block text-xs font-bold">${esc(d.weekday.slice(0, 3))}</span>
               <span class="block text-xs">${Math.round(d.t_max)}° / ${Math.round(d.t_min)}°</span>
               <span class="block text-xs ${d.condition === 'heavy_rain' ? 'text-error font-bold' : 'text-on-surface-variant'}">${Math.round(d.precip_mm || 0)} mm</span>
             </div>`).join('');
-          return `<div class="mt-4 grid grid-cols-4 sm:grid-cols-7 gap-1.5">${dias}</div>
+            return `<div class="mt-4 grid grid-cols-4 sm:grid-cols-7 gap-1.5">${dias}</div>
                   <p class="text-xs text-on-surface-variant mt-2">${esc(card.place)} • Fonte: ${esc(card.source)}</p>`;
-        }
-        if (card.type === 'list') {
-          return `<div class="mt-3 text-sm"><p class="font-bold text-primary">${esc(card.title)}</p>
+          }
+          if (card.type === 'list') {
+            return `<div class="mt-3 text-sm"><p class="font-bold text-primary">${esc(card.title)}</p>
             <p class="text-on-surface-variant mt-1">${(card.items || []).map(esc).join(' · ')}</p>
             ${card.link ? `<a href="${esc(card.link)}" class="text-sm font-bold text-secondary underline">Ver tudo</a>` : ''}
             <p class="text-xs text-on-surface-variant mt-1">Fonte: ${esc(card.source)}</p></div>`;
+          }
+          return '';
         }
-        return '';
-      }
 
-      function bolhaAssistente(r) {
-        const sug = (r.suggestions || []).map((s) => `
+        function bolhaAssistente(r) {
+          const sug = (r.suggestions || []).map((s) => `
           <button type="button" data-pergunta="${esc(s)}" class="sugestao bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-full px-3 py-1.5 text-left shadow-sm">
             <span class="font-label-sm text-label-sm font-semibold text-primary">${esc(s)}</span></button>`).join('');
-        const id = 'm' + Math.random().toString(36).slice(2);
-        lista.insertAdjacentHTML('beforeend', `
+          const id = 'm' + Math.random().toString(36).slice(2);
+          lista.insertAdjacentHTML('beforeend', `
           <div class="flex items-start gap-3 max-w-3xl">
             <div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0 shadow-sm border border-outline-variant mt-0.5">
               <span class="material-symbols-outlined">potted_plant</span></div>
@@ -380,72 +391,72 @@
               <div class="flex flex-wrap gap-2">${sug}</div>
             </div>
           </div>`);
-      }
-
-      function digitando() {
-        lista.insertAdjacentHTML('beforeend', `<div id="digitando" class="text-sm text-on-surface-variant pl-14">Consultando os dados…</div>`);
-        rolar();
-      }
-
-      async function perguntar(texto) {
-        texto = texto.trim();
-        if (!texto) return;
-        const h = hora();
-        bolhaUsuario(texto, h);
-        estado.historico.push({ papel: 'u', texto, h });
-        entrada.value = '';
-        digitando();
-        let r;
-        try {
-          const resp = await fetch('{{ url_for("web.assistente_mensagem") }}', {
-            method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF },
-            body: JSON.stringify({ text: texto, context: estado.context }),
-          });
-          r = await resp.json();
-          if (!resp.ok) r = { text: (r.error && r.error.message) || 'Não consegui responder agora.', suggestions: [] };
-        } catch (e) {
-          r = { text: 'Sem conexão no momento. Tente de novo.', suggestions: [] };
         }
-        document.getElementById('digitando')?.remove();
-        if (r.context) estado.context = r.context;
-        estado.historico.push({ papel: 'a', r });
-        estado.historico = estado.historico.slice(-30);
-        salvar();
-        bolhaAssistente(r);
-        rolar();
-      }
 
-      // Reconstrói a conversa desta sessão do navegador
-      estado.historico.forEach((m) => (m.papel === 'u' ? bolhaUsuario(m.texto, m.h) : bolhaAssistente(m.r)));
-      if (estado.historico.length) rolar();
+        function digitando() {
+          lista.insertAdjacentHTML('beforeend', `<div id="digitando" class="text-sm text-on-surface-variant pl-14">Consultando os dados…</div>`);
+          rolar();
+        }
 
-      form.addEventListener('submit', (e) => { e.preventDefault(); perguntar(entrada.value); });
-      document.addEventListener('click', (e) => {
-        const s = e.target.closest('[data-pergunta]');
-        if (s) perguntar(s.dataset.pergunta);
-        const o = e.target.closest('[data-ouvir]');
-        if (o) falar(document.getElementById(o.dataset.ouvir)?.textContent || '');
-      });
-      document.getElementById('limpar')?.addEventListener('click', () => {
-        estado = { context: {}, historico: [] }; salvar(); window.location.reload();
-      });
+        async function perguntar(texto) {
+          texto = texto.trim();
+          if (!texto) return;
+          const h = hora();
+          bolhaUsuario(texto, h);
+          estado.historico.push({ papel: 'u', texto, h });
+          entrada.value = '';
+          digitando();
+          let r;
+          try {
+            const resp = await fetch('{{ url_for("web.assistente_mensagem") }}', {
+              method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF },
+              body: JSON.stringify({ text: texto, context: estado.context }),
+            });
+            r = await resp.json();
+            if (!resp.ok) r = { text: (r.error && r.error.message) || 'Não consegui responder agora.', suggestions: [] };
+          } catch (e) {
+            r = { text: 'Sem conexão no momento. Tente de novo.', suggestions: [] };
+          }
+          document.getElementById('digitando')?.remove();
+          if (r.context) estado.context = r.context;
+          estado.historico.push({ papel: 'a', r });
+          estado.historico = estado.historico.slice(-30);
+          salvar();
+          bolhaAssistente(r);
+          rolar();
+        }
 
-      // Microfone: reconhecimento de voz do próprio navegador (Chrome/Edge/Android)
-      const mic = document.getElementById('microfone');
-      const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!Rec) { mic.title = 'Seu navegador não reconhece voz; digite a pergunta.'; mic.classList.add('opacity-50'); }
-      mic.addEventListener('click', () => {
-        if (!Rec) { entrada.placeholder = 'Seu navegador não reconhece voz. Digite a pergunta.'; return; }
-        const rec = new Rec();
-        rec.lang = 'pt-BR'; rec.interimResults = false; rec.maxAlternatives = 1;
-        mic.classList.add('animate-pulse');
-        entrada.placeholder = 'Pode falar…';
-        rec.onresult = (ev) => { const t = ev.results[0][0].transcript; entrada.value = t; perguntar(t); };
-        rec.onend = () => { mic.classList.remove('animate-pulse'); entrada.placeholder = 'Escreva sua dúvida ou aperte no microfone...'; };
-        rec.onerror = () => { entrada.placeholder = 'Não entendi o áudio. Tente de novo ou digite.'; };
-        rec.start();
-      });
-    })();
+        // Reconstrói a conversa desta sessão do navegador
+        estado.historico.forEach((m) => (m.papel === 'u' ? bolhaUsuario(m.texto, m.h) : bolhaAssistente(m.r)));
+        if (estado.historico.length) rolar();
+
+        form.addEventListener('submit', (e) => { e.preventDefault(); perguntar(entrada.value); });
+        document.addEventListener('click', (e) => {
+          const s = e.target.closest('[data-pergunta]');
+          if (s) perguntar(s.dataset.pergunta);
+          const o = e.target.closest('[data-ouvir]');
+          if (o) falar(document.getElementById(o.dataset.ouvir)?.textContent || '');
+        });
+        document.getElementById('limpar')?.addEventListener('click', () => {
+          estado = { context: {}, historico: [] }; salvar(); window.location.reload();
+        });
+
+        // Microfone: reconhecimento de voz do próprio navegador (Chrome/Edge/Android)
+        const mic = document.getElementById('microfone');
+        const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Rec) { mic.title = 'Seu navegador não reconhece voz; digite a pergunta.'; mic.classList.add('opacity-50'); }
+        mic.addEventListener('click', () => {
+          if (!Rec) { entrada.placeholder = 'Seu navegador não reconhece voz. Digite a pergunta.'; return; }
+          const rec = new Rec();
+          rec.lang = 'pt-BR'; rec.interimResults = false; rec.maxAlternatives = 1;
+          mic.classList.add('animate-pulse');
+          entrada.placeholder = 'Pode falar…';
+          rec.onresult = (ev) => { const t = ev.results[0][0].transcript; entrada.value = t; perguntar(t); };
+          rec.onend = () => { mic.classList.remove('animate-pulse'); entrada.placeholder = 'Escreva sua dúvida ou aperte no microfone...'; };
+          rec.onerror = () => { entrada.placeholder = 'Não entendi o áudio. Tente de novo ou digite.'; };
+          rec.start();
+        });
+      })();
   </script>
   <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
   <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
